@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mr_lowat_bakery/NavigationBar.dart';
-import 'package:mr_lowat_bakery/adminScreens/AdminLogin.dart';
+import 'package:mr_lowat_bakery/adminScreens/AdminNavBar.dart';
 import 'package:mr_lowat_bakery/userscreens/sign_up.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+class LoginAdmin extends StatelessWidget {
+  const LoginAdmin({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +14,7 @@ class LoginScreen extends StatelessWidget {
           // Background Image
           Positioned.fill(
             child: Image.asset(
-              'assets/CustomerLogin.jpg', // Image path
+              'assets/AdminBackground.jpg', // Image path
               fit: BoxFit.cover,
             ),
           ),
@@ -54,22 +53,13 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                // Title with Gesture Detector for hidden gesture
-                GestureDetector(
-                  onLongPress: () {
-                    // Navigate to Admin Login Screen on long press
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const LoginAdmin()),
-                    );
-                  },
-                  child: const Text(
-                    "Mr Lowat Bakery",
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
+                // Title
+                const Text(
+                  "Mr Lowat Bakery",
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
                 ),
                 const SizedBox(height: 5),
@@ -135,11 +125,11 @@ class LoginScreen extends StatelessWidget {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const NavigationMenu()),
-                      );
-                    },
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const AdminNavigationMenu()),
+                        );
+                      },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.orange,
                       shape: RoundedRectangleBorder(
@@ -162,22 +152,6 @@ class LoginScreen extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class AdminLoginScreen extends StatelessWidget {
-  const AdminLoginScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Admin Login"),
-      ),
-      body: const Center(
-        child: Text("Admin Login Screen"),
       ),
     );
   }
