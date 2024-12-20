@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mr_lowat_bakery/screens/homepage.dart';
+import 'package:mr_lowat_bakery/NavigationBar.dart';
 import 'package:mr_lowat_bakery/screens/sign_up.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -14,7 +14,7 @@ class LoginScreen extends StatelessWidget {
           // Background Image
           Positioned.fill(
             child: Image.asset(
-              'assets/CustomerLogin.jpg', // image path
+              'assets/CustomerLogin.jpg', // Image path
               fit: BoxFit.cover,
             ),
           ),
@@ -30,18 +30,21 @@ class LoginScreen extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                      builder: (context) => const NewAccount(),
-                ),
-              );
-            },
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const NewAccount(),
+                        ),
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.pinkAccent,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
                     ),
                     child: const Text(
                       "Sign Up",
@@ -118,22 +121,24 @@ class LoginScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 // Log In Button
-                Center(
+                SizedBox(
+                  width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                       Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                      builder: (context) => const MyWidget(),
-                ),
-              );
-                    },
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => NavigationMenu()),
+                        );
+                      },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.orange,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 40,
+                        vertical: 15,
+                      ),
                     ),
                     child: const Text(
                       "Log In",
@@ -141,6 +146,7 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                 ),
+                const SizedBox(height: 20),
                 const Spacer(),
               ],
             ),
