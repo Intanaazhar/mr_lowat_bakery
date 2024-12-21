@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:mr_lowat_bakery/userscreens/homepage.dart';
+import 'package:mr_lowat_bakery/userscreens/userProfile.dart';
 
 
 class NavigationMenu extends StatelessWidget {
@@ -36,5 +37,5 @@ Widget build(BuildContext context) {
 class NavigationController extends GetxController{
   final Rx<int> selectedIndex = 0.obs;
 
-  final screens = [MyWidget(),Container(color: Colors.blue),Container(color: Colors.orange),Container(color: Colors.grey), Container(color: Colors.red)];
+  final screens = [const MyWidget(),Container(color: Colors.blue),Container(color: Colors.orange),Container(color: Colors.grey), UserProfile()];
 }

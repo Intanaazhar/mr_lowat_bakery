@@ -86,7 +86,7 @@ class LoginScreen extends StatelessWidget {
                   decoration: InputDecoration(
                     hintText: "Username",
                     filled: true,
-                    fillColor: const Color.fromARGB(255, 205, 127, 10),
+                    fillColor: Colors.orange,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
                       borderSide: BorderSide.none,

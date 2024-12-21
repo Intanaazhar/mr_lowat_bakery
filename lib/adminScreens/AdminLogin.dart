@@ -55,7 +55,7 @@ class LoginAdmin extends StatelessWidget {
                 const Spacer(),
                 // Title
                 const Text(
-                  "Mr Lowat Bakery",
+                  "Hi Admin! ",
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
@@ -63,11 +63,11 @@ class LoginAdmin extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 5),
-                Text(
-                  "Made by hand, from scratch\nwith love",
+                const Text(
+                  "Welcome to your bakery app ;)",
                   style: TextStyle(
                     fontSize: 16,
-                    color: Colors.grey[700],
+                    color: Colors.black,
                   ),
                 ),
                 const SizedBox(height: 200),
@@ -76,7 +76,7 @@ class LoginAdmin extends StatelessWidget {
                   decoration: InputDecoration(
                     hintText: "Username",
                     filled: true,
-                    fillColor: const Color.fromARGB(255, 205, 127, 10),
+                   fillColor: Colors.orange,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
                       borderSide: BorderSide.none,

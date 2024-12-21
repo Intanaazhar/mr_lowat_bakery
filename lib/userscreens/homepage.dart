@@ -5,8 +5,8 @@ class MyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: const SafeArea(
+    return const Scaffold(
+      body: SafeArea(
         child: Center(
           child: Icon(
             Icons.shopping_cart,
