@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mr_lowat_bakery/screens/settings_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -91,7 +92,15 @@ class UserProfile extends StatelessWidget {
             const SizedBox(height: 20),
             ProfileButton(label: "My Carts", onTap: () {}),
             const SizedBox(height: 20),
-            ProfileButton(label: "Settings", onTap: () {}),
+           ProfileButton(
+              label: "Settings",
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingsPage()),
+                );
+              },
+            ),
           ],
         ),
       ),
