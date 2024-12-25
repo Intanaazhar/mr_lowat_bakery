@@ -9,12 +9,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: UserProfile(),
+      home: AdminMenu(),
     );
   }
 }
 
-class UserProfile extends StatelessWidget {
+class AdminMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,12 +23,12 @@ class UserProfile extends StatelessWidget {
         backgroundColor: Colors.orange,
         elevation: 0,
         title: Text(
-          "My Profile",
+          "Admin Menu",
           style: TextStyle(color: Colors.white, fontSize: 20),
         ),
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {},
         ),
         actions: [
@@ -38,13 +38,16 @@ class UserProfile extends StatelessWidget {
           ),
         ],
       ),
-      body: Center(  // Wrap the entire body in a Center widget
+      body: Center(
+        // Wrap the entire body in a Center widget
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,  // Center everything vertically
-          crossAxisAlignment: CrossAxisAlignment.center,  // Center everything horizontally
+          mainAxisAlignment:
+              MainAxisAlignment.center, // Center everything vertically
+          crossAxisAlignment:
+              CrossAxisAlignment.center, // Center everything horizontally
           children: [
             // Adjusting the height of the profile picture
-            SizedBox(height: 40),
+            const SizedBox(height: 10),
             Container(
               width: 180, // Size of the circular ring
               height: 180,
@@ -57,37 +60,34 @@ class UserProfile extends StatelessWidget {
                 ),
               ),
               child: Padding(
-                padding: EdgeInsets.all(5), // Space between ring and profile picture
+                padding:
+                    EdgeInsets.all(5), // Space between ring and profile picture
                 child: CircleAvatar(
                   radius: 150,
-                  backgroundImage: AssetImage('assets/userProfilePic.jpg'), // Replace with your avatar image asset
+                  backgroundImage: AssetImage(
+                      'assets/mrLowat_logo.jpg'), // Replace with your avatar image asset
                   backgroundColor: Colors.grey[200],
                 ),
               ),
             ),
-            SizedBox(height: 10), // Spacing between the profile picture and the text
+            SizedBox(
+                height: 10), // Spacing between the profile picture and the text
             Text(
-              "Nur Qistina", // Replace with dynamic name if needed
+              "Mr Lowat Bakery",
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: Color.fromARGB(255, 68, 68, 68),
               ),
             ),
-            Text(
-              "Qistina03@gmail.com", // Replace with dynamic email if needed
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.grey[700],
-              ),
-            ),
+
             SizedBox(height: 20), // Spacing before the buttons
             // Buttons
-            ProfileButton(label: "My Orders", onTap: () {}),
+            ProfileButton(label: "Add New Menu", onTap: () {}),
             SizedBox(height: 20),
-            ProfileButton(label: "My Carts", onTap: () {}),
+            ProfileButton(label: "Customer Feedbacks", onTap: () {}),
             SizedBox(height: 20),
-            ProfileButton(label: "Settings", onTap: () {}),
+            ProfileButton(label: "Manage Orders", onTap: () {}),
           ],
         ),
       ),
@@ -107,9 +107,9 @@ class ProfileButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: 350,
-        padding: EdgeInsets.symmetric(vertical: 30),  // Adjusted padding
+        padding: EdgeInsets.symmetric(vertical: 20), // Adjusted padding
         decoration: BoxDecoration(
-          color: Colors.orange,
+          color: Color(0xffffa1c1),
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(

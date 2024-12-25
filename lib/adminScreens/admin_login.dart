@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mr_lowat_bakery/adminScreens/AdminNavBar.dart';
+import 'package:mr_lowat_bakery/adminScreens/admin_nav_bar.dart';
 import 'package:mr_lowat_bakery/userscreens/sign_up.dart';
 
 class LoginAdmin extends StatelessWidget {

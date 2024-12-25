@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 
 class click_button_page extends StatelessWidget {
-  const click_button_page({Key? key}) : super(key: key);
+  const click_button_page({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mr_lowat_bakery/NavigationBar.dart';
-import 'package:mr_lowat_bakery/adminScreens/AdminLogin.dart';
+import 'package:mr_lowat_bakery/navigation_bar.dart';
+import 'package:mr_lowat_bakery/adminScreens/admin_login.dart';
 import 'package:mr_lowat_bakery/userscreens/sign_up.dart';
 
 class LoginScreen extends StatelessWidget {
