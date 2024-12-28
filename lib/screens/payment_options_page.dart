@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class PaymentOptionsPage extends StatelessWidget {
-  const PaymentOptionsPage({Key? key}) : super(key: key);
+  const PaymentOptionsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +28,9 @@ class PaymentOptionsPage extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.radio_button_checked, color: Colors.orange),
+              const Icon(Icons.radio_button_checked, color: Colors.orange),
               Container(width: 50, height: 2, color: Colors.orange),
-              Icon(Icons.radio_button_unchecked, color: Colors.orange),
+              const Icon(Icons.radio_button_unchecked, color: Colors.orange),
             ],
           ),
           const SizedBox(height: 30),
@@ -79,31 +79,31 @@ class PaymentOptionsPage extends StatelessWidget {
                     ),
                   ),
                   const Divider(),
-                  Row(
+                  const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
+                    children: [
                       Text('Subtotal', style: TextStyle(fontSize: 16)),
                       Text('RM80', style: TextStyle(fontSize: 16)),
                     ],
                   ),
-                  Row(
+                  const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
+                    children: [
                       Text('Add On', style: TextStyle(fontSize: 16)),
                       Text('RM10', style: TextStyle(fontSize: 16)),
                     ],
                   ),
-                  Row(
+                  const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
+                    children: [
                       Text('Shipping', style: TextStyle(fontSize: 16)),
                       Text('RM0', style: TextStyle(fontSize: 16)),
                     ],
                   ),
                   const Divider(),
-                  Row(
+                  const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
+                    children: [
                       Text('Total',
                           style: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold)),
