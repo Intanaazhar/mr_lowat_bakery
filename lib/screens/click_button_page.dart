@@ -1,6 +1,5 @@
-
-
 import 'package:flutter/material.dart';
+import 'package:get/get.dart'; // Used for state management and navigation
 
 class click_button_page extends StatelessWidget {
   const click_button_page({super.key});
@@ -17,7 +16,7 @@ class click_button_page extends StatelessWidget {
         children: [
           const Spacer(),
           Image.asset(
-            'assets/cake_image.png', // Replace with your image asset path
+            'assets/cake.jpg.png', // Replace with your image asset path
             height: 200,
           ),
           const SizedBox(height: 20),
@@ -30,32 +29,22 @@ class click_button_page extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               children: [
-                _buildOptionRow('Size', ['3 inches', '5 inches']),
-                _buildOptionRow('Flavour', ['Chocolate', 'Vanilla', 'Pandan', 'Mocha']),
-                _buildOptionRow('Topper Theme', ['Roses', 'Stars', 'Custom']),
+                _buildOptionRow(context, 'Size', ['3 Inch', '5 Inch']),
+                _buildOptionRow(context, 'Flavour', ['Chocolate', 'Vanilla', 'Pandan', 'Mocha']),
+                _buildTopperTheme(context),
                 _buildDatePicker(context),
-                _buildToggleOption('Add on Knife, Candle, Box'),
-                _buildOptionRow('Payment Option', ['Deposit', 'Full payment']),
+                _buildPickupOptions(context),
+                _buildOptionRow(context, 'Payment Options', ['Deposit', 'Full payment']),
+                _buildAddOnOptions(),
                 const SizedBox(height: 20),
-                _buildMoreToExplore(),
               ],
             ),
           ),
           const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton(
-                onPressed: () => _showOverlay(context, 'Book Now'),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
-                child: const Text('Book Now'),
-              ),
-              ElevatedButton(
-                onPressed: () => _showOverlay(context, 'Add a Comment'),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
-                child: const Text('Add a Comment'),
-              ),
-            ],
+          ElevatedButton(
+            onPressed: () => _showConfirmationPopup(context),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+            child: const Text('Add to Cart'),
           ),
           const Spacer(),
         ],
@@ -63,7 +52,7 @@ class click_button_page extends StatelessWidget {
     );
   }
 
-  Widget _buildOptionRow(String title, List<String> options) {
+  Widget _buildOptionRow(BuildContext context, String title, List<String> options) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -74,15 +63,71 @@ class click_button_page extends StatelessWidget {
         Wrap(
           spacing: 10.0,
           children: options.map((option) {
-            return ChoiceChip(
-              label: Text(option),
-              selected: false, // Add selection logic here
-              onSelected: (selected) {},
+            return StatefulBuilder(
+              builder: (context, setState) {
+                bool isSelected = false;
+                return ChoiceChip(
+                  label: Text(option),
+                  selected: isSelected,
+                  selectedColor: Colors.orange,
+                  onSelected: (selected) {
+                    setState(() {
+                      isSelected = selected;
+                    });
+                  },
+                );
+              },
             );
           }).toList(),
         ),
         const SizedBox(height: 15),
       ],
+    );
+  }
+
+  Widget _buildTopperTheme(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Topper Theme',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        Row(
+          children: [
+            const Expanded(
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: 'Insert option',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.arrow_drop_down),
+              onPressed: () {
+                _showTopperOptions(context);
+              },
+            ),
+          ],
+        ),
+        const SizedBox(height: 15),
+      ],
+    );
+  }
+
+  void _showTopperOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return ListView(
+          children: const [
+            ListTile(title: Text('Roses')),
+            ListTile(title: Text('Stars')),
+            ListTile(title: Text('Custom')),
+          ],
+        );
+      },
     );
   }
 
@@ -96,17 +141,30 @@ class click_button_page extends StatelessWidget {
         ),
         Row(
           children: [
-            ElevatedButton(
-              onPressed: () async {
-                await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime.now(),
-                  lastDate: DateTime(2100),
-                );
-                // Handle selected date
-              },
-              child: const Text('Select Date'),
+            Expanded(
+              child: StatefulBuilder(
+                builder: (context, setState) {
+                  DateTime? selectedDate;
+                  String formattedDate = 'Select Date';
+                  return ElevatedButton(
+                    onPressed: () async {
+                      DateTime? date = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime(2100),
+                      );
+                      if (date != null) {
+                        setState(() {
+                          selectedDate = date;
+                          formattedDate = '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}';
+                        });
+                      }
+                    },
+                    child: Text(formattedDate),
+                  );
+                },
+              ),
             ),
           ],
         ),
@@ -115,110 +173,91 @@ class click_button_page extends StatelessWidget {
     );
   }
 
-  Widget _buildToggleOption(String title) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-        Switch(
-          value: false, // Add toggle logic here
-          onChanged: (value) {},
-        ),
-      ],
-    );
-  }
-
-
-Widget _buildMoreToExplore() {
+  Widget _buildPickupOptions(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'More to Explore',
+          'Pickup Options',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
-        SizedBox(
-          height: 150,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: [
-              _buildExploreCard('assets/explore1.png', 'Cake Design A'),
-              _buildExploreCard('assets/explore2.png', 'Cake Design B'),
-              _buildExploreCard('assets/explore3.png', 'Cake Design C'),
-            ],
-          ),
+        Wrap(
+          spacing: 10.0,
+          children: ['Self Pickup', 'Delivery'].map((option) {
+            return StatefulBuilder(
+              builder: (context, setState) {
+                bool isSelected = false;
+                return ChoiceChip(
+                  label: Text(option),
+                  selected: isSelected,
+                  selectedColor: Colors.orange,
+                  onSelected: (selected) {
+                    setState(() {
+                      isSelected = selected;
+                    });
+                  },
+                );
+              },
+            );
+          }).toList(),
         ),
         const SizedBox(height: 15),
       ],
     );
   }
 
-  Widget _buildExploreCard(String imagePath, String title) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 10.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Image.asset(
-            imagePath,
-            width: 100,
-            height: 100,
-            fit: BoxFit.cover,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              title,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+  Widget _buildAddOnOptions() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Add on Knife, Candle, Box',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        Row(
+          children: [
+            StatefulBuilder(
+              builder: (context, setState) {
+                bool isChecked = false;
+                return Checkbox(
+                  value: isChecked,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      isChecked = value ?? false;
+                    });
+                  },
+                );
+              },
             ),
-          ),
-        ],
-      ),
+            const Text('Include'),
+          ],
+        ),
+        const SizedBox(height: 15),
+      ],
     );
   }
 
-  void _showOverlay(BuildContext context, String title) {
-    showModalBottomSheet(
+  void _showConfirmationPopup(BuildContext context) {
+    showDialog(
       context: context,
       builder: (BuildContext context) {
-        return Container(
-          padding: const EdgeInsets.all(20.0),
-          height: 300,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              if (title == 'Add a Comment') ...[
-                const TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Enter your comment',
-                    border: OutlineInputBorder(),
-                  ),
-                  maxLines: 5,
-                ),
-              ] else if (title == 'Book Now') ...[
-                const Text(
-                  'Confirm your booking details.',
-                  style: TextStyle(fontSize: 16),
-                ),
-                const Spacer(),
-                ElevatedButton(
-                  onPressed: () {
-                    // Confirm booking logic
-                  },
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
-                  child: const Text('Confirm'),
-                ),
-              ],
-            ],
-          ),
+        return AlertDialog(
+          title: const Text('Order Confirmed'),
+          content: const Text('Your order has been confirmed.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('OK'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed('/cart'); // Navigate to the cart page
+              },
+              child: const Text('Check out your cart'),
+            ),
+          ],
         );
       },
     );

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: AdminMenu(),
     );
@@ -15,6 +17,8 @@ class MyApp extends StatelessWidget {
 }
 
 class AdminMenu extends StatelessWidget {
+  const AdminMenu({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +26,7 @@ class AdminMenu extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.orange,
         elevation: 0,
-        title: Text(
+        title: const Text(
           "Admin Menu",
           style: TextStyle(color: Colors.white, fontSize: 20),
         ),
@@ -33,7 +37,7 @@ class AdminMenu extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.logout, color: Colors.white),
+            icon: const Icon(Icons.logout, color: Colors.white),
             onPressed: () {},
           ),
         ],
@@ -51,7 +55,7 @@ class AdminMenu extends StatelessWidget {
             Container(
               width: 180, // Size of the circular ring
               height: 180,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
                   colors: [Colors.orange, Colors.red],
@@ -61,18 +65,18 @@ class AdminMenu extends StatelessWidget {
               ),
               child: Padding(
                 padding:
-                    EdgeInsets.all(5), // Space between ring and profile picture
+                    const EdgeInsets.all(5), // Space between ring and profile picture
                 child: CircleAvatar(
                   radius: 150,
-                  backgroundImage: AssetImage(
+                  backgroundImage: const AssetImage(
                       'assets/mrLowat_logo.jpg'), // Replace with your avatar image asset
                   backgroundColor: Colors.grey[200],
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
                 height: 10), // Spacing between the profile picture and the text
-            Text(
+            const Text(
               "Mr Lowat Bakery",
               style: TextStyle(
                 fontSize: 20,
@@ -81,12 +85,12 @@ class AdminMenu extends StatelessWidget {
               ),
             ),
 
-            SizedBox(height: 20), // Spacing before the buttons
+            const SizedBox(height: 20), // Spacing before the buttons
             // Buttons
             ProfileButton(label: "Add New Menu", onTap: () {}),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ProfileButton(label: "Customer Feedbacks", onTap: () {}),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ProfileButton(label: "Manage Orders", onTap: () {}),
           ],
         ),
@@ -99,7 +103,7 @@ class ProfileButton extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
 
-  ProfileButton({required this.label, required this.onTap});
+  const ProfileButton({super.key, required this.label, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -107,9 +111,9 @@ class ProfileButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: 350,
-        padding: EdgeInsets.symmetric(vertical: 20), // Adjusted padding
+        padding: const EdgeInsets.symmetric(vertical: 20), // Adjusted padding
         decoration: BoxDecoration(
-          color: Color(0xffffa1c1),
+          color: const Color(0xffffa1c1),
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
@@ -122,7 +126,7 @@ class ProfileButton extends StatelessWidget {
         child: Center(
           child: Text(
             label,
-            style: TextStyle(fontSize: 18, color: Colors.white),
+            style: const TextStyle(fontSize: 18, color: Colors.white),
           ),
         ),
       ),
