@@ -70,6 +70,7 @@ class UserProfile extends StatelessWidget {
                 ),
               ),
             ),
+            //later on I want it to fetch the user's name automatically
             const SizedBox(height: 10), // Spacing between the profile picture and the text
             const Text(
               "Nur Qistina", // Replace with dynamic name if needed
@@ -97,7 +98,7 @@ class UserProfile extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => SettingsPage()),
+                  MaterialPageRoute(builder: (context) => const SettingsPage()),
                 );
               },
             ),

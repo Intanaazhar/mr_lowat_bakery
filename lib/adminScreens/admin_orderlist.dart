@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: AdminOrderList(),
     );
@@ -15,6 +17,8 @@ class MyApp extends StatelessWidget {
 }
 
 class AdminOrderList extends StatefulWidget {
+  const AdminOrderList({super.key});
+
   @override
   _AdminOrderListState createState() => _AdminOrderListState();
 }
@@ -30,13 +34,13 @@ class _AdminOrderListState extends State<AdminOrderList> {
       appBar: AppBar(
         backgroundColor: Colors.orange,
         elevation: 0,
-        title: Text(
+        title: const Text(
           "Order List",
           style: TextStyle(color: Colors.white, fontSize: 20),
         ),
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {},
         ),
       ),
@@ -49,9 +53,9 @@ class _AdminOrderListState extends State<AdminOrderList> {
                 itemCount: currentStatuses.length,
                 itemBuilder: (context, index) {
                   return Card(
-                    margin: EdgeInsets.symmetric(vertical: 8),
+                    margin: const EdgeInsets.symmetric(vertical: 8),
                     child: ListTile(
-                      leading: CircleAvatar(
+                      leading: const CircleAvatar(
                         backgroundColor: Colors.orange,
                         child: Icon(Icons.cake, color: Colors.white),
                       ),
@@ -66,7 +70,7 @@ class _AdminOrderListState extends State<AdminOrderList> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        child: Text("Details"),
+                        child: const Text("Details"),
                       ),
                     ),
                   );
@@ -91,18 +95,18 @@ class _AdminOrderListState extends State<AdminOrderList> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
-              title: Text("Order Details"),
+              title: const Text("Order Details"),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text("Name: ${index == 0 ? 'Nur Qistina' : 'Ahmad'}"),
-                  Text("Booking Date: 10/12/2024"),
-                  Text("Cake Size: 3 inches"),
-                  Text("Flavor: Chocolate"),
-                  Text("Topper: Roses"),
-                  Text("Payment: Full payment"),
-                  Text("Pickup: Self pickup"),
-                  SizedBox(height: 20),
+                  const Text("Booking Date: 10/12/2024"),
+                  const Text("Cake Size: 3 inches"),
+                  const Text("Flavor: Chocolate"),
+                  const Text("Topper: Roses"),
+                  const Text("Payment: Full payment"),
+                  const Text("Pickup: Self pickup"),
+                  const SizedBox(height: 20),
                   DropdownButtonFormField<String>(
                     value: selectedStatus,
                     decoration: InputDecoration(
@@ -133,11 +137,11 @@ class _AdminOrderListState extends State<AdminOrderList> {
                     });
                     Navigator.of(context).pop();
                   },
-                  child: Text("Save"),
+                  child: const Text("Save"),
                 ),
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text("Close"),
+                  child: const Text("Close"),
                 ),
               ],
             );

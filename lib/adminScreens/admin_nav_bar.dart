@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:mr_lowat_bakery/adminScreens/admin_homepage.dart';
 import 'package:mr_lowat_bakery/adminScreens/admin_menu.dart';
+import 'package:mr_lowat_bakery/adminScreens/admin_notification.dart';
 import 'package:mr_lowat_bakery/adminScreens/admin_orderlist.dart';
 //import 'package:mr_lowat_bakery/adminScreens/adminHomepage.dart';
 
@@ -18,7 +20,7 @@ Widget build(BuildContext context) {
       ()=> NavigationBar(
         height: 80,
         elevation:0,
-        backgroundColor: Colors.orange, // Set the background color to orange
+        backgroundColor: Colors.pink, // Set the background color to orange
         selectedIndex: controller.selectedIndex.value,
         onDestinationSelected: (index) => controller.selectedIndex.value = index,
         destinations: const [
@@ -38,5 +40,5 @@ Widget build(BuildContext context) {
 class AdminNavigationController extends GetxController{
   final Rx<int> selectedIndex = 0.obs;
   //to edit more
-  final screens = [Container(color: Colors.pink),Container(color: Colors.blue),AdminOrderList(),Container(color: Colors.grey), AdminMenu()];
+  final screens = [const AdminHomePage(),Container(color: Colors.blue),const AdminOrderList(),const AdminCustomerFeedback(), const AdminMenu()];
 }

@@ -67,6 +67,24 @@ flutter:
      - assets/AdminBackground.jpg
      - assets/userProfilePic.jpg
      - assets/mrLowat_logo.jpg
+     - assets/homeAds.png
+     - assets/cake.png
+     - assets/cheesecake.png
+     - assets/brownie.png
+     - assets/egg-tart.png
+     - assets/cupcake.png
+     - assets/puffs.png
+     - assets/cookies.png
+     - assets/tart.jpg
+     - assets/brownies.jpg
+     - assets/cupcake.jpg
+     - assets/puffs.jpg
+     - assets/cupcake2.jpg
+     - assets/tart2.jpg
+     - assets/cake1.png
+     - assets/cake2.png
+     - assets/cake3.png
+     - assets/cake4.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -1,65 +1,83 @@
-
-/*
 import 'package:flutter/material.dart';
 
-
 class DescriptionPage extends StatelessWidget {
-  const DescriptionPage({super.key});
+  final String imagePath;
+  final String name;
+  final String price;
+  final Function(Map<String, String>) onAddToCart;
+
+  const DescriptionPage({
+    super.key,
+    required this.imagePath,
+    required this.name,
+    required this.price,
+    required this.onAddToCart,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cake Preferences'),
+        title: const Text("Cake Preferences"),
         backgroundColor: Colors.orange,
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Spacer(),
-          Image.asset(
-            'assets/cake_image.png', // Replace with your image asset path
-            height: 200,
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            'Choose your preferences',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 10),
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Image.asset(imagePath, width: double.infinity, height: 200, fit: BoxFit.cover),
+            const SizedBox(height: 16),
+            Text(name, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            Text(price, style: const TextStyle(fontSize: 18, color: Colors.orange)),
+            const SizedBox(height: 16),
+            Text(
+              'Choose your preferences',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                children: [
+                  _buildOptionRow('Size', ['3 inches', '5 inches']),
+                  _buildOptionRow('Flavour', ['Chocolate', 'Vanilla', 'Pandan', 'Mocha']),
+                  _buildOptionRow('Topper Theme', ['Roses', 'Stars', 'Custom']),
+                  _buildDatePicker(context),
+                  _buildToggleOption('Add on Knife, Candle, Box'),
+                  _buildOptionRow('Payment Option', ['Deposit', 'Full payment']),
+                  const SizedBox(height: 20),
+                  _buildMoreToExplore(),
+                ],
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildOptionRow('Size', ['3 inches', '5 inches']),
-                _buildOptionRow('Flavour', ['Chocolate', 'Vanilla', 'Pandan', 'Mocha']),
-                _buildOptionRow('Topper Theme', ['Roses', 'Stars', 'Custom']),
-                _buildDatePicker(context),
-                _buildToggleOption('Add on Knife, Candle, Box'),
-                _buildOptionRow('Payment Option', ['Deposit', 'Full payment']),
-                const SizedBox(height: 20),
-                _buildMoreToExplore(),
+                ElevatedButton(
+                  onPressed: () {
+                    onAddToCart({
+                      'image': imagePath,
+                      'title': name,
+                      'price': price,
+                    });
+                    Navigator.pop(context); // Return to previous page
+                  },
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+                  child: const Text("Add to Cart"),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    _showOverlay(context, 'Add a Comment');
+                  },
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+                  child: const Text('Add a Comment'),
+                ),
               ],
             ),
-          ),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton(
-                onPressed: () => _showOverlay(context, 'Book Now'),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
-                child: const Text('Book Now'),
-              ),
-              ElevatedButton(
-                onPressed: () => _showOverlay(context, 'Add a Comment'),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
-                child: const Text('Add a Comment'),
-              ),
-            ],
-          ),
-          const Spacer(),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -132,8 +150,7 @@ class DescriptionPage extends StatelessWidget {
     );
   }
 
-
-Widget _buildMoreToExplore() {
+  Widget _buildMoreToExplore() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -224,4 +241,4 @@ Widget _buildMoreToExplore() {
       },
     );
   }
-}*/
+}
