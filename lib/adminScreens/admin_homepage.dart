@@ -1,87 +1,202 @@
 import 'package:flutter/material.dart';
-import 'package:mr_lowat_bakery/adminScreens/admin_nav_bar.dart';
+import 'package:mr_lowat_bakery/userscreens/home/cake_category.dart';
+import 'package:mr_lowat_bakery/userscreens/home/cart_page.dart';
+import 'package:mr_lowat_bakery/userscreens/home/category_widgets.dart';
+import 'package:mr_lowat_bakery/userscreens/home/menu_widgets.dart';
 
-class AdminHomePage extends StatelessWidget {
-  const AdminHomePage({super.key});
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Homepage(),
+    );
+  }
+}
+
+class Homepage extends StatelessWidget {
+  const Homepage({super.key});
+
+  get cart => null;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 235, 225, 225),
       appBar: AppBar(
-        title: const Text("Admin Dashboard"),
-        backgroundColor: Colors.orange.shade300,
-      ),
-      drawer: const AdminNavigationMenu(),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: GridView.count(
-          crossAxisCount: 2,
-          crossAxisSpacing: 16.0,
-          mainAxisSpacing: 16.0,
-          children: [
-            _buildDashboardCard(
-              context,
-              title: "Orders",
-              icon: Icons.shopping_cart,
-              onTap: () {
-                // Navigate to Orders Page
-              },
-            ),
-            _buildDashboardCard(
-              context,
-              title: "Products",
-              icon: Icons.cake,
-              onTap: () {
-                // Navigate to Products Page
-              },
-            ),
-            _buildDashboardCard(
-              context,
-              title: "Customers",
-              icon: Icons.people,
-              onTap: () {
-                // Navigate to Customers Page
-              },
-            ),
-            _buildDashboardCard(
-              context,
-              title: "Feedback",
-              icon: Icons.feedback,
-              onTap: () {
-                // Navigate to Feedback Page
-              },
-            ),
-          ],
+        backgroundColor: Colors.orange,
+        elevation: 0,
+        title: const Text(
+          "Home",
+          style: TextStyle(color: Colors.white, fontSize: 20),
         ),
-      ),
-    );
-  }
-
-  Widget _buildDashboardCard(
-    BuildContext context, {
-    required String title,
-    required IconData icon,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Card(
-        color: Colors.orange.shade300,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.settings, color: Colors.white),
+          onPressed: () {},
         ),
-        child: Center(
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.edit, color: Colors.white), // Changed icon here
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CartPage(cart: cart),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(icon, size: 48.0, color: Colors.white),
-              const SizedBox(height: 8.0),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+              const Image(image: AssetImage('assets/homeAds.png')),
+              const SizedBox(height: 15),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search here...',
+                    prefixIcon: const Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Colors.black, width: 1.0),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  'Discover by category',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                height: 150,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: <Widget>[
+                      const SizedBox(width: 14),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const CakeCategoryPage()),
+                          );
+                        },
+                        child: const CustomRoundedContainer(
+                            imagePath: 'assets/cake.png'),
+                      ),
+                      const SizedBox(width: 14),
+                      GestureDetector(
+                        onTap: () {
+                          print('Cheesecake clicked!');
+                        },
+                        child: const CustomRoundedContainer(
+                            imagePath: 'assets/cheesecake.png'),
+                      ),
+                      const SizedBox(width: 14),
+                      GestureDetector(
+                        onTap: () {
+                          print('Brownie clicked!');
+                        },
+                        child: const CustomRoundedContainer(
+                            imagePath: 'assets/brownie.png'),
+                      ),
+                      const SizedBox(width: 14),
+                      GestureDetector(
+                        onTap: () {
+                          print('Egg Tart clicked!');
+                        },
+                        child: const CustomRoundedContainer(
+                            imagePath: 'assets/egg-tart.png'),
+                      ),
+                      const SizedBox(width: 14),
+                      GestureDetector(
+                        onTap: () {
+                          print('Cupcake clicked!');
+                        },
+                        child: const CustomRoundedContainer(
+                            imagePath: 'assets/cupcake.png'),
+                      ),
+                      const SizedBox(width: 14),
+                      GestureDetector(
+                        onTap: () {
+                          print('Puffs clicked!');
+                        },
+                        child: const CustomRoundedContainer(
+                            imagePath: 'assets/puffs.png'),
+                      ),
+                      const SizedBox(width: 14),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  'Most Ordered',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      children: [
+                        MenuWidgets(
+                          imagePath: 'assets/tart.jpg',
+                          name: 'Egg Tart',
+                          price: 'RM 5.00',
+                          onPressed: () {},
+                        ),
+                        const SizedBox(height: 14),
+                        MenuWidgets(
+                          imagePath: 'assets/brownies.jpg',
+                          name: 'Brownies',
+                          price: 'RM 8.00',
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        MenuWidgets(
+                          imagePath: 'assets/cupcake.jpg',
+                          name: 'Cupcake',
+                          price: 'RM 6.00',
+                          onPressed: () {},
+                        ),
+                        const SizedBox(height: 14),
+                        MenuWidgets(
+                          imagePath: 'assets/puffs.jpg',
+                          name: 'Cream Puffs',
+                          price: 'RM 4.00',
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ],
