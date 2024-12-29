@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-//import 'package:mr_lowat_bakery/screens/click_button_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/cart_page.dart';
 import 'package:mr_lowat_bakery/userscreens/description_page.dart';
+import 'package:mr_lowat_bakery/userscreens/home/menu_widgets.dart';
 
 class CakeCategoryPage extends StatefulWidget {
   const CakeCategoryPage({super.key});
@@ -75,72 +75,34 @@ class _CakeCategoryPageState extends State<CakeCategoryPage> {
           itemCount: items.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            childAspectRatio: 0.8,
+            childAspectRatio: 0.9,
             crossAxisSpacing: 10,
             mainAxisSpacing: 10,
           ),
           itemBuilder: (context, index) {
-            return buildCard(items[index]);
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget buildCard(Map<String, String> item) {
-    return Card(
-      elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(
-            child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
-              child: Image.asset(
-                item['image']!,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              item['title']!,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Text(
-              item['price']!,
-              style: const TextStyle(color: Colors.orange),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+            return MenuWidgets(
+              imagePath: items[index]['image']!,
+              name: items[index]['title']!,
+              price: items[index]['price']!,
               onPressed: () {
-                // Navigate to DescriptionPage with the item details
+                // Navigate to DescriptionPage with item details
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => DescriptionPage(
-                      imagePath: item['image']!,
-                      name: item['title']!,
-                      price: item['price']!,
-                      onAddToCart: (selectedItem) {
-                        addToCart(selectedItem);
+                      imagePath: items[index]['image']!,
+                      name: items[index]['title']!,
+                      price: items[index]['price']!,
+                      onAddToCart: () {
+                        addToCart(items[index]);
                       },
                     ),
                   ),
                 );
               },
-              child: const Text("View", style: TextStyle(color: Colors.white)),
-            ),
-          ),
-        ],
+            );
+          },
+        ),
       ),
     );
   }

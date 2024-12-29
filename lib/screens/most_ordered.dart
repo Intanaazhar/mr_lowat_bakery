@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class MostOrderedPage extends StatefulWidget {
+  const MostOrderedPage({super.key});
+
   @override
   _MostOrderedPageState createState() => _MostOrderedPageState();
 }
@@ -54,7 +56,7 @@ class _MostOrderedPageState extends State<MostOrderedPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text("${item['title']} added to cart!"),
-        duration: Duration(seconds: 2),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
@@ -63,11 +65,11 @@ class _MostOrderedPageState extends State<MostOrderedPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Most Ordered"),
+        title: const Text("Most Ordered"),
         backgroundColor: Colors.orange,
         actions: [
           IconButton(
-            icon: Icon(Icons.shopping_cart),
+            icon: const Icon(Icons.shopping_cart),
             onPressed: () {
               Navigator.push(
                 context,
@@ -83,7 +85,7 @@ class _MostOrderedPageState extends State<MostOrderedPage> {
         padding: const EdgeInsets.all(10.0),
         child: GridView.builder(
           itemCount: mostOrderedItems.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             childAspectRatio: 0.8,
             crossAxisSpacing: 10,
@@ -106,7 +108,7 @@ class _MostOrderedPageState extends State<MostOrderedPage> {
         children: [
           Expanded(
             child: ClipRRect(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
               child: Image.asset(
                 item['image']!,
                 fit: BoxFit.cover,
@@ -117,14 +119,14 @@ class _MostOrderedPageState extends State<MostOrderedPage> {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               item['title']!,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Text(
               item['price']!,
-              style: TextStyle(backgroundColor: Colors.orange),
+              style: const TextStyle(backgroundColor: Colors.orange),
             ),
           ),
           Padding(
@@ -132,7 +134,7 @@ class _MostOrderedPageState extends State<MostOrderedPage> {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
               onPressed: () => addToCart(item),
-              child: Icon(Icons.add, color: Colors.white),
+              child: const Icon(Icons.add, color: Colors.white),
             ),
           ),
         ],
@@ -144,13 +146,13 @@ class _MostOrderedPageState extends State<MostOrderedPage> {
 class CartPage extends StatelessWidget {
   final List<Map<String, String>> cart;
 
-  CartPage({required this.cart});
+  const CartPage({super.key, required this.cart});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Your Cart"),
+        title: const Text("Your Cart"),
         backgroundColor: Colors.orange,
       ),
       body: ListView.builder(
@@ -160,7 +162,7 @@ class CartPage extends StatelessWidget {
             leading: Image.asset(cart[index]['image']!),
             title: Text(cart[index]['title']!),
             subtitle: Text(cart[index]['price']!),
-            trailing: Icon(Icons.delete, color: Colors.red),
+            trailing: const Icon(Icons.delete, color: Colors.red),
           );
         },
       ),

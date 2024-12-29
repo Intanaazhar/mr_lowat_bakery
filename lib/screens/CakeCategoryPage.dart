@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mr_lowat_bakery/screens/BrowniesCategoryPage.dart';
 
 class CakeCategoryPage extends StatefulWidget {
+  const CakeCategoryPage({super.key});
+
   @override
   _CakeCategoryPageState createState() => _CakeCategoryPageState();
 }
@@ -39,7 +41,7 @@ class _CakeCategoryPageState extends State<CakeCategoryPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text("${item['title']} added to cart!"),
-        duration: Duration(seconds: 1),
+        duration: const Duration(seconds: 1),
       ),
     );
   }
@@ -48,11 +50,11 @@ class _CakeCategoryPageState extends State<CakeCategoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cake Menu"),
+        title: const Text("Cake Menu"),
         backgroundColor: Colors.orange,
         actions: [
           IconButton(
-            icon: Icon(Icons.shopping_cart),
+            icon: const Icon(Icons.shopping_cart),
             onPressed: () {
               // Navigate to CartPage
               Navigator.push(
@@ -69,7 +71,7 @@ class _CakeCategoryPageState extends State<CakeCategoryPage> {
         padding: const EdgeInsets.all(10.0),
         child: GridView.builder(
           itemCount: items.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             childAspectRatio: 0.8,
             crossAxisSpacing: 10,
@@ -92,7 +94,7 @@ class _CakeCategoryPageState extends State<CakeCategoryPage> {
         children: [
           Expanded(
             child: ClipRRect(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
               child: Image.asset(
                 item['image']!,
                 fit: BoxFit.cover,
@@ -103,14 +105,14 @@ class _CakeCategoryPageState extends State<CakeCategoryPage> {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               item['title']!,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Text(
               item['price']!,
-              style: TextStyle(color: Colors.orange),
+              style: const TextStyle(color: Colors.orange),
             ),
           ),
           Padding(
@@ -120,7 +122,7 @@ class _CakeCategoryPageState extends State<CakeCategoryPage> {
               onPressed: () {
                 addToCart(item); // Add to cart when pressed
               },
-              child: Icon(Icons.add, color: Colors.white),
+              child: const Icon(Icons.add, color: Colors.white),
             ),
           ),
         ],

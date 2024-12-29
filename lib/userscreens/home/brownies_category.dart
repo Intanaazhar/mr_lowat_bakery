@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mr_lowat_bakery/userscreens/home/cart_page.dart';
 
 class BrowniesCategoryPage extends StatefulWidget {
+  const BrowniesCategoryPage({super.key});
+
   @override
   _BrowniesCategoryPageState createState() => _BrowniesCategoryPageState();
 }

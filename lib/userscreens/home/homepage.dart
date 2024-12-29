@@ -96,7 +96,7 @@ class Homepage extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: <Widget>[
-                      const SizedBox(width: 14),
+                      const SizedBox(width: 16),
                       GestureDetector(
                         onTap: () {
                           // Action for Cake
@@ -107,7 +107,7 @@ class Homepage extends StatelessWidget {
                         },
                         child: const CustomRoundedContainer(imagePath: 'assets/cake.png'),
                       ),
-                      const SizedBox(width: 14),
+                      const SizedBox(width: 16),
                       GestureDetector(
                         onTap: () {
                           // Action for Cheesecake
@@ -115,7 +115,7 @@ class Homepage extends StatelessWidget {
                         },
                         child: const CustomRoundedContainer(imagePath:'assets/cheesecake.png'),
                       ),
-                      const SizedBox(width: 14),
+                      const SizedBox(width: 16),
                       GestureDetector(
                         onTap: () {
                           // Action for Brownie
@@ -123,7 +123,7 @@ class Homepage extends StatelessWidget {
                         },
                         child: const CustomRoundedContainer(imagePath: 'assets/brownie.png'),
                       ),
-                      const SizedBox(width: 14),
+                      const SizedBox(width: 16),
                       GestureDetector(
                         onTap: () {
                           // Action for Egg Tart
@@ -131,7 +131,7 @@ class Homepage extends StatelessWidget {
                         },
                         child: const CustomRoundedContainer(imagePath: 'assets/egg-tart.png'),
                       ),
-                      const SizedBox(width: 14),
+                      const SizedBox(width: 16),
                       GestureDetector(
                         onTap: () {
                           // Action for Cupcake
@@ -139,7 +139,7 @@ class Homepage extends StatelessWidget {
                         },
                         child: const CustomRoundedContainer(imagePath: 'assets/cupcake.png'),
                       ),
-                      const SizedBox(width: 14),
+                      const SizedBox(width: 16),
                       GestureDetector(
                         onTap: () {
                           // Action for Puffs
@@ -147,7 +147,7 @@ class Homepage extends StatelessWidget {
                         },
                         child: const CustomRoundedContainer(imagePath: 'assets/puffs.png'),
                       ),
-                      const SizedBox(width: 14),
+                      const SizedBox(width: 16),
                     ],
                   ),
                 ),
@@ -161,7 +161,7 @@ class Homepage extends StatelessWidget {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 18),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
@@ -189,7 +189,7 @@ class Homepage extends StatelessWidget {
                             );*/
                           },
                         ),
-                        const SizedBox(height: 14),
+                        const SizedBox(height: 18),
                         MenuWidgets(
                           imagePath: 'assets/brownies.jpg',
                           name: 'Brownies',
@@ -231,7 +231,7 @@ class Homepage extends StatelessWidget {
                             );*/
                           },
                         ),
-                        const SizedBox(height: 14),
+                        const SizedBox(height: 18),
                         MenuWidgets(
                           imagePath: 'assets/puffs.jpg',
                           name: 'Cream Puffs',

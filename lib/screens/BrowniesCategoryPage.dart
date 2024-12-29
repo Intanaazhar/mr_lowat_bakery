@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class BrowniesCategoryPage extends StatefulWidget {
+  const BrowniesCategoryPage({super.key});
+
   @override
   _BrowniesCategoryPageState createState() => _BrowniesCategoryPageState();
 }
@@ -33,7 +35,7 @@ class _BrowniesCategoryPageState extends State<BrowniesCategoryPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text("${item['title']} added to cart!"),
-        duration: Duration(seconds: 2),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
@@ -42,11 +44,11 @@ class _BrowniesCategoryPageState extends State<BrowniesCategoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Brownies Menu"),
+        title: const Text("Brownies Menu"),
         backgroundColor: Colors.orange,
         actions: [
           IconButton(
-            icon: Icon(Icons.shopping_cart),
+            icon: const Icon(Icons.shopping_cart),
             onPressed: () {
               // Show cart or navigate to a cart page
               Navigator.push(
@@ -61,7 +63,7 @@ class _BrowniesCategoryPageState extends State<BrowniesCategoryPage> {
         padding: const EdgeInsets.all(10.0),
         child: GridView.builder(
           itemCount: brownies.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             childAspectRatio: 0.8,
             crossAxisSpacing: 10,
@@ -84,7 +86,7 @@ class _BrowniesCategoryPageState extends State<BrowniesCategoryPage> {
         children: [
           Expanded(
             child: ClipRRect(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
               child: Image.asset(
                 brownie['image']!,
                 fit: BoxFit.cover,
@@ -95,14 +97,14 @@ class _BrowniesCategoryPageState extends State<BrowniesCategoryPage> {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               brownie['title']!,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Text(
               brownie['price']!,
-              style: TextStyle(color: Colors.orange),
+              style: const TextStyle(color: Colors.orange),
             ),
           ),
           Padding(
@@ -110,7 +112,7 @@ class _BrowniesCategoryPageState extends State<BrowniesCategoryPage> {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
               onPressed: () => addToCart(brownie), // Add to cart on button press
-              child: Icon(Icons.add, color: Colors.white),
+              child: const Icon(Icons.add, color: Colors.white),
             ),
           ),
         ],
@@ -122,13 +124,13 @@ class _BrowniesCategoryPageState extends State<BrowniesCategoryPage> {
 class CartPage extends StatelessWidget {
   final List<Map<String, String>> cart;
 
-  CartPage({required this.cart});
+  const CartPage({super.key, required this.cart});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Your Cart"),
+        title: const Text("Your Cart"),
         backgroundColor: Colors.orange,
       ),
       body: ListView.builder(
@@ -138,7 +140,7 @@ class CartPage extends StatelessWidget {
             leading: Image.asset(cart[index]['image']!),
             title: Text(cart[index]['title']!),
             subtitle: Text(cart[index]['price']!),
-            trailing: Icon(Icons.delete, color: Colors.red),
+            trailing: const Icon(Icons.delete, color: Colors.red),
           );
         },
       ),

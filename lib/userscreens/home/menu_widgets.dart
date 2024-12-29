@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-//import 'package:mr_lowat_bakery/screens/click_button_page.dart';
 import 'package:mr_lowat_bakery/userscreens/description_page.dart';
 
 class MenuWidgets extends StatelessWidget {
   final String imagePath;
   final String name;
   final String price;
-  final VoidCallback onPressed; // Callback for the button press
+  final VoidCallback onPressed; // Callback for external actions (e.g., add to cart)
 
   const MenuWidgets({
     super.key,
@@ -29,7 +28,7 @@ class MenuWidgets extends StatelessWidget {
             color: Colors.black.withOpacity(0.2), // Shadow color
             blurRadius: 6.0, // How much the shadow is blurred
             spreadRadius: 2.0, // How much the shadow spreads
-            offset: const Offset(4.0, 4.0), // Position of the shadow (horizontal, vertical)
+            offset: const Offset(4.0, 4.0), // Shadow offset
           ),
         ],
       ),
@@ -46,11 +45,11 @@ class MenuWidgets extends StatelessWidget {
             child: Image.asset(
               imagePath,
               width: double.infinity,
-              height: 100,
+              height: 120,
               fit: BoxFit.cover,
             ),
           ),
-          const SizedBox(height: 50),
+          const SizedBox(height: 10),
           // Name, Price, and Button
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -78,11 +77,15 @@ class MenuWidgets extends StatelessWidget {
                 // Button
                 ElevatedButton(
                   onPressed: () {
+                    // Navigate to the DescriptionPage and pass parameters
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                       builder: (context) => DescriptionPage(imagePath: '', name: '', price: '', onAddToCart: (item) {
-                          },
+                        builder: (context) => DescriptionPage(
+                          imagePath: imagePath,
+                          name: name,
+                          price: price,
+                          onAddToCart: onPressed, // Pass the external callback
                         ),
                       ),
                     );
