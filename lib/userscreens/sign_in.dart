@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mr_lowat_bakery/screens/homepage.dart';
-import 'package:mr_lowat_bakery/screens/sign_up.dart';
+import 'package:mr_lowat_bakery/navigation_bar.dart';
+import 'package:mr_lowat_bakery/adminScreens/admin_login.dart';
+import 'package:mr_lowat_bakery/userscreens/sign_up.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -14,7 +15,7 @@ class LoginScreen extends StatelessWidget {
           // Background Image
           Positioned.fill(
             child: Image.asset(
-              'assets/CustomerLogin.jpg', // image path
+              'assets/CustomerLogin.jpg', // Image path
               fit: BoxFit.cover,
             ),
           ),
@@ -30,18 +31,21 @@ class LoginScreen extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                      builder: (context) => const NewAccount(),
-                ),
-              );
-            },
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const NewAccount(),
+                        ),
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.pinkAccent,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
                     ),
                     child: const Text(
                       "Sign Up",
@@ -50,13 +54,22 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                // Title
-                const Text(
-                  "Mr Lowat Bakery",
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                // Title with Gesture Detector for hidden gesture
+                GestureDetector(
+                  onLongPress: () {
+                    // Navigate to Admin Login Screen on long press
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LoginAdmin()),
+                    );
+                  },
+                  child: const Text(
+                    "Mr Lowat Bakery",
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 5),
@@ -73,7 +86,7 @@ class LoginScreen extends StatelessWidget {
                   decoration: InputDecoration(
                     hintText: "Username",
                     filled: true,
-                    fillColor: const Color.fromARGB(255, 205, 127, 10),
+                    fillColor: Colors.orange,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
                       borderSide: BorderSide.none,
@@ -118,22 +131,24 @@ class LoginScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 // Log In Button
-                Center(
+                SizedBox(
+                  width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                       Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                      builder: (context) => const MyWidget(),
-                ),
-              );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const NavigationMenu()),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.orange,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 40,
+                        vertical: 15,
+                      ),
                     ),
                     child: const Text(
                       "Log In",
@@ -141,11 +156,28 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                 ),
+                const SizedBox(height: 20),
                 const Spacer(),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class AdminLoginScreen extends StatelessWidget {
+  const AdminLoginScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Admin Login"),
+      ),
+      body: const Center(
+        child: Text("Admin Login Screen"),
       ),
     );
   }
