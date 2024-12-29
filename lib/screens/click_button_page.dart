@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart'; // Used for state management and navigation
+// Used for state management and navigation
 
 class click_button_page extends StatelessWidget {
   const click_button_page({super.key});
