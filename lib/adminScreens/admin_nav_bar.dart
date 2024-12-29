@@ -40,5 +40,5 @@ Widget build(BuildContext context) {
 class AdminNavigationController extends GetxController{
   final Rx<int> selectedIndex = 0.obs;
   //to edit more
-  final screens = [const AdminHomePage(),Container(color: Colors.blue),const AdminOrderList(),const AdminCustomerFeedback(), const AdminMenu()];
+  final screens = [Container(color: Colors.pink),Container(color: Colors.blue),AdminOrderList(),Container(color: Colors.grey), AdminMenu()];
 }
