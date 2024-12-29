@@ -3,14 +3,8 @@ import 'package:mr_lowat_bakery/userscreens/address_page.dart';
 import 'package:mr_lowat_bakery/userscreens/debit_card_page.dart';
 import 'package:mr_lowat_bakery/userscreens/feedback_page.dart';
 import 'package:mr_lowat_bakery/userscreens/support_page.dart';
-import 'package:mr_lowat_bakery/userscreens/user_profile.dart';
+import 'package:mr_lowat_bakery/userscreens/edit_profile.dart';
 import 'package:mr_lowat_bakery/userscreens/welcome.dart';
-//import 'user_profile.dart';
-//import 'address_page.dart';
-//import 'debit_card_page.dart';
-//import 'feedback_page.dart';
-//import 'support_page.dart';
-//import 'welcome.dart';
 
 class SettingsPopup extends StatelessWidget {
   const SettingsPopup({Key? key}) : super(key: key);
@@ -32,12 +26,23 @@ class SettingsPopup extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20.0),
-            _buildSettingsOption('Profile', Icons.person, context, UserProfile()),
-            _buildSettingsOption('Address', Icons.location_on, context, AddressPage()),
-            _buildSettingsOption('Debit Card', Icons.credit_card, context, DebitCardPage()),
-            _buildSettingsOption('Feedback', Icons.feedback, context, FeedbackPage()),
-            _buildSettingsOption('Customer Support', Icons.support_agent, context, SupportPage()),
+            // Navigate to Edit Profile
+            _buildSettingsOption('Edit Profile', Icons.person, context, const EditProfile()),
+
+            // Navigate to Address Page
+            _buildSettingsOption('Address', Icons.location_on, context, const AddressPage()),
+
+            // Navigate to Debit Card Page
+            _buildSettingsOption('Debit Card', Icons.credit_card, context, const DebitCardPage()),
+
+            // Navigate to Feedback Page
+            _buildSettingsOption('Feedback', Icons.feedback, context, const FeedbackPage()),
+
+            // Navigate to Customer Support Page
+            _buildSettingsOption('Customer Support', Icons.support_agent, context, const SupportPage()),
+
             const SizedBox(height: 30.0),
+            // Log Out Button
             ElevatedButton(
               onPressed: () {
                 showDialog(
@@ -47,12 +52,14 @@ class SettingsPopup extends StatelessWidget {
                       title: const Text('Log Out'),
                       content: const Text('Are you sure you want to log out?'),
                       actions: [
+                        // Cancel button
                         TextButton(
                           onPressed: () {
                             Navigator.of(context).pop(); // Close the dialog
                           },
                           child: const Text('Cancel'),
                         ),
+                        // Confirm Log Out
                         TextButton(
                           onPressed: () {
                             Navigator.of(context).pop(); // Close the dialog
@@ -93,9 +100,11 @@ class SettingsPopup extends StatelessWidget {
     );
   }
 
+  // Helper function to build each settings option
   Widget _buildSettingsOption(String title, IconData icon, BuildContext context, Widget page) {
     return GestureDetector(
       onTap: () {
+        // Navigate to the specific page when tapped
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => page),

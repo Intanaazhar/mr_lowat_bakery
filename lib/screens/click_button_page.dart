@@ -154,13 +154,11 @@ class click_button_page extends StatelessWidget {
                         firstDate: DateTime.now(),
                         lastDate: DateTime(2100),
                       );
-                      if (date != null) {
-                        setState(() {
-                          selectedDate = date;
-                          formattedDate = '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}';
-                        });
-                      }
-                    },
+                      setState(() {
+                        selectedDate = date;
+                        formattedDate = '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}';
+                      });
+                                        },
                     child: Text(formattedDate),
                   );
                 },

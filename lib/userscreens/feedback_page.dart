@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class FeedbackPage extends StatelessWidget {
-  const FeedbackPage({Key? key}) : super(key: key);
+  const FeedbackPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,9 +20,9 @@ class FeedbackPage extends StatelessWidget {
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
-            TextField(
+            const TextField(
               maxLines: 5,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 hintText: 'Enter your feedback here...',
                 border: OutlineInputBorder(),
               ),

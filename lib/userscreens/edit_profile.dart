@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mr_lowat_bakery/screens/settings_page.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});
@@ -12,7 +11,7 @@ class _EditProfileState extends State<EditProfile> {
   // Editable fields
   final TextEditingController _nameController = TextEditingController(text: "Nur Qistina");
   final TextEditingController _emailController = TextEditingController(text: "Qistina03@gmail.com");
-  
+
   bool _isEditing = false;
 
   @override
@@ -42,100 +41,104 @@ class _EditProfileState extends State<EditProfile> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 40),
-            // Profile Picture
-            Container(
-              width: 180,
-              height: 180,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  colors: [Colors.orange, Colors.red],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(height: 40),
+
+              // Profile Picture
+              Container(
+                width: 180,
+                height: 180,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    colors: [Colors.orange, Colors.red],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: CircleAvatar(
+                    radius: 150,
+                    backgroundImage: const AssetImage('assets/userProfilePic.jpg'), // Replace with your avatar
+                    backgroundColor: Colors.grey[200],
+                  ),
                 ),
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(5),
-                child: CircleAvatar(
-                  radius: 150,
-                  backgroundImage: const AssetImage('assets/userProfilePic.jpg'), // Replace with your avatar
-                  backgroundColor: Colors.grey[200],
+              const SizedBox(height: 20),
+
+              // Editable Name
+              _isEditing
+                  ? _buildEditableField("Name", _nameController)
+                  : Text(
+                      _nameController.text,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+
+              // Editable Email
+              const SizedBox(height: 10),
+              _isEditing
+                  ? _buildEditableField("Email", _emailController)
+                  : Text(
+                      _emailController.text,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.grey[700],
+                      ),
+                    ),
+
+              const SizedBox(height: 20),
+
+              // Edit/Save Button
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _isEditing = !_isEditing;
+                  });
+                  if (!_isEditing) {
+                    // Save changes logic
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Profile Updated')),
+                    );
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange,
+                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
+                child: Text(_isEditing ? "Save Changes" : "Edit Profile"),
               ),
-            ),
-            const SizedBox(height: 20),
 
-            // Editable Name
-            _isEditing
-                ? _buildEditableField("Name", _nameController)
-                : Text(
-                    _nameController.text,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
+              const SizedBox(height: 20),
 
-            // Editable Email
-            const SizedBox(height: 10),
-            _isEditing
-                ? _buildEditableField("Email", _emailController)
-                : Text(
-                    _emailController.text,
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.grey[700],
-                    ),
-                  ),
-
-            const SizedBox(height: 20),
-
-            // Edit/Save Button
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  _isEditing = !_isEditing;
-                });
-                if (!_isEditing) {
-                  // Save changes logic
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Profile Updated')),
+              // Buttons for other actions
+              ProfileButton(label: "My Orders", onTap: () {}),
+              const SizedBox(height: 20),
+              ProfileButton(label: "My Carts", onTap: () {}),
+              const SizedBox(height: 20),
+              ProfileButton(
+                label: "Settings",
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SettingsPopup()),
                   );
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
-                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
+                },
               ),
-              child: Text(_isEditing ? "Save Changes" : "Edit Profile"),
-            ),
-
-            const SizedBox(height: 20),
-
-            // Buttons for other actions
-            ProfileButton(label: "My Orders", onTap: () {}),
-            const SizedBox(height: 20),
-            ProfileButton(label: "My Carts", onTap: () {}),
-            const SizedBox(height: 20),
-            ProfileButton(
-              label: "Settings",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SettingsPopup()),
-                );
-              },
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -146,8 +149,10 @@ class _EditProfileState extends State<EditProfile> {
       padding: const EdgeInsets.symmetric(horizontal: 30),
       child: TextField(
         controller: controller,
+        textAlign: TextAlign.center,
         decoration: InputDecoration(
           labelText: label,
+          labelStyle: const TextStyle(fontSize: 18),
           border: const OutlineInputBorder(),
         ),
       ),
@@ -174,7 +179,7 @@ class ProfileButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: 350,
-        padding: const EdgeInsets.symmetric(vertical: 30),
+        padding: const EdgeInsets.symmetric(vertical: 15),
         decoration: BoxDecoration(
           color: Colors.orange,
           borderRadius: BorderRadius.circular(10),
@@ -192,6 +197,22 @@ class ProfileButton extends StatelessWidget {
             style: const TextStyle(fontSize: 18, color: Colors.white),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class SettingsPopup extends StatelessWidget {
+  const SettingsPopup({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Settings"),
+      ),
+      body: const Center(
+        child: Text("Settings Screen"),
       ),
     );
   }
