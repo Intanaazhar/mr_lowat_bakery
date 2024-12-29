@@ -38,5 +38,5 @@ Widget build(BuildContext context) {
 class NavigationController extends GetxController{
   final Rx<int> selectedIndex = 0.obs;
 
-  final screens = [const MyWidget(),Container(color: Colors.blue),Container(color: Colors.orange), const click_button_page(), const UserProfile()];
+  final screens = [const MyWidget(),Container(color: Colors.blue),Container(color: Colors.orange), const ClickButtonPage(), const UserProfile()];
 }
