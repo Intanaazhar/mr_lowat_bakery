@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mr_lowat_bakery/screens/BrowniesCategoryPage.dart';
+import 'CustomizeOrderPage.dart';
 
 class CakeCategoryPage extends StatefulWidget {
-  const CakeCategoryPage({super.key});
-
   @override
   _CakeCategoryPageState createState() => _CakeCategoryPageState();
 }
@@ -22,26 +20,27 @@ class _CakeCategoryPageState extends State<CakeCategoryPage> {
     },
     {
       'image': 'assets/cake3.png',
-      'title': 'Congratulations Cake',
+      'title': 'Congratulations Cake with Extra Details',
       'price': 'RM70',
     },
     {
       'image': 'assets/cake4.png',
-      'title': 'Dessert Cake',
+      'title': 'Dessert Cake for Any Occasion',
       'price': 'RM50',
     },
   ];
 
-  final List<Map<String, String>> cart = []; // Cart to store selected items
+  final List<Map<String, dynamic>> cart = []; // Cart to store selected items
 
-  void addToCart(Map<String, String> item) {
+  void addToCart(Map<String, dynamic> item) {
     setState(() {
       cart.add(item);
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text("${item['title']} added to cart!"),
-        duration: const Duration(seconds: 1),
+        content: Text("${item['title']} successfully added to cart!"),
+        duration: Duration(seconds: 2),
+        backgroundColor: Colors.orange,
       ),
     );
   }
@@ -50,18 +49,37 @@ class _CakeCategoryPageState extends State<CakeCategoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Cake Menu"),
+        title: Text("Cake Menu"),
         backgroundColor: Colors.orange,
         actions: [
           IconButton(
-            icon: const Icon(Icons.shopping_cart),
+            icon: Icon(Icons.shopping_cart),
             onPressed: () {
-              // Navigate to CartPage
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CartPage(cart: cart),
-                ),
+              // Show cart items in a simple dialog
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text("Cart Items"),
+                    content: cart.isEmpty
+                        ? Text("Your cart is empty.")
+                        : Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: cart
+                                .map((item) => ListTile(
+                                      title: Text(item['title']),
+                                      subtitle: Text(item['price']),
+                                    ))
+                                .toList(),
+                          ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text("Close"),
+                      ),
+                    ],
+                  );
+                },
               );
             },
           ),
@@ -71,9 +89,9 @@ class _CakeCategoryPageState extends State<CakeCategoryPage> {
         padding: const EdgeInsets.all(10.0),
         child: GridView.builder(
           itemCount: items.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            childAspectRatio: 0.8,
+            childAspectRatio: 0.75, // Adjust aspect ratio for better fit
             crossAxisSpacing: 10,
             mainAxisSpacing: 10,
           ),
@@ -94,10 +112,10 @@ class _CakeCategoryPageState extends State<CakeCategoryPage> {
         children: [
           Expanded(
             child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
               child: Image.asset(
                 item['image']!,
-                fit: BoxFit.cover,
+                fit: BoxFit.cover, // Ensure the image fits properly
               ),
             ),
           ),
@@ -105,14 +123,17 @@ class _CakeCategoryPageState extends State<CakeCategoryPage> {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               item['title']!,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontWeight: FontWeight.bold),
+              overflow: TextOverflow.ellipsis, // Prevent overflow
+              maxLines: 1, // Limit to 1 line
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Text(
               item['price']!,
-              style: const TextStyle(color: Colors.orange),
+              style: TextStyle(color: Colors.orange),
+              textAlign: TextAlign.center, // Center-align the price
             ),
           ),
           Padding(
@@ -120,9 +141,17 @@ class _CakeCategoryPageState extends State<CakeCategoryPage> {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
               onPressed: () {
-                addToCart(item); // Add to cart when pressed
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CustomizeOrderPage(
+                      item: item,
+                      addToCart: addToCart,
+                    ),
+                  ),
+                );
               },
-              child: const Icon(Icons.add, color: Colors.white),
+              child: Icon(Icons.add, color: Colors.white),
             ),
           ),
         ],
