@@ -92,13 +92,13 @@ class SettingsPopup extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(icon, color: Colors.orange),
+            Icon(icon, color: Colors.orangeAccent),
             const SizedBox(width: 15.0),
             Text(
               title,
               style: const TextStyle(
                 fontSize: 16.0,
-                color: Colors.orange,
+                color: Colors.orangeAccent,
                 fontWeight: FontWeight.bold,
               ),
             ),
