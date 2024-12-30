@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mr_lowat_bakery/userscreens/forget_password.dart';
+import 'package:mr_lowat_bakery/userscreens/welcome.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});
@@ -11,6 +13,8 @@ class _EditProfileState extends State<EditProfile> {
   // Editable fields
   final TextEditingController _nameController = TextEditingController(text: "Nur Qistina");
   final TextEditingController _emailController = TextEditingController(text: "Qistina03@gmail.com");
+  final TextEditingController _birthdayController = TextEditingController(text: "01/01/2000");
+  final TextEditingController _phoneController = TextEditingController(text: "123-456-7890");
 
   bool _isEditing = false;
 
@@ -36,8 +40,13 @@ class _EditProfileState extends State<EditProfile> {
           IconButton(
             icon: const Icon(Icons.logout, color: Colors.white),
             onPressed: () {
-              // Handle logout logic
-            },
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const BakeryWelcomeScreen(),
+                          ),
+                        );
+                      },
           ),
         ],
       ),
@@ -65,7 +74,7 @@ class _EditProfileState extends State<EditProfile> {
                   padding: const EdgeInsets.all(5),
                   child: CircleAvatar(
                     radius: 150,
-                    backgroundImage: const AssetImage('assets/userProfilePic.jpg'), // Replace with your avatar
+                    backgroundImage: const AssetImage('assets/userProfilePic.jpg'),
                     backgroundColor: Colors.grey[200],
                   ),
                 ),
@@ -90,6 +99,30 @@ class _EditProfileState extends State<EditProfile> {
                   ? _buildEditableField("Email", _emailController)
                   : Text(
                       _emailController.text,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.grey[700],
+                      ),
+                    ),
+
+              // Editable Birthday
+              const SizedBox(height: 10),
+              _isEditing
+                  ? _buildEditableField("Birthday", _birthdayController)
+                  : Text(
+                      _birthdayController.text,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.grey[700],
+                      ),
+                    ),
+
+              // Editable Phone Number
+              const SizedBox(height: 10),
+              _isEditing
+                  ? _buildEditableField("Phone Number", _phoneController)
+                  : Text(
+                      _phoneController.text,
                       style: TextStyle(
                         fontSize: 18,
                         color: Colors.grey[700],
@@ -124,16 +157,16 @@ class _EditProfileState extends State<EditProfile> {
               const SizedBox(height: 20),
 
               // Buttons for other actions
-              ProfileButton(label: "My Orders", onTap: () {}),
+              /*ProfileButton(label: "Edit Birthday", onTap: () {}),
               const SizedBox(height: 20),
-              ProfileButton(label: "My Carts", onTap: () {}),
-              const SizedBox(height: 20),
+              ProfileButton(label: "Edit Phone Number", onTap: () {}),
+              const SizedBox(height: 20),*/
               ProfileButton(
-                label: "Settings",
+                label: "Change Password",
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const SettingsPopup()),
+                    MaterialPageRoute(builder: (context) => const ChangePassword()),
                   );
                 },
               ),
@@ -163,6 +196,8 @@ class _EditProfileState extends State<EditProfile> {
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
+    _birthdayController.dispose();
+    _phoneController.dispose();
     super.dispose();
   }
 }
@@ -197,22 +232,6 @@ class ProfileButton extends StatelessWidget {
             style: const TextStyle(fontSize: 18, color: Colors.white),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class SettingsPopup extends StatelessWidget {
-  const SettingsPopup({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Settings"),
-      ),
-      body: const Center(
-        child: Text("Settings Screen"),
       ),
     );
   }

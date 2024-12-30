@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-// Used for state management and navigation
 
-class click_button_page extends StatelessWidget {
-  const click_button_page({super.key});
+class ClickButtonPage extends StatelessWidget {
+  const ClickButtonPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,43 +10,37 @@ class click_button_page extends StatelessWidget {
         title: const Text('Cake Preferences'),
         backgroundColor: Colors.orange,
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Spacer(),
-          Image.asset(
-            'assets/cake.jpg.png', // Replace with your image asset path
-            height: 200,
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            'Choose your preferences',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 10),
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              children: [
-                _buildOptionRow(context, 'Size', ['3 Inch', '5 Inch']),
-                _buildOptionRow(context, 'Flavour', ['Chocolate', 'Vanilla', 'Pandan', 'Mocha']),
-                _buildTopperTheme(context),
-                _buildDatePicker(context),
-                _buildPickupOptions(context),
-                _buildOptionRow(context, 'Payment Options', ['Deposit', 'Full payment']),
-                _buildAddOnOptions(),
-                const SizedBox(height: 20),
-              ],
+      body: SingleChildScrollView(  // Wrap the whole body with SingleChildScrollView
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(height: 20),  // Add some top spacing
+            Image.asset(
+              'assets/cake.jpg.png', // Replace with your image asset path
+              height: 200,
             ),
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () => _showConfirmationPopup(context),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
-            child: const Text('Add to Cart'),
-          ),
-          const Spacer(),
-        ],
+            const SizedBox(height: 20),
+            const Text(
+              'Choose your preferences',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            _buildOptionRow(context, 'Size', ['3 Inch', '5 Inch']),
+            _buildOptionRow(context, 'Flavour', ['Chocolate', 'Vanilla', 'Pandan', 'Mocha']),
+            _buildTopperTheme(context),
+            _buildDatePicker(context),
+            _buildPickupOptions(context),
+            _buildOptionRow(context, 'Payment Options', ['Deposit', 'Full payment']),
+            _buildAddOnOptions(),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => _showConfirmationPopup(context),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+              child: const Text('Add to Cart'),
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }
