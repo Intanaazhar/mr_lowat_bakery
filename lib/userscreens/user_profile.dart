@@ -1,4 +1,7 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:mr_lowat_bakery/screens/settings_page.dart';
+import 'package:mr_lowat_bakery/userscreens/welcome.dart';
 import 'package:mr_lowat_bakery/screens/settings_page.dart';
 
 void main() {
@@ -23,123 +26,170 @@ class UserProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.orange,
-        elevation: 0,
-        title: const Text(
-          "My Profile",
-          style: TextStyle(color: Colors.white, fontSize: 20),
-        ),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {},
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout, color: Colors.white),
-            onPressed: () {},
+      backgroundColor: Colors.transparent,
+      body: Stack(
+        children: [
+          // Blurred background
+          Positioned.fill(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+              child: Container(
+                color: Colors.black.withAlpha(51),
+              ),
+            ),
+          ),
+          Center(
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.85,
+              padding: const EdgeInsets.all(20.0),
+              decoration: BoxDecoration(
+                color: Colors.orange.withAlpha(230),
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              child: Stack(
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Profile Picture
+                      const CircleAvatar(
+                        radius: 50,
+                        backgroundImage: AssetImage('assets/userProfilePic.jpg'),
+                      ),
+                      const SizedBox(height: 10),
+                      const Text(
+                        "Nur Qistina",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const Text(
+                        "Qistina03@gmail.com",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white70,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        "Order Tracker",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      _buildOrderTracker(),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                        ),
+                        onPressed: () {
+                          _showLogoutDialog(context);
+                        },
+                        child: const Text("Logout"),
+                      ),
+                    ],
+                  ),
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    child: IconButton(
+                      icon: const Icon(Icons.settings, color: Colors.white),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SettingsPopup(),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),
-      body: Center(  // Wrap the entire body in a Center widget
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,  // Center everything vertically
-          crossAxisAlignment: CrossAxisAlignment.center,  // Center everything horizontally
-          children: [
-            // Adjusting the height of the profile picture
-            const SizedBox(height: 40),
-            Container(
-              width: 180, // Size of the circular ring
-              height: 180,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  colors: [Colors.orange, Colors.red],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(5), // Space between ring and profile picture
-                child: CircleAvatar(
-                  radius: 150,
-                  backgroundImage: const AssetImage('assets/userProfilePic.jpg'), // Replace with your avatar image asset
-                  backgroundColor: Colors.grey[200],
-                ),
-              ),
+    );
+  }
+
+  Widget _buildOrderTracker() {
+    return Column(
+      children: [
+        _buildOrderStep("Payment Completed", true),
+        _buildVerticalDivider(true),
+        _buildOrderStep("Order accepted", true),
+        _buildVerticalDivider(true),
+        _buildOrderStep("Order is being processed", true),
+        _buildVerticalDivider(false),
+        _buildOrderStep("Ready to pickup", false),
+      ],
+    );
+  }
+
+  Widget _buildOrderStep(String title, bool isCompleted) {
+    return Row(
+      children: [
+        Icon(
+          isCompleted ? Icons.check_circle : Icons.radio_button_unchecked,
+          color: isCompleted ? Colors.green : Colors.grey,
+        ),
+        const SizedBox(width: 10),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: isCompleted ? Colors.black : Colors.grey,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildVerticalDivider(bool isActive) {
+    return Container(
+      height: 30,
+      width: 2,
+      color: isActive ? Colors.green : Colors.grey,
+      margin: const EdgeInsets.symmetric(horizontal: 15),
+    );
+  }
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Logout"),
+          content: const Text("Are you sure you want to log out?"),
+          actions: [
+            TextButton(
+              child: const Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
             ),
-            //later on I want it to fetch the user's name automatically
-            const SizedBox(height: 10), // Spacing between the profile picture and the text
-            const Text(
-              "Nur Qistina", // Replace with dynamic name if needed
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-            ),
-            Text(
-              "Qistina03@gmail.com", // Replace with dynamic email if needed
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.grey[700],
-              ),
-            ),
-            const SizedBox(height: 20), // Spacing before the buttons
-            // Buttons
-            ProfileButton(label: "My Orders", onTap: () {}),
-            const SizedBox(height: 20),
-            ProfileButton(label: "My Carts", onTap: () {}),
-            const SizedBox(height: 20),
-           ProfileButton(
-              label: "Settings",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SettingsPopup()),
+            TextButton(
+              child: const Text("Logout"),
+              onPressed: () {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder: (context) => const BakeryWelcomeScreen(),
+                  ),
+                  (Route<dynamic> route) => false,
                 );
               },
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class ProfileButton extends StatelessWidget {
-  final String label;
-  final VoidCallback onTap;
-
-  const ProfileButton({super.key, required this.label, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 350,
-        padding: const EdgeInsets.symmetric(vertical: 30),  // Adjusted padding
-        decoration: BoxDecoration(
-          color: Colors.orange,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 2,
-              blurRadius: 5,
-            ),
-          ],
-        ),
-        child: Center(
-          child: Text(
-            label,
-            style: const TextStyle(fontSize: 18, color: Colors.white),
-          ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
