@@ -1,16 +1,28 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:mr_lowat_bakery/screens/settings_page.dart';
 import 'package:mr_lowat_bakery/userscreens/address_page.dart';
 import 'package:mr_lowat_bakery/userscreens/debit_card_page.dart';
+import 'package:mr_lowat_bakery/userscreens/edit_profile.dart';
 import 'package:mr_lowat_bakery/userscreens/feedback_page.dart';
 import 'package:mr_lowat_bakery/userscreens/support_page.dart';
 import 'package:mr_lowat_bakery/userscreens/user_profile.dart';
-import 'package:mr_lowat_bakery/userscreens/welcome.dart';
-//import 'user_profile.dart';
-//import 'address_page.dart';
-//import 'debit_card_page.dart';
-//import 'feedback_page.dart';
-//import 'support_page.dart';
-//import 'welcome.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: UserProfile(),
+    );
+  }
+}
 
 class SettingsPopup extends StatelessWidget {
   const SettingsPopup({Key? key}) : super(key: key);
@@ -18,77 +30,58 @@ class SettingsPopup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.orange,
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              'Settings',
-              style: TextStyle(
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 20.0),
-            _buildSettingsOption('Profile', Icons.person, context, UserProfile()),
-            _buildSettingsOption('Address', Icons.location_on, context, AddressPage()),
-            _buildSettingsOption('Debit Card', Icons.credit_card, context, DebitCardPage()),
-            _buildSettingsOption('Feedback', Icons.feedback, context, FeedbackPage()),
-            _buildSettingsOption('Customer Support', Icons.support_agent, context, SupportPage()),
-            const SizedBox(height: 30.0),
-            ElevatedButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('Log Out'),
-                      content: const Text('Are you sure you want to log out?'),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop(); // Close the dialog
-                          },
-                          child: const Text('Cancel'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop(); // Close the dialog
-                            Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(builder: (context) => const BakeryWelcomeScreen()),
-                              (route) => false, // Remove all previous routes
-                            );
-                          },
-                          child: const Text('Log Out'),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: Colors.orange,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 40.0,
-                  vertical: 15.0,
-                ),
-              ),
-              child: const Text(
-                'Log Out',
-                style: TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
+      appBar: AppBar(
+        backgroundColor: Colors.orange,
+        title: const Text("Settings", style: TextStyle(color: Colors.white)),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
+      ),
+      body: Stack(
+        children: [
+          // Blurred background
+          Positioned.fill(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+              child: Container(
+                color: Colors.black.withAlpha(51),
+              ),
+            ),
+          ),
+          Center(
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.85,
+              padding: const EdgeInsets.all(20.0),
+              decoration: BoxDecoration(
+                color: Colors.orange.withAlpha(230),
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    "Settings",
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  _buildSettingsOption("Profile", Icons.person, context, const EditProfile()),
+                  _buildSettingsOption("Address", Icons.location_on, context, const AddressPage()),
+                  _buildSettingsOption("Debit Card", Icons.credit_card, context, const DebitCardPage()),
+                  _buildSettingsOption("Feedback", Icons.feedback, context, const FeedbackPage()),
+                  _buildSettingsOption("Customer Support", Icons.support_agent, context, const SupportPage()),
+                  const SizedBox(height: 20),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -101,18 +94,30 @@ class SettingsPopup extends StatelessWidget {
           MaterialPageRoute(builder: (context) => page),
         );
       },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 10.0),
+        padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(30.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withAlpha(25),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Icon(icon, color: Colors.white),
-            const SizedBox(width: 10.0),
+            Icon(icon, color: Colors.orange),
+            const SizedBox(width: 15.0),
             Text(
               title,
               style: const TextStyle(
-                fontSize: 18.0,
-                color: Colors.white,
+                fontSize: 16.0,
+                color: Colors.orange,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ],
