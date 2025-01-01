@@ -14,8 +14,8 @@ class _CheeseTartCategoryPageState extends State<CheeseTartCategoryPage> {
     {'image': 'assets/giant_cheese_tart_6inch.png', 'title': 'Giant Cheese Tart 6 Inch', 'price': 'RM46-RM58'},
     {'image': 'assets/giant_cheese_tart_7inch.png', 'title': 'Giant Cheese Tart 7 Inch', 'price': 'RM56-RM68'},
     {'image': 'assets/tart.jpg', 'title': 'Fruit Mini Tart', 'price': 'RM35-RM40'},
-    {'image': 'assets/tart2.png', 'title': 'Mini Cheese Tart 16 Pieces', 'price': 'RM34-RM38'},
-    {'image': 'assets/tart3.png', 'title': 'Mini Cheese Tart 25 Pieces', 'price': 'RM55-RM58'},
+    {'image': 'assets/tart2.jpg', 'title': 'Mini Cheese Tart 16 Pieces', 'price': 'RM34-RM38'},
+    {'image': 'assets/tart3.jpg', 'title': 'Mini Cheese Tart 25 Pieces', 'price': 'RM55-RM58'},
     {'image': 'assets/mini_cheese_tart_36.png', 'title': 'Mini Cheese Tart 36 Pieces', 'price': 'RM43-RM58'},
     {'image': 'assets/mini_cheese_tart_49.png', 'title': 'Mini Cheese Tart 49 Pieces', 'price': 'RM59-RM78'},
   ];
