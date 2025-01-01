@@ -1,7 +1,7 @@
 
 
 import 'package:flutter/material.dart';
-// Used for state management and navigation
+//import 'package:get/get.dart'; // Used for state management and navigation
 
 
 class DescriptionPage extends StatelessWidget {

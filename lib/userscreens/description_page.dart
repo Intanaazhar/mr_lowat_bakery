@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mr_lowat_bakery/userscreens/open_comment_bottom_sheet.dart'; // Import "Comment" Bottom Sheet
+import 'book_now_bottom_sheet.dart';  // Import "Book Now" Bottom Sheet
+
 
 class DescriptionPage extends StatefulWidget {
   final String imagePath;
@@ -19,68 +22,15 @@ class DescriptionPage extends StatefulWidget {
 }
 
 class _DescriptionPageState extends State<DescriptionPage> {
-  final List<String> _comments = [];
-  final TextEditingController _commentController = TextEditingController();
-
-  void _addComment() {
-    if (_commentController.text.trim().isNotEmpty) {
-      setState(() {
-        _comments.add(_commentController.text.trim());
-        _commentController.clear();
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Comment added successfully!')),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a comment')),
-      );
-    }
-  }
-
-  // Bottom Sheet function to handle comment section
-  void _openCommentBottomSheet() {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: _commentController,
-                decoration: const InputDecoration(
-                  labelText: 'Enter your comment',
-                  border: OutlineInputBorder(),
-                ),
-                maxLines: 4,
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: _addComment,
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
-                child: const Text('Add Comment'),
-              ),
-              const SizedBox(height: 16),
-              const Text('Comments:', style: TextStyle(fontWeight: FontWeight.bold)),
-              const SizedBox(height: 8),
-              // Display the list of comments
-              ..._comments.map((comment) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Text(comment),
-                  )),
-            ],
-          ),
-        );
-      },
+  final List<Map<String, String>> _comments = [];
+  
+  void _addComment(String comment) {
+    setState(() {
+      _comments.add({'author': 'User', 'message': comment});
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Comment added successfully!')),
     );
-  }
-
-  @override
-  void dispose() {
-    _commentController.dispose();
-    super.dispose();
   }
 
   @override
@@ -156,7 +106,15 @@ class _DescriptionPageState extends State<DescriptionPage> {
                     ],
                   ),
                   ElevatedButton(
-                    onPressed: widget.onAddToCart,
+                    onPressed: () {
+                      openBookNowBottomSheet(
+                        context: context,
+                        onAddToCart: (preferences) {
+                          // Handle the preferences (e.g., add to cart)
+                          print(preferences);
+                        },
+                      );
+                    },
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
                     child: const Text('Book Now'),
                   ),
@@ -167,7 +125,13 @@ class _DescriptionPageState extends State<DescriptionPage> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: InkWell(
-                onTap: _openCommentBottomSheet, // Open bottom sheet for comments
+                onTap: () {
+                  openCommentsBottomSheet(
+                    context: context,
+                    comments: _comments,
+                    onAddComment: _addComment,
+                  );
+                },
                 child: Container(
                   decoration: const BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -184,7 +148,6 @@ class _DescriptionPageState extends State<DescriptionPage> {
                     ],
                   ),
                 ),
-
               ),
             ),
           ],

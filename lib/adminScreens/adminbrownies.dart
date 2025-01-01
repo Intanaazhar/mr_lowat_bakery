@@ -41,9 +41,9 @@ class _BrowniesCategoryPageState extends State<BrowniesCategoryPage> {
       brownies.removeAt(index);
     });
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text("Item deleted successfully!"),
-        duration: const Duration(seconds: 2),
+      const SnackBar(
+        content: Text("Item deleted successfully!"),
+        duration: Duration(seconds: 2),
       ),
     );
   }

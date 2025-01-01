@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DebitCardPage extends StatelessWidget {
-  const DebitCardPage({Key? key}) : super(key: key);
+  const DebitCardPage({super.key});
 
   @override
   Widget build(BuildContext context) {

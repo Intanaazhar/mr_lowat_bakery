@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:mr_lowat_bakery/adminScreens/adminbrownies.dart';
 import 'package:mr_lowat_bakery/userscreens/home/cake_category.dart';
 import 'package:mr_lowat_bakery/userscreens/home/cart_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/category_widgets.dart';
+import 'package:mr_lowat_bakery/userscreens/home/cheesetart_category.dart';
+import 'package:mr_lowat_bakery/userscreens/home/cupcake_category.dart';
 import 'package:mr_lowat_bakery/userscreens/home/menu_widgets.dart';
+import 'package:mr_lowat_bakery/userscreens/home/others_category.dart';
 
 
 
@@ -111,7 +115,10 @@ class Homepage extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           // Action for Cheesecake
-                          print('Cheesecake clicked!');
+                          Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const CakeCategoryPage()),
+                        );
                         },
                         child: const CustomRoundedContainer(imagePath:'assets/cheesecake.png'),
                       ),
@@ -119,15 +126,21 @@ class Homepage extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           // Action for Brownie
-                          print('Brownie clicked!');
+                         Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const BrowniesCategoryPage()),
+                        );
                         },
                         child: const CustomRoundedContainer(imagePath: 'assets/brownie.png'),
                       ),
                       const SizedBox(width: 16),
                       GestureDetector(
                         onTap: () {
-                          // Action for Egg Tart
-                          print('Egg Tart clicked!');
+                          // Action for Cheese Tart
+                          Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const CheeseTartCategoryPage()),
+                        );
                         },
                         child: const CustomRoundedContainer(imagePath: 'assets/egg-tart.png'),
                       ),
@@ -135,7 +148,10 @@ class Homepage extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           // Action for Cupcake
-                          print('Cupcake clicked!');
+                          Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const CupcakeCategoryPage()),
+                        );
                         },
                         child: const CustomRoundedContainer(imagePath: 'assets/cupcake.png'),
                       ),
@@ -143,7 +159,10 @@ class Homepage extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           // Action for Puffs
-                          print('Puffs clicked!');
+                          Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const OthersCategoryPage()),
+                        );
                         },
                         child: const CustomRoundedContainer(imagePath: 'assets/puffs.png'),
                       ),
