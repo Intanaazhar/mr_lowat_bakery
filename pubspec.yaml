@@ -95,6 +95,11 @@ flutter:
      - assets/fruit_choux.png
      - assets/brownies.png
      - assets/sponge_cake.png
+     - assets/bun_sosej.png
+     - assets/giant_cheese_tart_6inch.png
+     - assets/giant_cheese_tart_7inch.png
+     - assets/mini_cheese_tart_36.png
+     - assets/mini_cheese_tart_49.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
