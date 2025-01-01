@@ -15,13 +15,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Homepage(),
+      home: AdminHomepage(),
     );
   }
 }
 
-class Homepage extends StatelessWidget {
-  const Homepage({super.key});
+class AdminHomepage extends StatelessWidget {
+  const AdminHomepage({super.key});
 
   get cart => null;
 

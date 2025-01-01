@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:mr_lowat_bakery/adminScreens/admin_homepage.dart';
 import 'package:mr_lowat_bakery/adminScreens/admin_menu.dart';
 import 'package:mr_lowat_bakery/adminScreens/admin_notification.dart';
 import 'package:mr_lowat_bakery/adminScreens/admin_orderlist.dart';
+import 'package:mr_lowat_bakery/adminScreens/admincakes.dart';
 //import 'package:mr_lowat_bakery/adminScreens/adminHomepage.dart';
 
 
@@ -40,5 +40,5 @@ Widget build(BuildContext context) {
 class AdminNavigationController extends GetxController{
   final Rx<int> selectedIndex = 0.obs;
   //to edit more
-  final screens = [const AdminHomePage(),Container(color: Colors.blue),const AdminOrderList(),const AdminCustomerFeedback(), const AdminMenu()];
+  final screens = [AdminHomepage(),Container(color: Colors.blue),const AdminOrderList(),const AdminCustomerFeedback(), const AdminMenu()];
 }
