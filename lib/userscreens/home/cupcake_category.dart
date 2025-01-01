@@ -13,8 +13,8 @@ class _CupcakeCategoryPageState extends State<CupcakeCategoryPage> {
   final List<Map<String, String>> cupcakes = [
     {'image': 'assets/mini_cupcakes_cream_cheese.png', 'title': 'Mini Cupcakes Cream Cheese', 'price': 'RM36-RM55'},
     {'image': 'assets/mini_cupcakes_fresh_cream.png', 'title': 'Mini Cupcakes Fresh Cream', 'price': 'RM30-RM40'},
-    {'image': 'assets/normal_cupcake_fresh_cream.png', 'title': 'Normal Size Cupcake Fresh Cream', 'price': 'RM2.30-RM3.00/pcs'},
-    {'image': 'assets/normal_cupcake_cream_cheese.png', 'title': 'Normal Size Cupcake Cream Cheese', 'price': 'RM3.50-RM3.80/pcs'},
+    {'image': 'assets/normal_cupcakes_fresh_cream.png', 'title': 'Normal Size Cupcake Fresh Cream', 'price': 'RM2.30-RM3.00/pcs'},
+    {'image': 'assets/normal_cupcakes_cream_cheese.png', 'title': 'Normal Size Cupcake Cream Cheese', 'price': 'RM3.50-RM3.80/pcs'},
   ];
 
   final List<Map<String, String>> cart = []; // Cart to store selected items
