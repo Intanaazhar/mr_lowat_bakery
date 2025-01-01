@@ -2,30 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:mr_lowat_bakery/userscreens/home/cart_page.dart';
 import 'package:mr_lowat_bakery/userscreens/description_page.dart';
 
-class BrowniesCategoryPage extends StatefulWidget {
-  const BrowniesCategoryPage({super.key});
+class CupcakeCategoryPage extends StatefulWidget {
+  const CupcakeCategoryPage({super.key});
 
   @override
-  _BrowniesCategoryPageState createState() => _BrowniesCategoryPageState();
+  _CupcakeCategoryPageState createState() => _CupcakeCategoryPageState();
 }
 
-class _BrowniesCategoryPageState extends State<BrowniesCategoryPage> {
-  final List<Map<String, String>> brownies = [
-    {
-      'image': 'assets/nutella_brownies.png',
-      'title': 'Nutella Brownies',
-      'price': 'RM27-RM38',
-    },
-    {
-      'image': 'assets/cream_cheese_nutella.png',
-      'title': 'Cream Cheese and Nutella Brownies',
-      'price': 'RM30-RM45',
-    },
-    {
-      'image': 'assets/peanuts_brownies.png',
-      'title': 'Peanuts Brownies',
-      'price': 'RM30-RM45',
-    },
+class _CupcakeCategoryPageState extends State<CupcakeCategoryPage> {
+  final List<Map<String, String>> cupcakes = [
+    {'image': 'assets/mini_cupcakes_cream_cheese.png', 'title': 'Mini Cupcakes Cream Cheese', 'price': 'RM36-RM55'},
+    {'image': 'assets/mini_cupcakes_fresh_cream.png', 'title': 'Mini Cupcakes Fresh Cream', 'price': 'RM30-RM40'},
+    {'image': 'assets/normal_cupcake_fresh_cream.png', 'title': 'Normal Size Cupcake Fresh Cream', 'price': 'RM2.30-RM3.00/pcs'},
+    {'image': 'assets/normal_cupcake_cream_cheese.png', 'title': 'Normal Size Cupcake Cream Cheese', 'price': 'RM3.50-RM3.80/pcs'},
   ];
 
   final List<Map<String, String>> cart = []; // Cart to store selected items
@@ -46,7 +35,7 @@ class _BrowniesCategoryPageState extends State<BrowniesCategoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Brownies Menu"),
+        title: const Text("Cupcake Menu"),
         backgroundColor: Colors.orange,
         actions: [
           IconButton(
@@ -64,7 +53,7 @@ class _BrowniesCategoryPageState extends State<BrowniesCategoryPage> {
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: GridView.builder(
-          itemCount: brownies.length,
+          itemCount: cupcakes.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             childAspectRatio: 0.8,
@@ -91,14 +80,14 @@ class _BrowniesCategoryPageState extends State<BrowniesCategoryPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Image.asset(
-                        brownies[index]['image']!,
+                        cupcakes[index]['image']!,
                         height: 100,
                         fit: BoxFit.cover,
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Text(
-                          brownies[index]['title']!,
+                          cupcakes[index]['title']!,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontSize: 14,
@@ -109,7 +98,7 @@ class _BrowniesCategoryPageState extends State<BrowniesCategoryPage> {
                         ),
                       ),
                       Text(
-                        brownies[index]['price']!,
+                        cupcakes[index]['price']!,
                         style: const TextStyle(
                           fontSize: 14,
                           color: Colors.green,
@@ -126,11 +115,11 @@ class _BrowniesCategoryPageState extends State<BrowniesCategoryPage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => DescriptionPage(
-                              imagePath: brownies[index]['image']!,
-                              name: brownies[index]['title']!,
-                              price: brownies[index]['price']!,
+                              imagePath: cupcakes[index]['image']!,
+                              name: cupcakes[index]['title']!,
+                              price: cupcakes[index]['price']!,
                               onAddToCart: () {
-                                addToCart(brownies[index]);
+                                addToCart(cupcakes[index]);
                               },
                             ),
                           ),
