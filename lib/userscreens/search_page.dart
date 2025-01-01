@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mr_lowat_bakery/screens/click_button_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/cake_category.dart';
 
 class SearchPage extends StatefulWidget {
@@ -8,66 +9,32 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   final List<Map<String, String>> bakeryItems = [
-    {
-      'title': 'Burnt Cheese Cake',
-      'description': '6-inch RM40 | 8-inch RM60',
-      'image': 'assets/burnt_cheese_cake.png',
-    },
-    {
-      'title': 'Giant Cheese Tart',
-      'description': '6-inch RM46-58 | 7-inch RM56-68',
-      'image': 'assets/giant_cheese_tart.png',
-    },
-    {
-      'title': 'Mini Cheese Tart',
-      'description': 'Original RM20 | Fruity Filling RM22 | Nutella Toppings RM26',
-      'image': 'assets/mini_cheese_tart.png',
-    },
-    {
-      'title': 'Mini Cupcakes Fresh Cream',
-      'description': 'RM30-40',
-      'image': 'assets/mini_cupcakes_fresh_cream.png',
-    },
-    {
-      'title': 'Mini Cupcakes Cream Cheese',
-      'description': 'RM36-55',
-      'image': 'assets/mini_cupcakes_cream_cheese.png',
-    },
-    {
-      'title': 'Normal Cupcakes Fresh Cream',
-      'description': 'RM2.80/pcs',
-      'image': 'assets/normal_cupcakes_fresh_cream.png',
-    },
-    {
-      'title': 'Normal Cupcakes Cream Cheese',
-      'description': 'RM3.50/pcs',
-      'image': 'assets/normal_cupcakes_cream_cheese.png',
-    },
-    {
-      'title': 'Cream Puff',
-      'description': 'Fresh Cream RM25 | Cream Custard RM35 | Chocolate RM35 | Tiramisu RM35',
-      'image': 'assets/cream_puff.png',
-    },
-    {
-      'title': 'Choux au Craquelin',
-      'description': 'Fresh Cream RM35 | Cream Custard RM45 | Chocolate RM50 | Tiramisu RM50',
-      'image': 'assets/choux_au_craquelin.png',
-    },
-    {
-      'title': 'Fruit Choux',
-      'description': 'Fresh Cream RM35 | Cream Custard RM40 | Chocolate RM40 | Tiramisu RM40',
-      'image': 'assets/fruit_choux.png',
-    },
-    {
-      'title': 'Brownies',
-      'description': '6-inch RM25-32 | 8-inch RM35-48',
-      'image': 'assets/brownies.png',
-    },
-    {
-      'title': 'Sponge Cake Simple Decoration',
-      'description': 'RM35-90',
-      'image': 'assets/sponge_cake.png',
-    },
+    {'title': 'Mini Cupcakes Cream Cheese', 'description': 'RM36-RM55', 'image': 'assets/mini_cupcakes_cream_cheese.png'},
+    {'title': 'Mini Cupcakes Fresh Cream', 'description': 'RM30-RM40', 'image': 'assets/mini_cupcakes_fresh_cream.png'},
+    {'title': 'Normal Size Cupcake Fresh Cream', 'description': 'RM2.30-RM3.00/pcs', 'image': 'assets/normal_cupcakes_fresh_cream.png'},
+    {'title': 'Normal Size Cupcake Cream Cheese', 'description': 'RM3.50-RM3.80/pcs', 'image': 'assets/normal_cupcakes_cream_cheese.png'},
+    {'title': 'Giant Cheese Tart 6 Inch', 'description': 'RM46-RM58', 'image': 'assets/giant_cheese_tart_6inch.png'},
+    {'title': 'Giant Cheese Tart 7 Inch', 'description': 'RM56-RM68', 'image': 'assets/giant_cheese_tart_7inch.png'},
+    {'title': 'Fruit Mini Tart', 'description': 'RM35-RM40', 'image': 'assets/tart.jpg'},
+    {'title': 'Mini Cheese Tart 16 Pieces', 'description': 'RM34-RM38', 'image': 'assets/tart2.jpg'},
+    {'title': 'Mini Cheese Tart 25 Pieces', 'description': 'RM55-RM58', 'image': 'assets/tart3.jpg'},
+    {'title': 'Mini Cheese Tart 36 Pieces', 'description': 'RM43-RM58', 'image': 'assets/mini_cheese_tart_36.png'},
+    {'title': 'Mini Cheese Tart 49 Pieces', 'description': 'RM59-RM78', 'image': 'assets/mini_cheese_tart_49.png'},
+    {'title': 'Nutella Brownies', 'description': 'RM27-RM38', 'image': 'assets/nutella_brownies.png'},
+    {'title': 'Cream Cheese and Nutella Brownies', 'description': 'RM30-RM45', 'image': 'assets/cream_cheese_nutella.png'},
+    {'title': 'Peanuts Brownies', 'description': 'RM30-RM45', 'image': 'assets/peanuts_brownies.png'},
+    {'title': 'Choux au Craquelin 25 Pieces', 'description': 'RM35-RM50', 'image': 'assets/choux_au_craquelin.png'},
+    {'title': 'Cream Puff 25 Pieces', 'description': 'RM25-RM35', 'image': 'assets/cream_puff.png'},
+    {'title': 'Fruit Choux 25 Pieces', 'description': 'RM35-RM40', 'image': 'assets/fruit_choux.png'},
+    {'title': 'Kek Pisang', 'description': 'RM16-RM35', 'image': 'assets/kek_pisang.png'},
+    {'title': 'Bun Sosej', 'description': 'RM20-RM30', 'image': 'assets/bun_sosej.png'},
+    {'title': 'Party Set Sandwich', 'description': 'RM18-RM46', 'image': 'assets/sandwich.jpg'},
+    {'title': 'Special Wedding Cake', 'description': 'RM150', 'image': 'assets/cake1.png'},
+    {'title': 'Birthday Cake', 'description': 'RM80', 'image': 'assets/cake2.png'},
+    {'title': 'Congratulations Cake', 'description': 'RM70', 'image': 'assets/cake3.png'},
+    {'title': 'Dessert Cake', 'description': 'RM50', 'image': 'assets/cake4.png'},
+    {'title': 'Apam@Moist 25 Pieces', 'description': 'RM30', 'image': 'assets/apam_moist.png'},
+    {'title': 'Bite Size Cake 25 Pieces', 'description': 'RM35', 'image': 'assets/bite_size_cake.png'}
   ];
 
   List<Map<String, String>> filteredCategories = [];
@@ -102,7 +69,7 @@ class _SearchPageState extends State<SearchPage> {
             child: TextField(
               onChanged: (query) => filterCategories(query),
               decoration: InputDecoration(
-                hintText: 'Search categories...',
+                hintText: 'Search...',
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -120,7 +87,7 @@ class _SearchPageState extends State<SearchPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => CakeCategoryPage(), // Navigate to CakeCategoryPage
+                        builder: (context) => CakeCategoryPage(), 
                       ),
                     );
                   },

@@ -3,9 +3,10 @@ import 'package:mr_lowat_bakery/userscreens/home/cake_category.dart';
 import 'package:mr_lowat_bakery/userscreens/home/cart_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/category_widgets.dart';
 import 'package:mr_lowat_bakery/userscreens/home/menu_widgets.dart';
-
-
-
+import 'package:mr_lowat_bakery/userscreens/home/cheesetart_category.dart';
+import 'package:mr_lowat_bakery/userscreens/home/brownies_category.dart';
+import 'package:mr_lowat_bakery/userscreens/home/cupcake_category.dart';
+import 'package:mr_lowat_bakery/userscreens/home/others_category.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
 
 class Homepage extends StatelessWidget {
   const Homepage({super.key});
-  
+
   get cart => null;
 
   @override
@@ -48,13 +49,13 @@ class Homepage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.shopping_cart, color: Colors.white),
             onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>CartPage(cart: cart),
-                        ),
-                      );
-                    },
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CartPage(cart: cart),
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -79,7 +80,7 @@ class Homepage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-               // Discover by Category
+              // Discover by Category
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
@@ -101,9 +102,9 @@ class Homepage extends StatelessWidget {
                         onTap: () {
                           // Action for Cake
                           Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const CakeCategoryPage()),
-                        );
+                            context,
+                            MaterialPageRoute(builder: (context) => const CakeCategoryPage()),
+                          );
                         },
                         child: const CustomRoundedContainer(imagePath: 'assets/cake.png'),
                       ),
@@ -111,23 +112,32 @@ class Homepage extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           // Action for Cheesecake
-                          print('Cheesecake clicked!');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const CheeseTartCategoryPage()),
+                          );
                         },
-                        child: const CustomRoundedContainer(imagePath:'assets/cheesecake.png'),
+                        child: const CustomRoundedContainer(imagePath: 'assets/cheesecake.png'),
                       ),
                       const SizedBox(width: 16),
                       GestureDetector(
                         onTap: () {
                           // Action for Brownie
-                          print('Brownie clicked!');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const BrowniesCategoryPage()),
+                          );
                         },
                         child: const CustomRoundedContainer(imagePath: 'assets/brownie.png'),
                       ),
                       const SizedBox(width: 16),
                       GestureDetector(
                         onTap: () {
-                          // Action for Egg Tart
-                          print('Egg Tart clicked!');
+                          // Action for CheeseTart
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const CheeseTartCategoryPage()),
+                          );
                         },
                         child: const CustomRoundedContainer(imagePath: 'assets/egg-tart.png'),
                       ),
@@ -135,15 +145,21 @@ class Homepage extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           // Action for Cupcake
-                          print('Cupcake clicked!');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const CupcakeCategoryPage()),
+                          );
                         },
                         child: const CustomRoundedContainer(imagePath: 'assets/cupcake.png'),
                       ),
                       const SizedBox(width: 16),
                       GestureDetector(
                         onTap: () {
-                          // Action for Puffs
-                          print('Puffs clicked!');
+                          // Action for Others
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const OthersCategoryPage()),
+                          );
                         },
                         child: const CustomRoundedContainer(imagePath: 'assets/puffs.png'),
                       ),
@@ -173,39 +189,19 @@ class Homepage extends StatelessWidget {
                       children: [
                         MenuWidgets(
                           imagePath: 'assets/tart.jpg',
-                          name: 'Egg Tart',
-                          price: 'RM 5.00',
+                          name: 'Mini Cheese Tart 16 Pieces',
+                          price: 'RM34.00-RM38.00',
                           onPressed: () {
-                           /* Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const DescriptionPage(
-                                  imagePath: 'assets/tart.jpg',
-                                  name: 'Egg Tart',
-                                  description:
-                                      'A crispy crust filled with soft and creamy custard.',
-                                ),
-                              ),
-                            );*/
+                            // Navigate to Description Page or handle the event
                           },
                         ),
                         const SizedBox(height: 18),
                         MenuWidgets(
                           imagePath: 'assets/brownies.jpg',
-                          name: 'Brownies',
-                          price: 'RM 8.00',
+                          name: 'Nutella Brownies',
+                          price: 'RM27.00-RM38.00',
                           onPressed: () {
-                            /*Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const DescriptionPage(
-                                  imagePath: 'assets/brownies.jpg',
-                                  name: 'Brownies',
-                                  description:
-                                      'Rich, fudgy brownies with a chocolatey taste.',
-                                ),
-                              ),
-                            );*/
+                            // Navigate to Description Page or handle the event
                           },
                         ),
                       ],
@@ -215,39 +211,19 @@ class Homepage extends StatelessWidget {
                       children: [
                         MenuWidgets(
                           imagePath: 'assets/cupcake.jpg',
-                          name: 'Cupcake',
-                          price: 'RM 6.00',
+                          name: 'Normal Size Cupcake Fresh Cream',
+                          price: 'RM2.30-RM3.00/pcs',
                           onPressed: () {
-                            /*Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const DescriptionPage(
-                                  imagePath: 'assets/cupcake.jpg',
-                                  name: 'Cupcake',
-                                  description:
-                                      'Soft and fluffy cupcake with buttercream frosting.',
-                                ),
-                              ),
-                            );*/
+                            // Navigate to Description Page or handle the event
                           },
                         ),
                         const SizedBox(height: 18),
                         MenuWidgets(
                           imagePath: 'assets/puffs.jpg',
-                          name: 'Cream Puffs',
-                          price: 'RM 4.00',
+                          name: 'Cream Puffs 25 Pieces',
+                          price: 'RM RM25.00-RM35.00',
                           onPressed: () {
-                            /*Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const DescriptionPage(
-                                  imagePath: 'assets/puffs.jpg',
-                                  name: 'Cream Puffs',
-                                  description:
-                                      'Light and airy puffs filled with cream.',
-                                ),
-                              ),
-                            );*/
+                            // Navigate to Description Page or handle the event
                           },
                         ),
                       ],
