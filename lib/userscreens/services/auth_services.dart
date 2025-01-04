@@ -5,7 +5,7 @@ class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Sign Up
+  // Sign Up ok
   Future<void> signUp({
     required String email,
     required String password,
