@@ -128,7 +128,7 @@ class _BurntCheesecakePageState extends State<BurntCheesecakePage> {
                         );
                       },
                       child: Container(
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.orange,
                           shape: BoxShape.circle,
                         ),

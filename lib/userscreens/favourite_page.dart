@@ -1,30 +1,41 @@
 import 'package:flutter/material.dart';
 
-class FavouritePage extends StatefulWidget {
-  const FavouritePage({super.key});
+class FavoriteButton extends StatefulWidget {
+  final Function onPressed;
+  final bool isFavorite; // Track favorite state
+
+  const FavoriteButton({
+    super.key,
+    required this.onPressed,
+    this.isFavorite = false,
+  });
 
   @override
-  _FavouritePageState createState() => _FavouritePageState();
+  State<FavoriteButton> createState() => _FavoriteButtonState();
 }
-class _FavouritePageState extends State<FavouritePage> {
+
+class _FavoriteButtonState extends State<FavoriteButton> {
+  bool _isFavorite = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _isFavorite = widget.isFavorite; // Set initial favorite state
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container();
-}
-}
-void main() {
-  runApp(    
-MaterialApp(
-      home: Scaffold(
-        //appBar: AppBar(),
-       //title: Text(‘My First App’),
-          //centerTitle: true,
-//backgroundColor: Colors.green),
-                  body: Container(
-	color: Colors.grey,
-	child: const Text('Favourites'),
-)
-),
-)
-);
+    return IconButton(
+      icon: Icon(
+        _isFavorite ? Icons.favorite : Icons.favorite_border,
+        color: Colors.red,
+      ),
+      onPressed: () {
+        setState(() {
+          _isFavorite = !_isFavorite; // Toggle favorite state
+          widget.onPressed(_isFavorite); // Call provided function with new state
+        });
+      },
+    );
+  }
 }

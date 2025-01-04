@@ -189,7 +189,7 @@ class Homepage extends StatelessWidget {
                       children: [
                         MenuWidgets(
                           imagePath: 'assets/tart.jpg',
-                          name: 'Mini Cheese Tart 16 Pieces',
+                          name: 'Mini Cheese Tart',
                           price: 'RM34.00-RM38.00',
                           onPressed: () {
                             // Navigate to Description Page or handle the event
@@ -211,7 +211,7 @@ class Homepage extends StatelessWidget {
                       children: [
                         MenuWidgets(
                           imagePath: 'assets/cupcake.jpg',
-                          name: 'Normal Size Cupcake Fresh Cream',
+                          name: 'Cupcake Fresh Cream',
                           price: 'RM2.30-RM3.00/pcs',
                           onPressed: () {
                             // Navigate to Description Page or handle the event
@@ -220,7 +220,7 @@ class Homepage extends StatelessWidget {
                         const SizedBox(height: 18),
                         MenuWidgets(
                           imagePath: 'assets/puffs.jpg',
-                          name: 'Cream Puffs 25 Pieces',
+                          name: 'Cream Puffs',
                           price: 'RM RM25.00-RM35.00',
                           onPressed: () {
                             // Navigate to Description Page or handle the event

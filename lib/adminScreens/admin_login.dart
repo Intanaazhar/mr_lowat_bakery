@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mr_lowat_bakery/adminScreens/admin_nav_bar.dart';
-import 'package:mr_lowat_bakery/userscreens/sign_up.dart';
 
 class LoginAdmin extends StatelessWidget {
   const LoginAdmin({super.key});
@@ -24,38 +23,10 @@ class LoginAdmin extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Sign Up Button
-                Align(
-                  alignment: Alignment.topRight,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const NewAccount(),
-                        ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.pinkAccent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 10,
-                      ),
-                    ),
-                    child: const Text(
-                      "Sign Up",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
-                const Spacer(),
+                const SizedBox(height: 50),
                 // Title
                 const Text(
-                  "Hi Admin! ",
+                  "Hi Admin!",
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
@@ -70,13 +41,13 @@ class LoginAdmin extends StatelessWidget {
                     color: Colors.black,
                   ),
                 ),
-                const SizedBox(height: 200),
+                const SizedBox(height: 150),
                 // Username Field
                 TextField(
                   decoration: InputDecoration(
                     hintText: "Username",
                     filled: true,
-                   fillColor: Colors.orange,
+                    fillColor: Colors.orange,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
                       borderSide: BorderSide.none,
@@ -125,11 +96,12 @@ class LoginAdmin extends StatelessWidget {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const AdminNavigationMenu()),
-                        );
-                      },
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const AdminNavigationMenu()),
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.orange,
                       shape: RoundedRectangleBorder(
@@ -147,7 +119,6 @@ class LoginAdmin extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                const Spacer(),
               ],
             ),
           ),

@@ -126,7 +126,7 @@ class _CupcakeCategoryPageState extends State<CupcakeCategoryPage> {
                         );
                       },
                       child: Container(
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.orange,
                           shape: BoxShape.circle,
                         ),

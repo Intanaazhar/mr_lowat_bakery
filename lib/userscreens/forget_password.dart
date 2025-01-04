@@ -1,95 +1,86 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class ChangePassword extends StatefulWidget {
-  const ChangePassword({super.key});
+class PasswordResetPage extends StatefulWidget {
+  const PasswordResetPage({Key? key}) : super(key: key);
 
   @override
-  _ChangePasswordState createState() => _ChangePasswordState();
+  _PasswordResetPageState createState() => _PasswordResetPageState();
 }
 
-class _ChangePasswordState extends State<ChangePassword> {
-  final TextEditingController _currentPasswordController = TextEditingController();
-  final TextEditingController _newPasswordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
-
-  bool _isObscuredCurrent = true;
-  bool _isObscuredNew = true;
-  bool _isObscuredConfirm = true;
+class _PasswordResetPageState extends State<PasswordResetPage> {
+  final TextEditingController _emailController = TextEditingController();
+  bool _isLoading = false;
+  String? _errorMessage;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: const Text("Reset Password"),
         backgroundColor: Colors.orange,
-        title: const Text("Change Password"),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              _buildPasswordField("Current Password", _currentPasswordController, _isObscuredCurrent),
-              const SizedBox(height: 20),
-              _buildPasswordField("New Password", _newPasswordController, _isObscuredNew),
-              const SizedBox(height: 20),
-              _buildPasswordField("Confirm New Password", _confirmPasswordController, _isObscuredConfirm),
-              const SizedBox(height: 30),
-              ElevatedButton(
-                onPressed: _changePassword,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange,
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                child: const Text("Change Password"),
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              "Enter your email to reset your password",
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 20),
+            TextField(
+              controller: _emailController,
+              decoration: InputDecoration(
+                labelText: "Email",
+                border: OutlineInputBorder(),
+                filled: true,
+                fillColor: Colors.white.withOpacity(0.8),
               ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 20),
+            if (_errorMessage != null)
+              Text(
+                _errorMessage!,
+                style: const TextStyle(color: Colors.red),
+              ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _isLoading ? null : _resetPassword,
+                child: _isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text("Send Reset Link"),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildPasswordField(String label, TextEditingController controller, bool isObscured) {
-    return TextField(
-      controller: controller,
-      obscureText: isObscured,
-      decoration: InputDecoration(
-        labelText: label,
-        suffixIcon: IconButton(
-          icon: Icon(
-            isObscured ? Icons.visibility : Icons.visibility_off,
-            color: Colors.grey,
-          ),
-          onPressed: () {
-            setState(() {
-              isObscured = !isObscured;
-            });
-          },
-        ),
-        border: const OutlineInputBorder(),
-      ),
-    );
-  }
+  Future<void> _resetPassword() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
 
-  void _changePassword() {
-    // Add password validation logic here
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Password changed successfully')));
-  }
-
-  @override
-  void dispose() {
-    _currentPasswordController.dispose();
-    _newPasswordController.dispose();
-    _confirmPasswordController.dispose();
-    super.dispose();
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: _emailController.text.trim());
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Password reset link sent! Check your email.")),
+      );
+      Navigator.pop(context); // Go back to the login page after sending the reset link
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        _errorMessage = e.message;
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 }

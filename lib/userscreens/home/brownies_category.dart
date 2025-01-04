@@ -137,7 +137,7 @@ class _BrowniesCategoryPageState extends State<BrowniesCategoryPage> {
                         );
                       },
                       child: Container(
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.orange,
                           shape: BoxShape.circle,
                         ),

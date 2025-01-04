@@ -128,7 +128,7 @@ class _OthersCategoryPageState extends State<OthersCategoryPage> {
                         );
                       },
                       child: Container(
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.orange,
                           shape: BoxShape.circle,
                         ),

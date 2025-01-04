@@ -129,7 +129,7 @@ class _CheeseTartCategoryPageState extends State<CheeseTartCategoryPage> {
                         );
                       },
                       child: Container(
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.orange,
                           shape: BoxShape.circle,
                         ),

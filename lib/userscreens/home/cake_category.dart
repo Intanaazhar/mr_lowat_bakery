@@ -130,7 +130,7 @@ class _CakeCategoryPageState extends State<CakeCategoryPage> {
                         );
                       },
                       child: Container(
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.orange,
                           shape: BoxShape.circle,
                         ),
