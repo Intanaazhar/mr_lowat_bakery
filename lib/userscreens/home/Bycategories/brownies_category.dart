@@ -2,29 +2,42 @@ import 'package:flutter/material.dart';
 import 'package:mr_lowat_bakery/userscreens/home/cart_page.dart';
 import 'package:mr_lowat_bakery/userscreens/description_page.dart';
 
-class BurntCheesecakePage extends StatefulWidget {
-  const BurntCheesecakePage({super.key});
+class BrowniesCategoryPage extends StatefulWidget {
+  const BrowniesCategoryPage({super.key});
 
   @override
-  _BurntCheesecakePageState createState() => _BurntCheesecakePageState();
+  _BrowniesCategoryPageState createState() => _BrowniesCategoryPageState();
 }
 
-class _BurntCheesecakePageState extends State<BurntCheesecakePage> {
-  final List<Map<String, String>> burntCheeseItems = [
-    {'image': 'assets/burnt_cheese_cake.png', 'title': 'Burnt Cheese Cake', 'price': 'RM40-RM65'},
-    {'image': 'assets/burnt_cheese_with_cheese_tart.png', 'title': 'Burnt Cheese Cake with Cheese Tart Set', 'price': 'RM60-RM85'},
+class _BrowniesCategoryPageState extends State<BrowniesCategoryPage> {
+  final List<Map<String, String>> brownies = [
+    {
+      'image': 'assets/nutella_brownies.png',
+      'title': 'Nutella Brownies',
+      'price': 'RM27-RM38',
+    },
+    {
+      'image': 'assets/cream_cheese_nutella.png',
+      'title': 'Cream Cheese and Nutella Brownies',
+      'price': 'RM30-RM45',
+    },
+    {
+      'image': 'assets/peanuts_brownies.png',
+      'title': 'Peanuts Brownies',
+      'price': 'RM30-RM45',
+    },
   ];
 
   final List<Map<String, String>> cart = []; // Cart to store selected items
 
   void addToCart(Map<String, String> item) {
     setState(() {
-      cart.add(item);
+      cart.add(item); // Add the item to the cart
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text("${item['title']} added to cart!"),
-        duration: const Duration(seconds: 1),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
@@ -33,7 +46,7 @@ class _BurntCheesecakePageState extends State<BurntCheesecakePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Burnt Cheesecake Menu"),
+        title: const Text("Brownies Menu"),
         backgroundColor: Colors.orange,
         actions: [
           IconButton(
@@ -42,9 +55,7 @@ class _BurntCheesecakePageState extends State<BurntCheesecakePage> {
               // Navigate to CartPage
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => CartPage(cart: cart),
-                ),
+                MaterialPageRoute(builder: (context) => CartPage(cart: cart)),
               );
             },
           ),
@@ -53,16 +64,14 @@ class _BurntCheesecakePageState extends State<BurntCheesecakePage> {
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: GridView.builder(
-          itemCount: burntCheeseItems.length,
+          itemCount: brownies.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            childAspectRatio: 0.8, // Adjust aspect ratio
+            childAspectRatio: 0.8,
             crossAxisSpacing: 10,
             mainAxisSpacing: 10,
           ),
           itemBuilder: (context, index) {
-            Map<String, String> item = burntCheeseItems[index];
-
             return Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -82,14 +91,14 @@ class _BurntCheesecakePageState extends State<BurntCheesecakePage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Image.asset(
-                        item['image']!,
+                        brownies[index]['image']!,
                         height: 100,
                         fit: BoxFit.cover,
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Text(
-                          item['title']!,
+                          brownies[index]['title']!,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontSize: 14,
@@ -100,7 +109,7 @@ class _BurntCheesecakePageState extends State<BurntCheesecakePage> {
                         ),
                       ),
                       Text(
-                        item['price']!,
+                        brownies[index]['price']!,
                         style: const TextStyle(
                           fontSize: 14,
                           color: Colors.green,
@@ -117,18 +126,18 @@ class _BurntCheesecakePageState extends State<BurntCheesecakePage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => DescriptionPage(
-                              imagePath: item['image']!,
-                              name: item['title']!,
-                              price: item['price']!,
+                              imagePath: brownies[index]['image']!,
+                              name: brownies[index]['title']!,
+                              price: brownies[index]['price']!,
                               onAddToCart: () {
-                                addToCart(item);
+                                addToCart(brownies[index]);
                               },
                             ),
                           ),
                         );
                       },
                       child: Container(
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.orange,
                           shape: BoxShape.circle,
                         ),

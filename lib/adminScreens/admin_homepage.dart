@@ -4,6 +4,7 @@ import 'package:mr_lowat_bakery/userscreens/home/cart_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/category_widgets.dart';
 import 'package:mr_lowat_bakery/userscreens/home/menu_widgets.dart';
 
+
 void main() {
   runApp(const MyApp());
 }

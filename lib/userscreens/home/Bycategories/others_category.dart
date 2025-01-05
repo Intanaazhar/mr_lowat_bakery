@@ -2,33 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:mr_lowat_bakery/userscreens/home/cart_page.dart';
 import 'package:mr_lowat_bakery/userscreens/description_page.dart';
 
-class CakeCategoryPage extends StatefulWidget {
-  const CakeCategoryPage({super.key});
+class OthersCategoryPage extends StatefulWidget {
+  const OthersCategoryPage({super.key});
 
   @override
-  _CakeCategoryPageState createState() => _CakeCategoryPageState();
+  _OthersCategoryPageState createState() => _OthersCategoryPageState();
 }
 
-class _CakeCategoryPageState extends State<CakeCategoryPage> {
-  final List<Map<String, String>> items = [
-    {'image': 'assets/cake1.png','title': 'Special Wedding Cake','price': 'RM150',},
-    {'image': 'assets/cake2.png','title': 'Birthday Cake','price': 'RM80',},
-    {'image': 'assets/cake3.png','title': 'Congratulations Cake','price': 'RM70',},
-    {'image': 'assets/cake4.png','title': 'Dessert Cake','price': 'RM50',},
-    {'image': 'assets/apam_moist.png', 'title': 'Apam@Moist 25 Pieces', 'price': 'RM30'},
-    {'image': 'assets/bite_size_cake.png', 'title': 'Bite Size Cake 25 Pieces', 'price': 'RM35'},
+class _OthersCategoryPageState extends State<OthersCategoryPage> {
+  final List<Map<String, String>> others = [
+    {'image': 'assets/choux_au_craquelin.png', 'title': 'Choux au Craquelin 25 Pieces', 'price': 'RM35-RM50'},
+    {'image': 'assets/cream_puff.png', 'title': 'Cream Puff 25 Pieces', 'price': 'RM25-RM35'},
+    {'image': 'assets/fruit_choux.png', 'title': 'Fruit Choux 25 Pieces', 'price': 'RM35-RM40'},
+    {'image': 'assets/kek_pisang.png', 'title': 'Kek Pisang', 'price': 'RM16-RM35'},
+    {'image': 'assets/bun_sosej.png', 'title': 'Bun Sosej', 'price': 'RM20-RM30'},
+    {'image': 'assets/sandwich.jpg', 'title': 'Party Set Sandwich', 'price': 'RM18-RM46'},
   ];
 
   final List<Map<String, String>> cart = []; // Cart to store selected items
 
   void addToCart(Map<String, String> item) {
     setState(() {
-      cart.add(item);
+      cart.add(item); // Add the item to the cart
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text("${item['title']} added to cart!"),
-        duration: const Duration(seconds: 1),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
@@ -37,7 +37,7 @@ class _CakeCategoryPageState extends State<CakeCategoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Cake Menu"),
+        title: const Text("Others Menu"),
         backgroundColor: Colors.orange,
         actions: [
           IconButton(
@@ -46,9 +46,7 @@ class _CakeCategoryPageState extends State<CakeCategoryPage> {
               // Navigate to CartPage
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => CartPage(cart: cart),
-                ),
+                MaterialPageRoute(builder: (context) => CartPage(cart: cart)),
               );
             },
           ),
@@ -57,10 +55,10 @@ class _CakeCategoryPageState extends State<CakeCategoryPage> {
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: GridView.builder(
-          itemCount: items.length,
+          itemCount: others.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            childAspectRatio: 0.8, // Adjust aspect ratio
+            childAspectRatio: 0.8,
             crossAxisSpacing: 10,
             mainAxisSpacing: 10,
           ),
@@ -84,14 +82,14 @@ class _CakeCategoryPageState extends State<CakeCategoryPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Image.asset(
-                        items[index]['image']!,
+                        others[index]['image']!,
                         height: 100,
                         fit: BoxFit.cover,
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Text(
-                          items[index]['title']!,
+                          others[index]['title']!,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontSize: 14,
@@ -102,7 +100,7 @@ class _CakeCategoryPageState extends State<CakeCategoryPage> {
                         ),
                       ),
                       Text(
-                        items[index]['price']!,
+                        others[index]['price']!,
                         style: const TextStyle(
                           fontSize: 14,
                           color: Colors.green,
@@ -119,18 +117,18 @@ class _CakeCategoryPageState extends State<CakeCategoryPage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => DescriptionPage(
-                              imagePath: items[index]['image']!,
-                              name: items[index]['title']!,
-                              price: items[index]['price']!,
+                              imagePath: others[index]['image']!,
+                              name: others[index]['title']!,
+                              price: others[index]['price']!,
                               onAddToCart: () {
-                                addToCart(items[index]);
+                                addToCart(others[index]);
                               },
                             ),
                           ),
                         );
                       },
                       child: Container(
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.orange,
                           shape: BoxShape.circle,
                         ),

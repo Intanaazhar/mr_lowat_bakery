@@ -156,7 +156,7 @@ class _EditProfileState extends State<EditProfile> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const ChangePassword()),
+                    MaterialPageRoute(builder: (context) => const PasswordResetPage()),
                   );
                 },
               ),

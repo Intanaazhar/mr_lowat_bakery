@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mr_lowat_bakery/adminScreens/adminbrownies.dart';
 import 'package:mr_lowat_bakery/screens/click_button_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/burntcheesecake_category.dart';
 import 'package:mr_lowat_bakery/userscreens/home/cake_category.dart';
@@ -7,6 +8,7 @@ import 'package:mr_lowat_bakery/userscreens/home/category_widgets.dart';
 import 'package:mr_lowat_bakery/userscreens/home/cheesetart_category.dart';
 import 'package:mr_lowat_bakery/userscreens/home/cupcake_category.dart';
 import 'package:mr_lowat_bakery/userscreens/home/menu_widgets.dart';
+import 'package:mr_lowat_bakery/userscreens/home/others_category.dart';
 
 
 
@@ -22,13 +24,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Homepage(),
+      home: AdminHomepage(),
     );
   }
 }
 
-class Homepage extends StatelessWidget {
-  const Homepage({super.key});
+class AdminHomepage extends StatelessWidget {
+  const AdminHomepage({super.key});
 
   get cart => null;
 
@@ -126,7 +128,10 @@ class Homepage extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           // Action for Brownie
-                          print('Brownie clicked!');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const BrowniesCategoryPage()),
+                          );
                         },
                         child: const CustomRoundedContainer(imagePath: 'assets/brownie.png'),
                       ),
@@ -156,7 +161,10 @@ class Homepage extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           // Action for Puffs
-                          print('Puffs clicked!');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const OthersCategoryPage()),
+                          );
                         },
                         child: const CustomRoundedContainer(imagePath: 'assets/puffs.png'),
                       ),

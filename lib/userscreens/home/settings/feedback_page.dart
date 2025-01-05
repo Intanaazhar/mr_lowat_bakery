@@ -78,7 +78,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
             TextField(
               controller: _improvementController,
               maxLines: 5,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: 'Enter your detailed feedback here...',
                 border: OutlineInputBorder(),
               ),

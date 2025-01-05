@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mr_lowat_bakery/screens/click_button_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/cake_category.dart';
 
 class SearchPage extends StatefulWidget {
+  const SearchPage({super.key});
+
   @override
   _SearchPageState createState() => _SearchPageState();
 }
@@ -87,7 +88,7 @@ class _SearchPageState extends State<SearchPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => CakeCategoryPage(), 
+                        builder: (context) => const CakeCategoryPage(), 
                       ),
                     );
                   },

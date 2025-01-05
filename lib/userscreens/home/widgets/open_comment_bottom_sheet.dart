@@ -5,7 +5,7 @@ void openCommentsBottomSheet({
   required List<Map<String, String>> comments,
   required Function(String) onAddComment,
 }) {
-  final TextEditingController _commentController = TextEditingController();
+  final TextEditingController commentController = TextEditingController();
 
   showModalBottomSheet(
     context: context,
@@ -32,7 +32,7 @@ void openCommentsBottomSheet({
             const SizedBox(height: 16),
 
             // Comments List (Wrapped in Expanded or SingleChildScrollView)
-            Container(
+            SizedBox(
               height: 300,  // Optional: set a fixed height or remove if you want dynamic
               child: ListView.builder(
                 itemCount: comments.length,
@@ -87,7 +87,7 @@ void openCommentsBottomSheet({
               children: [
                 Expanded(
                   child: TextField(
-                    controller: _commentController,
+                    controller: commentController,
                     decoration: const InputDecoration(
                       hintText: 'Add a comment',
                       border: OutlineInputBorder(),
@@ -97,10 +97,10 @@ void openCommentsBottomSheet({
                 const SizedBox(width: 8),
                 IconButton(
                   onPressed: () {
-                    final comment = _commentController.text.trim();
+                    final comment = commentController.text.trim();
                     if (comment.isNotEmpty) {
                       onAddComment(comment);
-                      _commentController.clear();
+                      commentController.clear();
                       Navigator.pop(context);
                     }
                   },

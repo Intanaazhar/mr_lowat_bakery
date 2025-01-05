@@ -1,10 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:mr_lowat_bakery/navigation_bar.dart';
+import 'package:mr_lowat_bakery/navigation_bar.dart';  // Update this import with your correct Navigation
 import 'package:mr_lowat_bakery/adminScreens/admin_login.dart';
+import 'package:mr_lowat_bakery/userscreens/forget_password.dart';
+import 'package:mr_lowat_bakery/userscreens/services/auth_services.dart'; // Import AuthService
 import 'package:mr_lowat_bakery/userscreens/sign_up.dart';
 
-class LoginScreen extends StatelessWidget {
+
+
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  bool _isLoading = false;
+  String? _errorMessage;
+
+  final AuthService _authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +31,7 @@ class LoginScreen extends StatelessWidget {
           // Background Image
           Positioned.fill(
             child: Image.asset(
-              'assets/CustomerLogin.jpg', // Image path
+              'assets/CustomerLogin.jpg', // Ensure the image path is correct
               fit: BoxFit.cover,
             ),
           ),
@@ -82,46 +98,20 @@ class LoginScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 200),
                 // Username Field
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: "Username",
-                    filled: true,
-                    fillColor: Colors.orange,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide.none,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 15,
-                    ),
-                  ),
-                ),
+                buildTextField("Username", controller: _emailController),
                 const SizedBox(height: 20),
                 // Password Field
-                TextField(
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    hintText: "Password",
-                    filled: true,
-                    fillColor: Colors.orange,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide.none,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 15,
-                    ),
-                  ),
-                ),
+                buildTextField("Password", controller: _passwordController, obscureText: true),
                 const SizedBox(height: 10),
                 // Forgot Password
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: () {
-                      // Add forgot password logic here
+                      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const PasswordResetPage()),
+      );
                     },
                     child: Text(
                       "Forgot Password?",
@@ -130,16 +120,18 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
+                // Error Message Display
+                if (_errorMessage != null)
+                  Text(
+                    _errorMessage!,
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                const SizedBox(height: 10),
                 // Log In Button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const NavigationMenu()),
-                      );
-                    },
+                    onPressed: _isLoading ? null : _signIn,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.orange,
                       shape: RoundedRectangleBorder(
@@ -150,10 +142,12 @@ class LoginScreen extends StatelessWidget {
                         vertical: 15,
                       ),
                     ),
-                    child: const Text(
-                      "Log In",
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    child: _isLoading
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text(
+                            "Log In",
+                            style: TextStyle(color: Colors.white),
+                          ),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -165,20 +159,52 @@ class LoginScreen extends StatelessWidget {
       ),
     );
   }
-}
 
-class AdminLoginScreen extends StatelessWidget {
-  const AdminLoginScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Admin Login"),
-      ),
-      body: const Center(
-        child: Text("Admin Login Screen"),
+  // Helper method to build a text field
+  Widget buildTextField(String hintText, {bool obscureText = false, required TextEditingController controller}) {
+    return TextField(
+      controller: controller,
+      obscureText: obscureText,
+      decoration: InputDecoration(
+        hintText: hintText,
+        filled: true,
+        fillColor: Colors.orange.withOpacity(0.8),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: BorderSide.none,
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 15,
+        ),
       ),
     );
+  }
+
+  // Sign in method with Firebase Authentication using AuthService
+  Future<void> _signIn() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    // Replace this with your authentication service logic.
+    // Example:
+    try {
+      // Simulate a successful sign-in.
+      await Future.delayed(const Duration(seconds: 2));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Login successful!')),
+      );
+      // Navigate to Homepage after successful login.
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const NavigationMenu()),
+      );
+    } catch (e) {
+      setState(() => _errorMessage = 'An error occurred: $e');
+    } finally {
+      setState(() => _isLoading = false);
+    }
   }
 }
