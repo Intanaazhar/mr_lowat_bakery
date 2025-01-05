@@ -111,6 +111,9 @@ flutter:
      - assets/mini_cheese_tart_49.png
      - assets/apam_moist.png
      - assets/bite_size_cake.png
+     - assets/tart2.jpg
+     - assets/tart3.jpg
+     - assets/tart1.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mr_lowat_bakery/userscreens/home/cake_category.dart';
+import 'package:mr_lowat_bakery/userscreens/cake_category_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/cart_page.dart';
-import 'package:mr_lowat_bakery/userscreens/home/category_widgets.dart';
-import 'package:mr_lowat_bakery/userscreens/home/menu_widgets.dart';
+import 'package:mr_lowat_bakery/userscreens/home/widgets/category_widgets.dart';
+import 'package:mr_lowat_bakery/userscreens/home/widgets/menu_widgets.dart';
 
 
 void main() {
@@ -16,13 +16,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Homepage(),
+      home: AdminHomepage(),
     );
   }
 }
 
-class Homepage extends StatelessWidget {
-  const Homepage({super.key});
+class AdminHomepage extends StatelessWidget {
+  const AdminHomepage({super.key});
 
   get cart => null;
 

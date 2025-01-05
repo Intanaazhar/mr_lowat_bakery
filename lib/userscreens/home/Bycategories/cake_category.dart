@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mr_lowat_bakery/userscreens/home/cart_page.dart';
-import 'package:mr_lowat_bakery/userscreens/description_page.dart';
+import 'package:mr_lowat_bakery/userscreens/home/widgets/description_page.dart';
 
 class CakeCategoryPage extends StatefulWidget {
   const CakeCategoryPage({super.key});

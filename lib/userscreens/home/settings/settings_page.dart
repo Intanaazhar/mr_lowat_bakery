@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mr_lowat_bakery/userscreens/address_page.dart';
-import 'package:mr_lowat_bakery/userscreens/debit_card_page.dart';
-import 'package:mr_lowat_bakery/userscreens/feedback_page.dart';
-import 'package:mr_lowat_bakery/userscreens/support_page.dart';
-import 'package:mr_lowat_bakery/userscreens/user_profile.dart';
+import 'package:mr_lowat_bakery/userscreens/home/settings/address_page.dart';
+import 'package:mr_lowat_bakery/userscreens/home/settings/debit_card_page.dart';
+import 'package:mr_lowat_bakery/userscreens/home/settings/feedback_page.dart';
+import 'package:mr_lowat_bakery/userscreens/home/settings/support_page.dart';
+import 'package:mr_lowat_bakery/userscreens/home/user_profile.dart';
 import 'package:mr_lowat_bakery/userscreens/welcome.dart';
 //import 'user_profile.dart';
 //import 'address_page.dart';

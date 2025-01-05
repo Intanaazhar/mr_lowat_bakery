@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mr_lowat_bakery/userscreens/services/auth_services.dart';
-import 'package:mr_lowat_bakery/userscreens/sign_in.dart'; // Import the AuthService
+import 'package:mr_lowat_bakery/userscreens/login/sign_in.dart'; // Import the AuthService
 
 class NewAccount extends StatefulWidget {
   const NewAccount({super.key});

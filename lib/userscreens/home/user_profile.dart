@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:mr_lowat_bakery/screens/settings_page.dart';
+import 'package:mr_lowat_bakery/userscreens/home/settings/settings_page.dart';
 import 'package:mr_lowat_bakery/userscreens/welcome.dart';
 
 void main() {

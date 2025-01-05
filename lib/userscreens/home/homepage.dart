@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:mr_lowat_bakery/adminScreens/adminbrownies.dart';
-import 'package:mr_lowat_bakery/screens/click_button_page.dart';
-import 'package:mr_lowat_bakery/userscreens/home/burntcheesecake_category.dart';
-import 'package:mr_lowat_bakery/userscreens/home/cake_category.dart';
+import 'package:mr_lowat_bakery/userscreens/home/Bycategories/brownies_category.dart';
+import 'package:mr_lowat_bakery/userscreens/click_button_page.dart';
+import 'package:mr_lowat_bakery/userscreens/home/Bycategories/burntcheesecake_category.dart';
+import 'package:mr_lowat_bakery/userscreens/home/Bycategories/cake_category.dart';
+import 'package:mr_lowat_bakery/userscreens/home/Bycategories/most_ordered.dart';
 import 'package:mr_lowat_bakery/userscreens/home/cart_page.dart';
-import 'package:mr_lowat_bakery/userscreens/home/category_widgets.dart';
-import 'package:mr_lowat_bakery/userscreens/home/cheesetart_category.dart';
-import 'package:mr_lowat_bakery/userscreens/home/cupcake_category.dart';
-import 'package:mr_lowat_bakery/userscreens/home/menu_widgets.dart';
-import 'package:mr_lowat_bakery/userscreens/home/others_category.dart';
+import 'package:mr_lowat_bakery/userscreens/home/widgets/category_widgets.dart';
+import 'package:mr_lowat_bakery/userscreens/home/Bycategories/cheesetart_category.dart';
+import 'package:mr_lowat_bakery/userscreens/home/Bycategories/cupcake_category.dart';
+import 'package:mr_lowat_bakery/userscreens/home/widgets/menu_widgets.dart';
+import 'package:mr_lowat_bakery/userscreens/home/Bycategories/others_category.dart';
 
 
 
@@ -24,13 +25,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: AdminHomepage(),
+      home: Homepage(),
     );
   }
 }
 
-class AdminHomepage extends StatelessWidget {
-  const AdminHomepage({super.key});
+class Homepage extends StatelessWidget {
+  const Homepage({super.key});
 
   get cart => null;
 
@@ -50,7 +51,7 @@ class AdminHomepage extends StatelessWidget {
           icon: const Icon(Icons.settings, color: Colors.white),
           onPressed: () {},
         ),
-        actions: [
+        /*actions: [
           IconButton(
             icon: const Icon(Icons.shopping_cart, color: Colors.white),
             onPressed: () {
@@ -62,7 +63,7 @@ class AdminHomepage extends StatelessWidget {
               );
             },
           ),
-        ],
+        ],*/
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -175,11 +176,32 @@ class AdminHomepage extends StatelessWidget {
               ),
 
               const SizedBox(height: 16),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
-                child: Text(
-                  'Most Ordered',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Most Ordered',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        // Navigate to the new page when "View All" is tapped
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const MostOrderedPage()),
+                        );
+                      },
+                      child: const Text(
+                        'View All',
+                        style: TextStyle(
+                          color: Colors.blue, // Customize the color
+                          fontWeight: FontWeight.w500, // Optional for styling
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 18),
@@ -193,7 +215,7 @@ class AdminHomepage extends StatelessWidget {
                         Expanded(
                           child: MenuWidgets(
                             imagePath: 'assets/tart.jpg',
-                            name: 'Mini Cheese Tart 16 Pieces',
+                            name: 'Mini Cheese Tart',
                             price: 'RM34.00-RM38.00',
                             onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const DescriptionPage())),
                           ),
@@ -216,7 +238,7 @@ class AdminHomepage extends StatelessWidget {
                         Expanded(
                           child: MenuWidgets(
                             imagePath: 'assets/cupcake.jpg',
-                            name: 'Normal Size Cupcake Fresh Cream',
+                            name: 'Cupcake Fresh Cream',
                             price: 'RM2.30-RM3.00/pcs',
                             onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) =>const DescriptionPage())),
                           ),
@@ -227,6 +249,29 @@ class AdminHomepage extends StatelessWidget {
                             imagePath: 'assets/puffs.jpg',
                             name: 'Cream Puffs 25 Pieces',
                             price: 'RM25.00-RM35.00',
+                            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const DescriptionPage())),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 18),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Expanded(
+                          child: MenuWidgets(
+                            imagePath: 'assets/tart1.png',
+                            name: 'Mini Fruit Tart',
+                            price: 'RM35',
+                            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) =>const DescriptionPage())),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: MenuWidgets(
+                            imagePath: 'assets/cream_cheese_nutella.png',
+                            name: 'Cream Cheese Brownies',
+                            price: 'RM45',
                             onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const DescriptionPage())),
                           ),
                         ),

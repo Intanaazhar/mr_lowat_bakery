@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mr_lowat_bakery/navigation_bar.dart';  // Update this import with your correct Navigation
+import 'package:mr_lowat_bakery/userscreens/home/navigation_bar.dart';  // Update this import with your correct Navigation
 import 'package:mr_lowat_bakery/adminScreens/admin_login.dart';
-import 'package:mr_lowat_bakery/userscreens/forget_password.dart';
+import 'package:mr_lowat_bakery/userscreens/login/forget_password.dart';
 import 'package:mr_lowat_bakery/userscreens/services/auth_services.dart'; // Import AuthService
-import 'package:mr_lowat_bakery/userscreens/sign_up.dart';
+import 'package:mr_lowat_bakery/userscreens/login/sign_up.dart';
 
 
 

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:mr_lowat_bakery/userscreens/homepage.dart';
-import 'package:mr_lowat_bakery/userscreens/search_page.dart';
-import 'package:mr_lowat_bakery/userscreens/user_profile.dart';
+import 'package:mr_lowat_bakery/userscreens/home/homepage.dart';
+import 'package:mr_lowat_bakery/userscreens/home/search_page.dart';
+import 'package:mr_lowat_bakery/userscreens/home/user_profile.dart';
 
 
 class NavigationMenu extends StatelessWidget {

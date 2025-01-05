@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:mr_lowat_bakery/userscreens/welcome.dart';
 import 'package:firebase_core/firebase_core.dart'; //dpt from firebase setup
 
-// ignore: unused_import
-import 'welcome.dart'; // Import your welcome screen file
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

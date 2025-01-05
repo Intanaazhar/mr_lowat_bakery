@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mr_lowat_bakery/userscreens/forget_password.dart';
+import 'package:mr_lowat_bakery/userscreens/login/forget_password.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});
