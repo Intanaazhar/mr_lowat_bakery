@@ -1,50 +1,115 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class BrowniesCategoryPage extends StatefulWidget {
-  const BrowniesCategoryPage({super.key});
+class AdminBrowniesPage extends StatefulWidget {
+  const AdminBrowniesPage({super.key});
 
   @override
-  _BrowniesCategoryPageState createState() => _BrowniesCategoryPageState();
+  _AdminBrowniesPageState createState() => _AdminBrowniesPageState();
 }
 
-class _BrowniesCategoryPageState extends State<BrowniesCategoryPage> {
-  final List<Map<String, String>> brownies = [
-    {
-      'image': 'assets/nutella_brownies.png',
-      'title': 'Nutella Brownies',
-      'price': 'RM27-RM38',
-    },
-    {
-      'image': 'assets/cream_cheese_nutella.png',
-      'title': 'Cream Cheese and Nutella Brownies',
-      'price': 'RM30-RM45',
-    },
-    {
-      'image': 'assets/peanuts_brownies.png',
-      'title': 'Peanuts Brownies',
-      'price': 'RM30-RM45',
-    },
-  ];
+class _AdminBrowniesPageState extends State<AdminBrowniesPage> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _imageController = TextEditingController();
 
-  void editBrownie(int index) {
-    // Implement edit functionality
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text("Edit ${brownies[index]['title']}"),
-        duration: const Duration(seconds: 2),
-      ),
-    );
+  void _addItem() async {
+    try {
+      await FirebaseFirestore.instance.collection('brownies').add({
+        'name': _nameController.text,
+        'price': _priceController.text,
+        'image': _imageController.text,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+      _nameController.clear();
+      _priceController.clear();
+      _imageController.clear();
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error adding item: $e")),
+      );
+    }
   }
 
-  void deleteBrownie(int index) {
-    setState(() {
-      brownies.removeAt(index);
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Item deleted successfully!"),
-        duration: Duration(seconds: 2),
-      ),
+  void _updateItem(String id) async {
+    try {
+      await FirebaseFirestore.instance.collection('brownies').doc(id).update({
+        'name': _nameController.text,
+        'price': _priceController.text,
+        'image': _imageController.text,
+      });
+      _nameController.clear();
+      _priceController.clear();
+      _imageController.clear();
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error updating item: $e")),
+      );
+    }
+  }
+
+  void _deleteItem(String id) async {
+    try {
+      await FirebaseFirestore.instance.collection('brownies').doc(id).delete();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Item deleted successfully!")),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error deleting item: $e")),
+      );
+    }
+  }
+
+  void _showDialog({String? id, Map<String, dynamic>? data}) {
+    if (data != null) {
+      _nameController.text = data['name'];
+      _priceController.text = data['price'];
+      _imageController.text = data['image'];
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(id == null ? "Add Item" : "Edit Item"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _nameController,
+                decoration: const InputDecoration(labelText: "Name"),
+              ),
+              TextField(
+                controller: _priceController,
+                decoration: const InputDecoration(labelText: "Price"),
+              ),
+              TextField(
+                controller: _imageController,
+                decoration: const InputDecoration(labelText: "Image URL"),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (id == null) {
+                  _addItem();
+                } else {
+                  _updateItem(id);
+                }
+              },
+              child: Text(id == null ? "Add" : "Update"),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -52,42 +117,48 @@ class _BrowniesCategoryPageState extends State<BrowniesCategoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Brownies Menu - Admin"),
+        title: const Text("Admin Brownies Menu"),
         backgroundColor: Colors.orange,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: GridView.builder(
-          itemCount: brownies.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 0.8,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () => _showDialog(),
           ),
-          itemBuilder: (context, index) {
-            return buildCard(index);
-          },
-        ),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Add new brownie functionality
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("Add new brownie functionality not implemented."),
-              duration: Duration(seconds: 2),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('brownies')
+            .orderBy('timestamp', descending: true)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final items = snapshot.data!.docs;
+
+          return GridView.builder(
+            itemCount: items.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 0.8,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
             ),
+            itemBuilder: (context, index) {
+              final item = items[index].data() as Map<String, dynamic>;
+              final id = items[index].id;
+
+              return buildCard(id, item);
+            },
           );
         },
-        backgroundColor: Colors.orange,
-        child: const Icon(Icons.add),
       ),
     );
   }
 
-  Widget buildCard(int index) {
-    final brownie = brownies[index];
+  Widget buildCard(String id, Map<String, dynamic> item) {
     return Card(
       elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -97,8 +168,8 @@ class _BrowniesCategoryPageState extends State<BrowniesCategoryPage> {
           Expanded(
             child: ClipRRect(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
-              child: Image.asset(
-                brownie['image']!,
+              child: Image.network(
+                item['image'],
                 fit: BoxFit.cover,
               ),
             ),
@@ -106,14 +177,14 @@ class _BrowniesCategoryPageState extends State<BrowniesCategoryPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              brownie['title']!,
+              item['name'],
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Text(
-              brownie['price']!,
+              item['price'],
               style: const TextStyle(color: Colors.orange),
             ),
           ),
@@ -122,11 +193,11 @@ class _BrowniesCategoryPageState extends State<BrowniesCategoryPage> {
             children: [
               IconButton(
                 icon: const Icon(Icons.edit, color: Colors.blue),
-                onPressed: () => editBrownie(index),
+                onPressed: () => _showDialog(id: id, data: item),
               ),
               IconButton(
                 icon: const Icon(Icons.delete, color: Colors.red),
-                onPressed: () => deleteBrownie(index),
+                onPressed: () => _deleteItem(id),
               ),
             ],
           ),

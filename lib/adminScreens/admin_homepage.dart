@@ -1,23 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:mr_lowat_bakery/userscreens/cake_category_page.dart';
-import 'package:mr_lowat_bakery/userscreens/home/widgets/category_widgets.dart';
+import 'package:mr_lowat_bakery/adminScreens/admincakes.dart';
+import 'package:mr_lowat_bakery/adminScreens/admincheesecake.dart';
+import 'package:mr_lowat_bakery/adminScreens/admintart.dart';
+import 'package:mr_lowat_bakery/adminScreens/adminbrownies.dart';
+import 'package:mr_lowat_bakery/adminScreens/admincupcake.dart';
+import 'package:mr_lowat_bakery/adminScreens/adminothers.dart';
 import 'package:mr_lowat_bakery/userscreens/home/widgets/menu_widgets.dart';
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: AdminHomepage(),
-    );
-  }
-}
+import 'package:mr_lowat_bakery/userscreens/home/widgets/category_widgets.dart';
 
 class AdminHomepage extends StatelessWidget {
   const AdminHomepage({super.key});
@@ -30,7 +19,7 @@ class AdminHomepage extends StatelessWidget {
         backgroundColor: Colors.orange,
         elevation: 0,
         title: const Text(
-          "Home",
+          "Admin Home",
           style: TextStyle(color: Colors.white, fontSize: 20),
         ),
         centerTitle: true,
@@ -42,9 +31,9 @@ class AdminHomepage extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.edit, color: Colors.white), // Pencil icon for editing
+            icon: const Icon(Icons.edit, color: Colors.white), // Edit button
             onPressed: () {
-              // Handle edit action, e.g., navigate to edit page
+              // Edit functionality
               print("Edit action triggered");
             },
           ),
@@ -90,52 +79,60 @@ class AdminHomepage extends StatelessWidget {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                                builder: (context) => const CakeCategoryPage()),
+                            MaterialPageRoute(builder: (context) => const AdminCakePage()),
                           );
                         },
-                        child: const CustomRoundedContainer(
-                            imagePath: 'assets/cake.png'),
+                        child: const CustomRoundedContainer(imagePath: 'assets/cake.png'),
                       ),
                       const SizedBox(width: 14),
                       GestureDetector(
                         onTap: () {
-                          print('Cheesecake clicked!');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const AdminBurntCheesecakePage()),
+                          );
                         },
-                        child: const CustomRoundedContainer(
-                            imagePath: 'assets/cheesecake.png'),
+                        child: const CustomRoundedContainer(imagePath: 'assets/cheesecake.png'),
                       ),
                       const SizedBox(width: 14),
                       GestureDetector(
                         onTap: () {
-                          print('Brownie clicked!');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const AdminBrowniesPage()),
+                          );
                         },
-                        child: const CustomRoundedContainer(
-                            imagePath: 'assets/brownie.png'),
+                        child: const CustomRoundedContainer(imagePath: 'assets/brownie.png'),
                       ),
                       const SizedBox(width: 14),
                       GestureDetector(
                         onTap: () {
-                          print('Egg Tart clicked!');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const AdminCheeseTartPage()),
+                          );
                         },
-                        child: const CustomRoundedContainer(
-                            imagePath: 'assets/egg-tart.png'),
+                        child: const CustomRoundedContainer(imagePath: 'assets/egg-tart.png'),
                       ),
                       const SizedBox(width: 14),
                       GestureDetector(
                         onTap: () {
-                          print('Cupcake clicked!');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const AdminCupcakePage()),
+                          );
                         },
-                        child: const CustomRoundedContainer(
-                            imagePath: 'assets/cupcake.png'),
+                        child: const CustomRoundedContainer(imagePath: 'assets/cupcake.png'),
                       ),
                       const SizedBox(width: 14),
                       GestureDetector(
                         onTap: () {
-                          print('Puffs clicked!');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const AdminOthersPage()),
+                          );
                         },
-                        child: const CustomRoundedContainer(
-                            imagePath: 'assets/puffs.png'),
+                        child: const CustomRoundedContainer(imagePath: 'assets/puffs.png'),
                       ),
                       const SizedBox(width: 14),
                     ],
@@ -163,14 +160,24 @@ class AdminHomepage extends StatelessWidget {
                           imagePath: 'assets/tart.jpg',
                           name: 'Egg Tart',
                           price: 'RM 5.00',
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const AdminCheeseTartPage()),
+                            );
+                          },
                         ),
                         const SizedBox(height: 14),
                         MenuWidgets(
                           imagePath: 'assets/brownies.jpg',
                           name: 'Brownies',
                           price: 'RM 8.00',
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const AdminBrowniesPage()),
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -180,14 +187,24 @@ class AdminHomepage extends StatelessWidget {
                           imagePath: 'assets/cupcake.jpg',
                           name: 'Cupcake',
                           price: 'RM 6.00',
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const AdminCupcakePage()),
+                            );
+                          },
                         ),
                         const SizedBox(height: 14),
                         MenuWidgets(
                           imagePath: 'assets/puffs.jpg',
                           name: 'Cream Puffs',
                           price: 'RM 4.00',
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const AdminOthersPage()),
+                            );
+                          },
                         ),
                       ],
                     ),

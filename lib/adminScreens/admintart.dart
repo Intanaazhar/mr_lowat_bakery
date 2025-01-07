@@ -1,42 +1,115 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class TartCategoryPage extends StatefulWidget {
-  const TartCategoryPage({super.key});
+class AdminCheeseTartPage extends StatefulWidget {
+  const AdminCheeseTartPage({super.key});
 
   @override
-  _TartCategoryPageState createState() => _TartCategoryPageState();
+  _AdminCheeseTartPageState createState() => _AdminCheeseTartPageState();
 }
 
-class _TartCategoryPageState extends State<TartCategoryPage> {
-  final List<Map<String, String>> tarts = [
-    {
-      'image': 'assets/fruit_tart.png',
-      'title': 'Fruit Tart',
-      'price': 'RM25-RM35',
-    },
-    {
-      'image': 'assets/cheese_tart.png',
-      'title': 'Cheese Tart',
-      'price': 'RM28-RM40',
-    },
-    {
-      'image': 'assets/chocolate_tart.png',
-      'title': 'Chocolate Tart',
-      'price': 'RM30-RM45',
-    },
-  ];
+class _AdminCheeseTartPageState extends State<AdminCheeseTartPage> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _imageController = TextEditingController();
 
-  final List<Map<String, String>> cart = []; // List to store cart items
+  void _addItem() async {
+    try {
+      await FirebaseFirestore.instance.collection('cheeseTarts').add({
+        'name': _nameController.text,
+        'price': _priceController.text,
+        'image': _imageController.text,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+      _nameController.clear();
+      _priceController.clear();
+      _imageController.clear();
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error adding item: $e")),
+      );
+    }
+  }
 
-  void addToCart(Map<String, String> item) {
-    setState(() {
-      cart.add(item); // Add the item to the cart
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text("${item['title']} added to cart!"),
-        duration: const Duration(seconds: 2),
-      ),
+  void _updateItem(String id) async {
+    try {
+      await FirebaseFirestore.instance.collection('cheeseTarts').doc(id).update({
+        'name': _nameController.text,
+        'price': _priceController.text,
+        'image': _imageController.text,
+      });
+      _nameController.clear();
+      _priceController.clear();
+      _imageController.clear();
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error updating item: $e")),
+      );
+    }
+  }
+
+  void _deleteItem(String id) async {
+    try {
+      await FirebaseFirestore.instance.collection('cheeseTarts').doc(id).delete();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Item deleted successfully!")),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error deleting item: $e")),
+      );
+    }
+  }
+
+  void _showDialog({String? id, Map<String, dynamic>? data}) {
+    if (data != null) {
+      _nameController.text = data['name'];
+      _priceController.text = data['price'];
+      _imageController.text = data['image'];
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(id == null ? "Add Item" : "Edit Item"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _nameController,
+                decoration: const InputDecoration(labelText: "Name"),
+              ),
+              TextField(
+                controller: _priceController,
+                decoration: const InputDecoration(labelText: "Price"),
+              ),
+              TextField(
+                controller: _imageController,
+                decoration: const InputDecoration(labelText: "Image URL"),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (id == null) {
+                  _addItem();
+                } else {
+                  _updateItem(id);
+                }
+              },
+              child: Text(id == null ? "Add" : "Update"),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -44,103 +117,94 @@ class _TartCategoryPageState extends State<TartCategoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Tart Menu"),
+        title: const Text("Admin Cheese Tart Menu"),
         backgroundColor: Colors.orange,
         actions: [
           IconButton(
-            icon: const Icon(Icons.shopping_cart),
-            onPressed: () {
-              // Show cart or navigate to a cart page
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => CartPage(cart: cart)),
+            icon: const Icon(Icons.add),
+            onPressed: () => _showDialog(),
+          ),
+        ],
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('cheeseTarts')
+            .orderBy('timestamp', descending: true)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final items = snapshot.data!.docs;
+
+          return GridView.builder(
+            itemCount: items.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 0.8,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+            ),
+            itemBuilder: (context, index) {
+              final item = items[index].data() as Map<String, dynamic>;
+              final id = items[index].id;
+
+              return Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.2),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                    ),
+                  ],
+                ),
+                child: Stack(
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Image.network(
+                          item['image'],
+                          height: 100,
+                          fit: BoxFit.cover,
+                        ),
+                        Text(
+                          item['name'],
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          item['price'],
+                          style: const TextStyle(color: Colors.green),
+                        ),
+                      ],
+                    ),
+                    Positioned(
+                      bottom: 8,
+                      right: 8,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit, color: Colors.blue),
+                            onPressed: () => _showDialog(id: id, data: item),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () => _deleteItem(id),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               );
             },
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: GridView.builder(
-          itemCount: tarts.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 0.8,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-          ),
-          itemBuilder: (context, index) {
-            return buildCard(tarts[index]);
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget buildCard(Map<String, String> tart) {
-    return Card(
-      elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(
-            child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
-              child: Image.asset(
-                tart['image']!,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              tart['title']!,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Text(
-              tart['price']!,
-              style: const TextStyle(color: Colors.orange),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
-              onPressed: () => addToCart(tart), // Add to cart on button press
-              child: const Icon(Icons.add, color: Colors.white),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class CartPage extends StatelessWidget {
-  final List<Map<String, String>> cart;
-
-  const CartPage({super.key, required this.cart});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Your Cart"),
-        backgroundColor: Colors.orange,
-      ),
-      body: ListView.builder(
-        itemCount: cart.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            leading: Image.asset(cart[index]['image']!),
-            title: Text(cart[index]['title']!),
-            subtitle: Text(cart[index]['price']!),
-            trailing: const Icon(Icons.delete, color: Colors.red),
           );
         },
       ),

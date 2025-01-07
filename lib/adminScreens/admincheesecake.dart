@@ -1,21 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class AdminCupcakePage extends StatefulWidget {
-  const AdminCupcakePage({super.key});
+class AdminBurntCheesecakePage extends StatefulWidget {
+  const AdminBurntCheesecakePage({super.key});
 
   @override
-  _AdminCupcakePageState createState() => _AdminCupcakePageState();
+  _AdminBurntCheesecakePageState createState() => _AdminBurntCheesecakePageState();
 }
 
-class _AdminCupcakePageState extends State<AdminCupcakePage> {
+class _AdminBurntCheesecakePageState extends State<AdminBurntCheesecakePage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _imageController = TextEditingController();
 
   void _addItem() async {
     try {
-      await FirebaseFirestore.instance.collection('cupcakes').add({
+      await FirebaseFirestore.instance.collection('burntCheesecakes').add({
         'name': _nameController.text,
         'price': _priceController.text,
         'image': _imageController.text,
@@ -34,7 +34,7 @@ class _AdminCupcakePageState extends State<AdminCupcakePage> {
 
   void _updateItem(String id) async {
     try {
-      await FirebaseFirestore.instance.collection('cupcakes').doc(id).update({
+      await FirebaseFirestore.instance.collection('burntCheesecakes').doc(id).update({
         'name': _nameController.text,
         'price': _priceController.text,
         'image': _imageController.text,
@@ -52,7 +52,7 @@ class _AdminCupcakePageState extends State<AdminCupcakePage> {
 
   void _deleteItem(String id) async {
     try {
-      await FirebaseFirestore.instance.collection('cupcakes').doc(id).delete();
+      await FirebaseFirestore.instance.collection('burntCheesecakes').doc(id).delete();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Item deleted successfully!")),
       );
@@ -117,7 +117,7 @@ class _AdminCupcakePageState extends State<AdminCupcakePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Admin Cupcake Menu"),
+        title: const Text("Admin Burnt Cheesecake Menu"),
         backgroundColor: Colors.orange,
         actions: [
           IconButton(
@@ -128,7 +128,7 @@ class _AdminCupcakePageState extends State<AdminCupcakePage> {
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
-            .collection('cupcakes')
+            .collection('burntCheesecakes')
             .orderBy('timestamp', descending: true)
             .snapshots(),
         builder: (context, snapshot) {
@@ -150,63 +150,69 @@ class _AdminCupcakePageState extends State<AdminCupcakePage> {
               final item = items[index].data() as Map<String, dynamic>;
               final id = items[index].id;
 
-              return Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.2),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                    ),
-                  ],
-                ),
-                child: Stack(
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Image.network(
-                          item['image'],
-                          height: 100,
-                          fit: BoxFit.cover,
-                        ),
-                        Text(
-                          item['name'],
-                          textAlign: TextAlign.center,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        Text(
-                          item['price'],
-                          style: const TextStyle(color: Colors.green),
-                        ),
-                      ],
-                    ),
-                    Positioned(
-                      bottom: 8,
-                      right: 8,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.edit, color: Colors.blue),
-                            onPressed: () => _showDialog(id: id, data: item),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: () => _deleteItem(id),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              );
+              return buildCard(id, item);
             },
           );
         },
+      ),
+    );
+  }
+
+  Widget buildCard(String id, Map<String, dynamic> item) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 2,
+            blurRadius: 5,
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Expanded(
+            child: ClipRRect(
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+              child: Image.network(
+                item['image'],
+                fit: BoxFit.cover,
+                width: double.infinity,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item['name'],
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  item['price'],
+                  style: const TextStyle(color: Colors.green),
+                ),
+              ],
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.edit, color: Colors.blue),
+                onPressed: () => _showDialog(id: id, data: item),
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete, color: Colors.red),
+                onPressed: () => _deleteItem(id),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
