@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mr_lowat_bakery/userscreens/home/navigation_bar.dart';  // Update this import with your correct Navigation
+import 'package:mr_lowat_bakery/userscreens/home/navigation_bar.dart'; // Update with your correct import
 import 'package:mr_lowat_bakery/adminScreens/admin_login.dart';
 import 'package:mr_lowat_bakery/userscreens/login/forget_password.dart';
 import 'package:mr_lowat_bakery/userscreens/services/auth_services.dart'; // Import AuthService
 import 'package:mr_lowat_bakery/userscreens/login/sign_up.dart';
-
-
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -109,9 +107,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: TextButton(
                     onPressed: () {
                       Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const PasswordResetPage()),
-      );
+                        context,
+                        MaterialPageRoute(builder: (context) => const PasswordResetPage()),
+                      );
                     },
                     child: Text(
                       "Forgot Password?",
@@ -188,21 +186,41 @@ class _LoginScreenState extends State<LoginScreen> {
       _errorMessage = null;
     });
 
-    // Replace this with your authentication service logic.
-    // Example:
+    // Validate email and password fields
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      setState(() {
+        _errorMessage = 'Please enter both email and password.';
+      });
+      setState(() => _isLoading = false);
+      return;
+    }
+
+    // Simple email format validation
+    if (!RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$").hasMatch(email)) {
+      setState(() {
+        _errorMessage = 'Please enter a valid email address.';
+      });
+      setState(() => _isLoading = false);
+      return;
+    }
+
     try {
-      // Simulate a successful sign-in.
-      await Future.delayed(const Duration(seconds: 2));
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Login successful!')),
+      // Attempt to sign in with the provided credentials
+      await _authService.signIn(
+        email: email,
+        password: password,
       );
+
       // Navigate to Homepage after successful login.
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const NavigationMenu()),
       );
     } catch (e) {
-      setState(() => _errorMessage = 'An error occurred: $e');
+      setState(() => _errorMessage = 'Invalid email or password.');
     } finally {
       setState(() => _isLoading = false);
     }

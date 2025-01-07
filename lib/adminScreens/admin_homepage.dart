@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mr_lowat_bakery/userscreens/cake_category_page.dart';
-import 'package:mr_lowat_bakery/userscreens/home/cart_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/widgets/category_widgets.dart';
 import 'package:mr_lowat_bakery/userscreens/home/widgets/menu_widgets.dart';
-
 
 void main() {
   runApp(const MyApp());
@@ -24,8 +22,6 @@ class MyApp extends StatelessWidget {
 class AdminHomepage extends StatelessWidget {
   const AdminHomepage({super.key});
 
-  get cart => null;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,18 +36,16 @@ class AdminHomepage extends StatelessWidget {
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.settings, color: Colors.white),
-          onPressed: () {},
+          onPressed: () {
+            // Settings action
+          },
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.edit, color: Colors.white), // Changed icon here
+            icon: const Icon(Icons.edit, color: Colors.white), // Pencil icon for editing
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CartPage(cart: cart),
-                ),
-              );
+              // Handle edit action, e.g., navigate to edit page
+              print("Edit action triggered");
             },
           ),
         ],

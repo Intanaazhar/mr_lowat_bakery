@@ -1,21 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:mr_lowat_bakery/userscreens/home/Bycategories/brownies_category.dart';
-import 'package:mr_lowat_bakery/userscreens/click_button_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:mr_lowat_bakery/adminScreens/adminbrownies.dart';
+import 'package:mr_lowat_bakery/userscreens/home/cart_page.dart'; // Ensure this file is correctly imported
 import 'package:mr_lowat_bakery/userscreens/home/Bycategories/burntcheesecake_category.dart';
-import 'package:mr_lowat_bakery/userscreens/home/Bycategories/cake_category.dart';
-import 'package:mr_lowat_bakery/userscreens/home/Bycategories/most_ordered.dart';
-import 'package:mr_lowat_bakery/userscreens/home/cart_page.dart';
-import 'package:mr_lowat_bakery/userscreens/home/widgets/category_widgets.dart';
 import 'package:mr_lowat_bakery/userscreens/home/Bycategories/cheesetart_category.dart';
 import 'package:mr_lowat_bakery/userscreens/home/Bycategories/cupcake_category.dart';
-import 'package:mr_lowat_bakery/userscreens/home/widgets/menu_widgets.dart';
 import 'package:mr_lowat_bakery/userscreens/home/Bycategories/others_category.dart';
+import 'package:mr_lowat_bakery/userscreens/home/widgets/menu_widgets.dart';
+import 'package:mr_lowat_bakery/userscreens/home/Bycategories/cake_category.dart';
+import 'package:mr_lowat_bakery/userscreens/home/Bycategories/most_ordered.dart';
+import 'package:mr_lowat_bakery/userscreens/home/widgets/category_widgets.dart';
 
-
-
-
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(); // Ensure Firebase is initialized
   runApp(const MyApp());
+}
+
+class CartItem {
+  final String name;
+  final String price;
+  final String imagePath;
+
+  CartItem({
+    required this.name,
+    required this.price,
+    required this.imagePath,
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -30,10 +42,29 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class Homepage extends StatelessWidget {
+class Homepage extends StatefulWidget {
   const Homepage({super.key});
 
-  get cart => null;
+  @override
+  _HomepageState createState() => _HomepageState();
+}
+
+class _HomepageState extends State<Homepage> {
+  late User? user;
+  List<CartItem> cart = [];
+
+  @override
+  void initState() {
+    super.initState();
+    user = FirebaseAuth.instance.currentUser; // Get current user
+  }
+
+  void _addToCart(CartItem item) {
+    setState(() {
+      cart.add(item); // Add item to cart
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -51,19 +82,26 @@ class Homepage extends StatelessWidget {
           icon: const Icon(Icons.settings, color: Colors.white),
           onPressed: () {},
         ),
-        /*actions: [
+    actions: [
           IconButton(
             icon: const Icon(Icons.shopping_cart, color: Colors.white),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CartPage(cart: cart),
-                ),
-              );
+              final userId = FirebaseAuth.instance.currentUser?.uid;
+              if (userId != null) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CartPage(userId: userId),
+                  ),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('You need to log in to view the cart.')),
+                );
+              }
             },
           ),
-        ],*/
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -98,7 +136,7 @@ class Homepage extends StatelessWidget {
 
               // Horizontal Scrollable Categories
               SizedBox(
-                height: 150, // Limit the height of the scrolling area
+                height: 150,
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
@@ -106,7 +144,6 @@ class Homepage extends StatelessWidget {
                       const SizedBox(width: 16),
                       GestureDetector(
                         onTap: () {
-                          // Action for Cake
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => const CakeCategoryPage()),
@@ -117,7 +154,6 @@ class Homepage extends StatelessWidget {
                       const SizedBox(width: 16),
                       GestureDetector(
                         onTap: () {
-                          // Action for Cheesecake
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => const BurntCheesecakePage()),
@@ -128,7 +164,6 @@ class Homepage extends StatelessWidget {
                       const SizedBox(width: 16),
                       GestureDetector(
                         onTap: () {
-                          // Action for Brownie
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => const BrowniesCategoryPage()),
@@ -139,7 +174,6 @@ class Homepage extends StatelessWidget {
                       const SizedBox(width: 16),
                       GestureDetector(
                         onTap: () {
-                          // Action for Egg Tart
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => const CheeseTartCategoryPage()),
@@ -150,7 +184,6 @@ class Homepage extends StatelessWidget {
                       const SizedBox(width: 16),
                       GestureDetector(
                         onTap: () {
-                          // Action for Cupcake
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => const CupcakeCategoryPage()),
@@ -161,7 +194,6 @@ class Homepage extends StatelessWidget {
                       const SizedBox(width: 16),
                       GestureDetector(
                         onTap: () {
-                          // Action for Puffs
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => const OthersCategoryPage()),
@@ -174,10 +206,9 @@ class Homepage extends StatelessWidget {
                   ),
                 ),
               ),
-
               const SizedBox(height: 16),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -187,7 +218,6 @@ class Homepage extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
-                        // Navigate to the new page when "View All" is tapped
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => const MostOrderedPage()),
@@ -196,8 +226,8 @@ class Homepage extends StatelessWidget {
                       child: const Text(
                         'View All',
                         style: TextStyle(
-                          color: Colors.blue, // Customize the color
-                          fontWeight: FontWeight.w500, // Optional for styling
+                          color: Colors.blue,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
@@ -217,7 +247,13 @@ class Homepage extends StatelessWidget {
                             imagePath: 'assets/tart.jpg',
                             name: 'Mini Cheese Tart',
                             price: 'RM34.00-RM38.00',
-                            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const DescriptionPage())),
+                            onPressed: () {
+                              _addToCart(CartItem(
+                                name: 'Mini Cheese Tart',
+                                price: 'RM34.00-RM38.00',
+                                imagePath: 'assets/tart.jpg',
+                              ));
+                            },
                           ),
                         ),
                         const SizedBox(width: 10),
@@ -226,7 +262,13 @@ class Homepage extends StatelessWidget {
                             imagePath: 'assets/brownies.jpg',
                             name: 'Nutella Brownies',
                             price: 'RM27.00-RM38.00',
-                            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const DescriptionPage())),
+                            onPressed: () {
+                              _addToCart(CartItem(
+                                name: 'Nutella Brownies',
+                                price: 'RM27.00-RM38.00',
+                                imagePath: 'assets/brownies.jpg',
+                              ));
+                            },
                           ),
                         ),
                       ],
@@ -240,7 +282,13 @@ class Homepage extends StatelessWidget {
                             imagePath: 'assets/cupcake.jpg',
                             name: 'Cupcake Fresh Cream',
                             price: 'RM2.30-RM3.00/pcs',
-                            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) =>const DescriptionPage())),
+                            onPressed: () {
+                              _addToCart(CartItem(
+                                name: 'Cupcake Fresh Cream',
+                                price: 'RM2.30-RM3.00/pcs',
+                                imagePath: 'assets/cupcake.jpg',
+                              ));
+                            },
                           ),
                         ),
                         const SizedBox(width: 10),
@@ -249,7 +297,13 @@ class Homepage extends StatelessWidget {
                             imagePath: 'assets/puffs.jpg',
                             name: 'Cream Puffs 25 Pieces',
                             price: 'RM25.00-RM35.00',
-                            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const DescriptionPage())),
+                            onPressed: () {
+                              _addToCart(CartItem(
+                                name: 'Cream Puffs 25 Pieces',
+                                price: 'RM25.00-RM35.00',
+                                imagePath: 'assets/puffs.jpg',
+                              ));
+                            },
                           ),
                         ),
                       ],
@@ -263,7 +317,13 @@ class Homepage extends StatelessWidget {
                             imagePath: 'assets/tart1.png',
                             name: 'Mini Fruit Tart',
                             price: 'RM35',
-                            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) =>const DescriptionPage())),
+                            onPressed: () {
+                              _addToCart(CartItem(
+                                name: 'Mini Fruit Tart',
+                                price: 'RM35',
+                                imagePath: 'assets/tart1.png',
+                              ));
+                            },
                           ),
                         ),
                         const SizedBox(width: 10),
@@ -272,7 +332,13 @@ class Homepage extends StatelessWidget {
                             imagePath: 'assets/cream_cheese_nutella.png',
                             name: 'Cream Cheese Brownies',
                             price: 'RM45',
-                            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const DescriptionPage())),
+                            onPressed: () {
+                              _addToCart(CartItem(
+                                name: 'Cream Cheese Brownies',
+                                price: 'RM45',
+                                imagePath: 'assets/cream_cheese_nutella.png',
+                              ));
+                            },
                           ),
                         ),
                       ],

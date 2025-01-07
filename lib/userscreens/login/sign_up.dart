@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mr_lowat_bakery/userscreens/services/auth_services.dart';
-import 'package:mr_lowat_bakery/userscreens/login/sign_in.dart'; // Import the AuthService
+import 'package:mr_lowat_bakery/userscreens/services/auth_services.dart'; // Import AuthService
+import 'package:mr_lowat_bakery/userscreens/login/sign_in.dart'; // Import the sign-in screen
 
 class NewAccount extends StatefulWidget {
   const NewAccount({super.key});
@@ -135,19 +135,54 @@ class _NewAccountState extends State<NewAccount> {
       _errorMessage = null;
     });
 
+    // Get input values
+    String firstName = _firstNameController.text.trim();
+    String lastName = _lastNameController.text.trim();
+    String username = _usernameController.text.trim();
+    String email = _emailController.text.trim();
+    String phone = _phoneController.text.trim();
+    String password = _passwordController.text.trim();
+
+    // Simple validation checks
+    if (firstName.isEmpty || lastName.isEmpty || username.isEmpty || email.isEmpty || phone.isEmpty || password.isEmpty) {
+      setState(() {
+        _errorMessage = 'All fields are required.';
+      });
+      setState(() => _isLoading = false);
+      return;
+    }
+
+    // Validate email format
+    if (!RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$").hasMatch(email)) {
+      setState(() {
+        _errorMessage = 'Please enter a valid email address.';
+      });
+      setState(() => _isLoading = false);
+      return;
+    }
+
     try {
-      // Replace this with your sign-up logic.
-      await Future.delayed(const Duration(seconds: 2));
+      // Call the sign-up method from AuthService
+      await _authService.signUp(
+        email: email,
+        password: password,
+        firstName: firstName,
+        lastName: lastName,
+        phone: phone,
+      );
+
+      // Navigate to the login screen after successful sign-up
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Sign Up successful!')),
       );
-      // Navigate to Homepage after successful login.
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const LoginScreen()),
       );
     } catch (e) {
-      setState(() => _errorMessage = 'An error occurred: $e');
+      setState(() {
+        _errorMessage = 'An error occurred: $e';
+      });
     } finally {
       setState(() => _isLoading = false);
     }

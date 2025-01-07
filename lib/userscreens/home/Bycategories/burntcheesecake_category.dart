@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mr_lowat_bakery/userscreens/home/cart_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/widgets/description_page.dart';
@@ -15,18 +17,37 @@ class _BurntCheesecakePageState extends State<BurntCheesecakePage> {
     {'image': 'assets/burnt_cheese_with_cheese_tart.png', 'title': 'Burnt Cheese Cake with Cheese Tart Set', 'price': 'RM60-RM85'},
   ];
 
-  final List<Map<String, String>> cart = []; // Cart to store selected items
+  // Add the selected item to Firebase cart collection
+  void addToCart(Map<String, String> item) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      try {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .collection('cart') // Firebase collection for cart items
+            .add({
+          'name': item['title'],
+          'imageUrl': item['image'],
+          'price': item['price'],
+          'timestamp': FieldValue.serverTimestamp(),
+        });
 
-  void addToCart(Map<String, String> item) {
-    setState(() {
-      cart.add(item);
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text("${item['title']} added to cart!"),
-        duration: const Duration(seconds: 1),
-      ),
-    );
+        // Show snack bar to confirm addition to cart
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("${item['title']} added to cart!"),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Error adding to cart: $e"),
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -39,13 +60,15 @@ class _BurntCheesecakePageState extends State<BurntCheesecakePage> {
           IconButton(
             icon: const Icon(Icons.shopping_cart),
             onPressed: () {
-              // Navigate to CartPage
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CartPage(cart: cart),
-                ),
-              );
+              final user = FirebaseAuth.instance.currentUser;
+              if (user != null) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CartPage(userId: user.uid),
+                  ),
+                );
+              }
             },
           ),
         ],

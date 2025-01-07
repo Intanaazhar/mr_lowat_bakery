@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class PasswordResetPage extends StatefulWidget {
-  const PasswordResetPage({Key? key}) : super(key: key);
+  const PasswordResetPage({super.key});
 
   @override
   _PasswordResetPageState createState() => _PasswordResetPageState();
@@ -34,7 +34,7 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
               controller: _emailController,
               decoration: InputDecoration(
                 labelText: "Email",
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
                 filled: true,
                 fillColor: Colors.white.withOpacity(0.8),
               ),

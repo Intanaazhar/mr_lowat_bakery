@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mr_lowat_bakery/userscreens/home/widgets/open_comment_bottom_sheet.dart'; // Import "Comment" Bottom Sheet
 import 'book_now_bottom_sheet.dart';  // Import "Book Now" Bottom Sheet
 
-
 class DescriptionPage extends StatefulWidget {
   final String imagePath;
   final String name;
@@ -23,7 +22,8 @@ class DescriptionPage extends StatefulWidget {
 
 class _DescriptionPageState extends State<DescriptionPage> {
   final List<Map<String, String>> _comments = [];
-  
+  bool isFavorite = false; // Declare the state variable here
+
   void _addComment(String comment) {
     setState(() {
       _comments.add({'author': 'User', 'message': comment});
@@ -79,9 +79,14 @@ class _DescriptionPageState extends State<DescriptionPage> {
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.favorite_border),
-                  onPressed: () {},
+                  icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_border),
                   color: Colors.red,
+                  onPressed: () {
+                    setState(() {
+                      isFavorite = !isFavorite;
+                    });
+                    // Save to Firebase or local storage if necessary
+                  },
                 ),
               ],
             ),
