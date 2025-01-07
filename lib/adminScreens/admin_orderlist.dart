@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -25,7 +26,6 @@ class AdminOrderList extends StatefulWidget {
 
 class _AdminOrderListState extends State<AdminOrderList> {
   final List<String> orderStatuses = ["Accepted", "Processing", "Ready"];
-  List<String> currentStatuses = ["Accepted", "Processing"];
 
   @override
   Widget build(BuildContext context) {
@@ -41,54 +41,63 @@ class _AdminOrderListState extends State<AdminOrderList> {
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pop(context); // Navigate back
+          },
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: currentStatuses.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    child: ListTile(
-                      leading: const CircleAvatar(
-                        backgroundColor: Colors.orange,
-                        child: Icon(Icons.cake, color: Colors.white),
-                      ),
-                      title: Text("Order ID: 000${index + 1}"),
-                      subtitle: Text(
-                          "Customer: ${index == 0 ? 'Nur Qistina' : 'Ahmad'}"),
-                      trailing: ElevatedButton(
-                        onPressed: () => _showOrderDetails(context, index),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        child: const Text("Details"),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('orders') // Replace with your collection name
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final orders = snapshot.data!.docs;
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(16.0),
+            itemCount: orders.length,
+            itemBuilder: (context, index) {
+              final order = orders[index].data() as Map<String, dynamic>;
+              final docId = orders[index].id;
+
+              return Card(
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                child: ListTile(
+                  leading: const CircleAvatar(
+                    backgroundColor: Colors.orange,
+                    child: Icon(Icons.cake, color: Colors.white),
+                  ),
+                  title: Text("Order ID: ${order['orderId'] ?? 'N/A'}"),
+                  subtitle: Text("Customer: ${order['customerName'] ?? 'Unknown'}"),
+                  trailing: ElevatedButton(
+                    onPressed: () => _showOrderDetails(context, order, docId),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
+                    child: const Text("Details"),
+                  ),
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }
 
-  void _showOrderDetails(BuildContext context, int index) {
+  void _showOrderDetails(BuildContext context, Map<String, dynamic> order, String docId) {
+    String selectedStatus = order['status'] ?? "Accepted";
+
     showDialog(
       context: context,
       builder: (context) {
-        String selectedStatus = currentStatuses[index];
-
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
@@ -96,46 +105,50 @@ class _AdminOrderListState extends State<AdminOrderList> {
                 borderRadius: BorderRadius.circular(12),
               ),
               title: const Text("Order Details"),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text("Name: ${index == 0 ? 'Nur Qistina' : 'Ahmad'}"),
-                  const Text("Booking Date: 10/12/2024"),
-                  const Text("Cake Size: 3 inches"),
-                  const Text("Flavor: Chocolate"),
-                  const Text("Topper: Roses"),
-                  const Text("Payment: Full payment"),
-                  const Text("Pickup: Self pickup"),
-                  const SizedBox(height: 20),
-                  DropdownButtonFormField<String>(
-                    value: selectedStatus,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Name: ${order['customerName'] ?? 'Unknown'}"),
+                    Text("Booking Date: ${order['bookingDate'] ?? 'N/A'}"),
+                    Text("Products: ${order['products'] ?? 'N/A'}"),
+                    Text("Description: ${order['description'] ?? 'N/A'}"),
+                    const SizedBox(height: 20),
+                    DropdownButtonFormField<String>(
+                      value: selectedStatus,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        labelText: "Order Status",
                       ),
-                      labelText: "Order Status",
+                      items: orderStatuses.map((status) {
+                        return DropdownMenuItem(
+                          value: status,
+                          child: Text(status),
+                        );
+                      }).toList(),
+                      onChanged: (newStatus) {
+                        setState(() {
+                          selectedStatus = newStatus!;
+                        });
+                      },
                     ),
-                    items: orderStatuses.map((status) {
-                      return DropdownMenuItem(
-                        value: status,
-                        child: Text(status),
-                      );
-                    }).toList(),
-                    onChanged: (newStatus) {
-                      setState(() {
-                        selectedStatus = newStatus!;
-                      });
-                    },
-                  ),
-                ],
+                  ],
+                ),
               ),
               actions: [
                 TextButton(
                   onPressed: () {
-                    setState(() {
-                      currentStatuses[index] = selectedStatus;
-                    });
+                    FirebaseFirestore.instance
+                        .collection('orders') // Replace with your collection name
+                        .doc(docId)
+                        .update({'status': selectedStatus});
                     Navigator.of(context).pop();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Order status updated")),
+                    );
                   },
                   child: const Text("Save"),
                 ),

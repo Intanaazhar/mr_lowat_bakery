@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mr_lowat_bakery/adminScreens/admineditmenu.dart'; 
+import 'package:mr_lowat_bakery/adminScreens/admin_orderlist.dart'; 
+import 'package:mr_lowat_bakery/adminScreens/admin_notification.dart'; 
 
 void main() {
   runApp(const MyApp());
@@ -33,27 +36,27 @@ class AdminMenu extends StatelessWidget {
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pop(context); // Navigate back
+          },
         ),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout, color: Colors.white),
-            onPressed: () {},
+            onPressed: () {
+              // Handle logout action
+            },
           ),
         ],
       ),
       body: Center(
-        // Wrap the entire body in a Center widget
         child: Column(
-          mainAxisAlignment:
-              MainAxisAlignment.center, // Center everything vertically
-          crossAxisAlignment:
-              CrossAxisAlignment.center, // Center everything horizontally
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Adjusting the height of the profile picture
             const SizedBox(height: 10),
             Container(
-              width: 180, // Size of the circular ring
+              width: 180,
               height: 180,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
@@ -64,18 +67,15 @@ class AdminMenu extends StatelessWidget {
                 ),
               ),
               child: Padding(
-                padding:
-                    const EdgeInsets.all(5), // Space between ring and profile picture
+                padding: const EdgeInsets.all(5),
                 child: CircleAvatar(
                   radius: 150,
-                  backgroundImage: const AssetImage(
-                      'assets/mrLowat_logo.jpg'), // Replace with your avatar image asset
+                  backgroundImage: const AssetImage('assets/mrLowat_logo.jpg'),
                   backgroundColor: Colors.grey[200],
                 ),
               ),
             ),
-            const SizedBox(
-                height: 10), // Spacing between the profile picture and the text
+            const SizedBox(height: 10),
             const Text(
               "Mr Lowat Bakery",
               style: TextStyle(
@@ -84,14 +84,37 @@ class AdminMenu extends StatelessWidget {
                 color: Color.fromARGB(255, 68, 68, 68),
               ),
             ),
-
-            const SizedBox(height: 20), // Spacing before the buttons
+            const SizedBox(height: 20),
             // Buttons
-            ProfileButton(label: "Add New Menu", onTap: () {}),
+            ProfileButton(
+              label: "Add New Menu",
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AdminEditMenu()), 
+                );
+              },
+            ),
             const SizedBox(height: 20),
-            ProfileButton(label: "Customer Feedbacks", onTap: () {}),
+            ProfileButton(
+              label: "Customer Feedbacks",
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AdminCustomerFeedback()), 
+                );
+              },
+            ),
             const SizedBox(height: 20),
-            ProfileButton(label: "Manage Orders", onTap: () {}),
+            ProfileButton(
+              label: "Manage Orders",
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AdminOrderList()), 
+                );
+              },
+            ),
           ],
         ),
       ),
@@ -111,7 +134,7 @@ class ProfileButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: 350,
-        padding: const EdgeInsets.symmetric(vertical: 20), // Adjusted padding
+        padding: const EdgeInsets.symmetric(vertical: 20),
         decoration: BoxDecoration(
           color: const Color(0xffffa1c1),
           borderRadius: BorderRadius.circular(10),

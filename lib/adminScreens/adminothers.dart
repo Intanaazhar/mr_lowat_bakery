@@ -1,21 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class AdminCupcakePage extends StatefulWidget {
-  const AdminCupcakePage({super.key});
+class AdminOthersPage extends StatefulWidget {
+  const AdminOthersPage({super.key});
 
   @override
-  _AdminCupcakePageState createState() => _AdminCupcakePageState();
+  _AdminOthersPageState createState() => _AdminOthersPageState();
 }
 
-class _AdminCupcakePageState extends State<AdminCupcakePage> {
+class _AdminOthersPageState extends State<AdminOthersPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _imageController = TextEditingController();
 
   void _addItem() async {
     try {
-      await FirebaseFirestore.instance.collection('cupcakes').add({
+      await FirebaseFirestore.instance.collection('others').add({
         'name': _nameController.text,
         'price': _priceController.text,
         'image': _imageController.text,
@@ -34,7 +34,7 @@ class _AdminCupcakePageState extends State<AdminCupcakePage> {
 
   void _updateItem(String id) async {
     try {
-      await FirebaseFirestore.instance.collection('cupcakes').doc(id).update({
+      await FirebaseFirestore.instance.collection('others').doc(id).update({
         'name': _nameController.text,
         'price': _priceController.text,
         'image': _imageController.text,
@@ -52,7 +52,7 @@ class _AdminCupcakePageState extends State<AdminCupcakePage> {
 
   void _deleteItem(String id) async {
     try {
-      await FirebaseFirestore.instance.collection('cupcakes').doc(id).delete();
+      await FirebaseFirestore.instance.collection('others').doc(id).delete();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Item deleted successfully!")),
       );
@@ -117,7 +117,7 @@ class _AdminCupcakePageState extends State<AdminCupcakePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Admin Cupcake Menu"),
+        title: const Text("Admin Others Menu"),
         backgroundColor: Colors.orange,
         actions: [
           IconButton(
@@ -128,7 +128,7 @@ class _AdminCupcakePageState extends State<AdminCupcakePage> {
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
-            .collection('cupcakes')
+            .collection('others')
             .orderBy('timestamp', descending: true)
             .snapshots(),
         builder: (context, snapshot) {
