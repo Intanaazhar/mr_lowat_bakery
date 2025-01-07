@@ -5,6 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 void openBookNowBottomSheet({
   required BuildContext context,
   required Function(Map<String, dynamic>) onAddToCart,
+  required String imagePath,   // Added parameter for image
+  required String name,        // Added parameter for name
+  required String price,       // Added parameter for price
 }) {
   String? selectedSize;
   String? selectedFlavour;
@@ -47,6 +50,19 @@ void openBookNowBottomSheet({
                 ),
                 const SizedBox(height: 16),
 
+                // Flavour Selection
+                _buildSelectionColumn(
+                  title: 'Flavour:',
+                  options: ['Chocolate', 'Pandan', 'Vanilla', 'Mocha'],
+                  selectedOption: selectedFlavour,
+                  onOptionSelected: (String? newFlavour) {
+                    setState(() {
+                      selectedFlavour = newFlavour;
+                    });
+                  },
+                ),
+                const SizedBox(height: 16),
+
                 // Booking Date
                 _buildDatePickerColumn(
                   title: 'Booking Date:',
@@ -56,6 +72,44 @@ void openBookNowBottomSheet({
                       bookingDate = newDate;
                     });
                   },
+                  context: context,
+                ),
+                const SizedBox(height: 16),
+
+                // Pickup Options
+                _buildSelectionColumn(
+                  title: 'Pickup Options:',
+                  options: ['Self Pickup', 'Delivery'],
+                  selectedOption: selectedPickupOption,
+                  onOptionSelected: (String? newOption) {
+                    setState(() {
+                      selectedPickupOption = newOption;
+                    });
+                  },
+                ),
+                const SizedBox(height: 16),
+
+                // Payment Options
+                _buildSelectionColumn(
+                  title: 'Payment Options:',
+                  options: ['Deposit', 'Full Payment'],
+                  selectedOption: selectedPaymentOption,
+                  onOptionSelected: (String? newOption) {
+                    setState(() {
+                      selectedPaymentOption = newOption;
+                    });
+                  },
+                ),
+                const SizedBox(height: 16),
+
+                // Add-ons Checkbox
+                _buildAddOnsColumn(
+                  addOns: addOns,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      addOns = value ?? false;
+                    });
+                  },
                 ),
                 const SizedBox(height: 16),
 
@@ -63,8 +117,10 @@ void openBookNowBottomSheet({
                 Center(
                   child: ElevatedButton(
                     onPressed: () async {
-                      // Prepare data to save
                       final data = {
+                        'name': name,                       // Include the name
+                        'price': price,                     // Include the price
+                        'imagePath': imagePath,             // Include the image path
                         'size': selectedSize,
                         'flavour': selectedFlavour,
                         'pickupOption': selectedPickupOption,
@@ -75,16 +131,15 @@ void openBookNowBottomSheet({
                       };
 
                       try {
-                        // Get the current user ID
                         final user = FirebaseAuth.instance.currentUser;
                         if (user != null) {
                           final userId = user.uid;
 
-                          // Save data under the user's order subcollection
+                          // Add the product and preferences to Firestore
                           await FirebaseFirestore.instance
                               .collection('users')
                               .doc(userId)
-                              .collection('order')
+                              .collection('cart')
                               .add(data);
 
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -101,11 +156,8 @@ void openBookNowBottomSheet({
                         );
                       }
 
-                      // Pass data to callback for further use
-                      onAddToCart(data);
-
-                      // Close the bottom sheet
-                      Navigator.pop(context);
+                      onAddToCart(data); // Callback function
+                      Navigator.pop(context);  // Close bottom sheet
                     },
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
                     child: const Text('Add to Cart'),
@@ -154,7 +206,7 @@ Widget _buildSelectionColumn({
 Widget _buildDatePickerColumn({
   required String title,
   DateTime? bookingDate,
-  required void Function(DateTime? selectedDate) onDateSelected,
+  required void Function(DateTime? selectedDate) onDateSelected, required BuildContext context,
 }) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,15 +224,12 @@ Widget _buildDatePickerColumn({
               : 'Select Date',
         ),
         onPressed: () async {
-          var context;
-          final DateTime? pickedDate = await showDatePicker(
-            context: onDateSelected.runtimeType == (BuildContext).runtimeType
-                ? context
-                : context,
-            initialDate: DateTime.now(),
-            firstDate: DateTime.now(),
-            lastDate: DateTime(2100),
-          );
+         final DateTime? pickedDate = await showDatePicker(
+  context: context, // Use the context provided to the StatefulBuilder
+  initialDate: DateTime.now(),
+  firstDate: DateTime.now(),
+  lastDate: DateTime(2100),
+);
 
           if (pickedDate != null) {
             onDateSelected(pickedDate);
@@ -191,3 +240,23 @@ Widget _buildDatePickerColumn({
   );
 }
 
+Widget _buildAddOnsColumn({
+  required bool addOns,
+  required ValueChanged<bool?> onChanged,
+}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text(
+        'Add on Knife, Candle, Box:',
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ),
+      const SizedBox(height: 8),
+      CheckboxListTile(
+        title: const Text('Add-ons'),
+        value: addOns,
+        onChanged: onChanged,
+      ),
+    ],
+  );
+}

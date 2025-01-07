@@ -111,17 +111,20 @@ class _DescriptionPageState extends State<DescriptionPage> {
                     ],
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      openBookNowBottomSheet(
-                        context: context,
-                        onAddToCart: (preferences) {
-                          // Handle the preferences (e.g., add to cart)
-                          print(preferences);
-                        },
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
-                    child: const Text('Book Now'),
+                onPressed: () {
+                    openBookNowBottomSheet(
+                      context: context,
+                      imagePath: widget.imagePath,  // Pass the imagePath from the widget
+                      name: widget.name,            // Pass the name from the widget
+                      price: widget.price,          // Pass the price from the widget
+                      onAddToCart: (preferences) {
+                        // Handle the preferences (e.g., add to cart)
+                        print(preferences);
+                      },
+                    );
+                  },
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+                child: const Text('Book Now'),
                   ),
                 ],
               ),
