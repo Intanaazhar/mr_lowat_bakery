@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:mr_lowat_bakery/userscreens/home/check_out_pages.dart';
 
 class CartPage extends StatelessWidget {
   final String userId;
@@ -30,19 +31,12 @@ class CartPage extends StatelessWidget {
 
           final orders = snapshot.data!.docs;
 
-          final cartItems = orders.map((order) {
-            var orderData = order.data() as Map<String, dynamic>;
-            return {
-              'imagePath': orderData['imagePath'],
-              'name': orderData['name'],
-              'price': orderData['price'],
-            };
-          }).toList();
-
           return ListView.builder(
-            itemCount: cartItems.length,
+            itemCount: orders.length,
             itemBuilder: (context, index) {
-              var cartItem = cartItems[index];
+              var orderData = orders[index].data() as Map<String, dynamic>;
+              var documentId = orders[index].id; // Get document ID
+
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Card(
@@ -55,10 +49,12 @@ class CartPage extends StatelessWidget {
                     child: Row(
                       children: [
                         Image.asset(
-                          cartItem['imagePath'],
+                          orderData['imagePath'], // Use Image.network for Firebase storage URLs
                           width: 60,
                           height: 60,
                           fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) =>
+                              const Icon(Icons.broken_image, size: 60),
                         ),
                         const SizedBox(width: 10),
                         Expanded(
@@ -66,37 +62,36 @@ class CartPage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                cartItem['name'],
-                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                orderData['name'],
+                                style: const TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 5),
                               Text(
-                                cartItem['price'],
-                                style: const TextStyle(fontSize: 14, color: Colors.grey),
+                                orderData['price'].toString(),
+                                style:
+                                    const TextStyle(fontSize: 14, color: Colors.grey),
                               ),
                             ],
                           ),
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            TextButton(
-                              onPressed: () {
-                                // Add edit functionality here
-                              },
-                              child: const Text('Edit'),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                // Add individual item checkout functionality here
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.orange, // Set background color to orange
-                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CheckoutPage(
+                                  userId: userId,
+                                  cartItemId: documentId, // Pass document ID
+                                ),
                               ),
-                              child: const Text('Checkout'),
-                            ),
-                          ],
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.orange, // Set background color to orange
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                          ),
+                          child: const Text('Checkout'),
                         ),
                       ],
                     ),
