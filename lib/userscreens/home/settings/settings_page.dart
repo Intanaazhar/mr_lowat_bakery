@@ -5,12 +5,6 @@ import 'package:mr_lowat_bakery/userscreens/home/settings/feedback_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/settings/support_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/user_profile.dart';
 import 'package:mr_lowat_bakery/userscreens/welcome.dart';
-//import 'user_profile.dart';
-//import 'address_page.dart';
-//import 'debit_card_page.dart';
-//import 'feedback_page.dart';
-//import 'support_page.dart';
-//import 'welcome.dart';
 
 class SettingsPopup extends StatelessWidget {
   const SettingsPopup({super.key});
@@ -19,19 +13,29 @@ class SettingsPopup extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.orange,
+      appBar: AppBar(
+        backgroundColor: Colors.orange,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context); // Navigate back to the previous screen
+          },
+        ),
+        title: const Text(
+          'Settings',
+          style: TextStyle(
+            fontSize: 24.0,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        centerTitle: true,
+      ),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              'Settings',
-              style: TextStyle(
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 20.0),
             _buildSettingsOption('Profile', Icons.person, context, const UserProfile()),
             _buildSettingsOption('Address', Icons.location_on, context, const AddressPage()),
             _buildSettingsOption('Debit Card', Icons.credit_card, context, const DebitCardPage()),
