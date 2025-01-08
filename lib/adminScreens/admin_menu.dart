@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mr_lowat_bakery/adminScreens/admin_login.dart';
 import 'package:mr_lowat_bakery/adminScreens/admineditmenu.dart'; 
 import 'package:mr_lowat_bakery/adminScreens/admin_orderlist.dart'; 
-import 'package:mr_lowat_bakery/adminScreens/admin_notification.dart'; 
+import 'package:mr_lowat_bakery/adminScreens/admin_notification.dart';
 
 void main() {
   runApp(const MyApp());
@@ -27,7 +28,7 @@ class AdminMenu extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.orange,
+        backgroundColor: Colors.pink,
         elevation: 0,
         title: const Text(
           "Admin Menu",
@@ -41,13 +42,58 @@ class AdminMenu extends StatelessWidget {
           },
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.logout, color: Colors.white),
-            onPressed: () {
-              // Handle logout action
-            },
-          ),
-        ],
+  IconButton(
+    icon: const Icon(Icons.logout, color: Colors.white),
+    onPressed: () {
+      // Show logout confirmation dialog
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("Log Out"),
+            content: const Text("Are you sure you want to log out?"),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context); // Close the dialog if "No" is selected
+                },
+                child: const Text("No"),
+              ),
+              TextButton(
+                onPressed: () {
+                  // Show success message and redirect to admin_login.dart
+                  Navigator.pop(context); // Close the confirmation dialog
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text("Log Out"),
+                        content: const Text("Log out successful, see you again."),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(builder: (context) => const LoginAdmin()),
+                                (route) => false, // Remove all previous routes
+                              );
+                            },
+                            child: const Text("OK"),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+                child: const Text("Yes"),
+              ),
+            ],
+          );
+        },
+      );
+    },
+  ),
+],
       ),
       body: Center(
         child: Column(

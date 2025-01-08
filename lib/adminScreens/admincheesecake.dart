@@ -117,8 +117,8 @@ class _AdminBurntCheesecakePageState extends State<AdminBurntCheesecakePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Admin Burnt Cheesecake Menu"),
-        backgroundColor: Colors.orange,
+        title: const Text("Burnt Cheesecake Menu - Admin"),
+        backgroundColor: Colors.pink,
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
@@ -142,7 +142,7 @@ class _AdminBurntCheesecakePageState extends State<AdminBurntCheesecakePage> {
             itemCount: items.length,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 0.8,
+              childAspectRatio: 0.7,
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
             ),
@@ -159,28 +159,32 @@ class _AdminBurntCheesecakePageState extends State<AdminBurntCheesecakePage> {
   }
 
   Widget buildCard(String id, Map<String, dynamic> item) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 2,
-            blurRadius: 5,
-          ),
-        ],
-      ),
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      elevation: 4,
       child: Column(
         children: [
           Expanded(
+            flex: 2,
             child: ClipRRect(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
-              child: Image.network(
-                item['image'],
-                fit: BoxFit.cover,
-                width: double.infinity,
-              ),
+              child: item['image'].toString().startsWith('http')
+                  ? Image.network(
+                      item['image'],
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(Icons.broken_image, size: 50, color: Colors.grey);
+                      },
+                    )
+                  : Image.asset(
+                      item['image'],
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(Icons.broken_image, size: 50, color: Colors.grey);
+                      },
+                    ),
             ),
           ),
           Padding(
@@ -190,11 +194,18 @@ class _AdminBurntCheesecakePageState extends State<AdminBurntCheesecakePage> {
               children: [
                 Text(
                   item['name'],
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
                 ),
+                const SizedBox(height: 5),
                 Text(
-                  item['price'],
-                  style: const TextStyle(color: Colors.green),
+                  'RM ${item['price']}',
+                  style: const TextStyle(
+                    color: Colors.green,
+                    fontSize: 14,
+                  ),
                 ),
               ],
             ),

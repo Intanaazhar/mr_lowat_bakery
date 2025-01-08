@@ -117,8 +117,8 @@ class _AdminBrowniesPageState extends State<AdminBrowniesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Admin Brownies Menu"),
-        backgroundColor: Colors.orange,
+        title: const Text("Brownies Menu - Admin"),
+        backgroundColor: Colors.pink,
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
@@ -142,7 +142,7 @@ class _AdminBrowniesPageState extends State<AdminBrowniesPage> {
             itemCount: items.length,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 0.8,
+              childAspectRatio: 0.7,
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
             ),
@@ -160,36 +160,58 @@ class _AdminBrowniesPageState extends State<AdminBrowniesPage> {
 
   Widget buildCard(String id, Map<String, dynamic> item) {
     return Card(
-      elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      elevation: 4,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
+            flex: 2,
             child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
-              child: Image.network(
-                item['image'],
-                fit: BoxFit.cover,
-              ),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+              child: item['image'].toString().startsWith('http')
+                  ? Image.network(
+                      item['image'],
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(Icons.broken_image, size: 50, color: Colors.grey);
+                      },
+                    )
+                  : Image.asset(
+                      item['image'],
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(Icons.broken_image, size: 50, color: Colors.grey);
+                      },
+                    ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(
-              item['name'],
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Text(
-              item['price'],
-              style: const TextStyle(color: Colors.orange),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item['name'],
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  'RM ${item['price']}',
+                  style: const TextStyle(
+                    color: Colors.green,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
             ),
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
                 icon: const Icon(Icons.edit, color: Colors.blue),

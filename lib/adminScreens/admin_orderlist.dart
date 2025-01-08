@@ -32,7 +32,7 @@ class _AdminOrderListState extends State<AdminOrderList> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.orange,
+        backgroundColor: Colors.pink,
         elevation: 0,
         title: const Text(
           "Order List",
@@ -68,7 +68,7 @@ class _AdminOrderListState extends State<AdminOrderList> {
                 margin: const EdgeInsets.symmetric(vertical: 8),
                 child: ListTile(
                   leading: const CircleAvatar(
-                    backgroundColor: Colors.orange,
+                    backgroundColor: Colors.pink,
                     child: Icon(Icons.cake, color: Colors.white),
                   ),
                   title: Text("Order ID: ${order['orderId'] ?? 'N/A'}"),
@@ -76,7 +76,7 @@ class _AdminOrderListState extends State<AdminOrderList> {
                   trailing: ElevatedButton(
                     onPressed: () => _showOrderDetails(context, order, docId),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange,
+                      backgroundColor: Colors.pink,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
