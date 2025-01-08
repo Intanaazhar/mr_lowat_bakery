@@ -12,36 +12,24 @@ class CheeseTartCategoryPage extends StatefulWidget {
 }
 
 class _CheeseTartCategoryPageState extends State<CheeseTartCategoryPage> {
-  final List<Map<String, String>> cheeseTarts = [
-    {'image': 'assets/giant_cheese_tart_6inch.png', 'title': 'Giant Cheese Tart 6 Inch', 'price': 'RM46-RM58'},
-    {'image': 'assets/giant_cheese_tart_7inch.png', 'title': 'Giant Cheese Tart 7 Inch', 'price': 'RM56-RM68'},
-    {'image': 'assets/tart.jpg', 'title': 'Fruit Mini Tart', 'price': 'RM35-RM40'},
-    {'image': 'assets/tart2.jpg', 'title': 'Mini Cheese Tart 16 Pieces', 'price': 'RM34-RM38'},
-    {'image': 'assets/tart3.jpg', 'title': 'Mini Cheese Tart 25 Pieces', 'price': 'RM55-RM58'},
-    {'image': 'assets/mini_cheese_tart_36.png', 'title': 'Mini Cheese Tart 36 Pieces', 'price': 'RM43-RM58'},
-    {'image': 'assets/mini_cheese_tart_49.png', 'title': 'Mini Cheese Tart 49 Pieces', 'price': 'RM59-RM78'},
-  ];
-
-  // Add the selected item to Firebase cart collection
-  void addToCart(Map<String, String> item) async {
+  void addToCart(Map<String, dynamic> item) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       try {
         await FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)
-            .collection('cart') // Firebase collection for cart items
+            .collection('cart')
             .add({
-          'name': item['title'],
+          'name': item['name'],
           'imageUrl': item['image'],
           'price': item['price'],
           'timestamp': FieldValue.serverTimestamp(),
         });
 
-        // Show snack bar to confirm addition to cart
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("${item['title']} added to cart!"),
+            content: Text("${item['name']} added to cart!"),
             duration: const Duration(seconds: 2),
           ),
         );
@@ -78,100 +66,123 @@ class _CheeseTartCategoryPageState extends State<CheeseTartCategoryPage> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: GridView.builder(
-          itemCount: cheeseTarts.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 0.8,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-          ),
-          itemBuilder: (context, index) {
-            return Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                  ),
-                ],
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('cheeseTarts').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final items = snapshot.data!.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+
+          return Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: GridView.builder(
+              itemCount: items.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.8,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
               ),
-              child: Stack(
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+              itemBuilder: (context, index) {
+                final item = items[index];
+                return Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                      ),
+                    ],
+                  ),
+                  child: Stack(
                     children: [
-                      Image.asset(
-                        cheeseTarts[index]['image']!,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text(
-                          cheeseTarts[index]['title']!,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: item['image'].toString().startsWith('http')
+                                ? Image.network(
+                                    item['image'],
+                                    height: 100,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image),
+                                  )
+                                : Image.asset(
+                                    item['image'],
+                                    height: 100,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image),
+                                  ),
                           ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Text(
+                              item['name'] ?? '',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          Text(
+                            'RM ${item['price']}',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.green,
+                            ),
+                          ),
+                        ],
                       ),
-                      Text(
-                        cheeseTarts[index]['price']!,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.green,
+                      Positioned(
+                        bottom: 8,
+                        right: 8,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DescriptionPage(
+                                  imagePath: item['image'],
+                                  name: item['name'],
+                                  price: 'RM ${item['price']}',
+                                  onAddToCart: () {
+                                    addToCart(item);
+                                  },
+                                ),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.orange,
+                              shape: BoxShape.circle,
+                            ),
+                            padding: const EdgeInsets.all(8),
+                            child: const Icon(
+                              Icons.add,
+                              color: Colors.white,
+                              size: 24,
+                            ),
+                          ),
                         ),
                       ),
                     ],
                   ),
-                  Positioned(
-                    bottom: 8,
-                    right: 8,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DescriptionPage(
-                              imagePath: cheeseTarts[index]['image']!,
-                              name: cheeseTarts[index]['title']!,
-                              price: cheeseTarts[index]['price']!,
-                              onAddToCart: () {
-                                addToCart(cheeseTarts[index]);
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          color: Colors.orange,
-                          shape: BoxShape.circle,
-                        ),
-                        padding: const EdgeInsets.all(8),
-                        child: const Icon(
-                          Icons.add,
-                          color: Colors.white,
-                          size: 24, // Bigger size
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
+                );
+              },
+            ),
+          );
+        },
       ),
     );
   }

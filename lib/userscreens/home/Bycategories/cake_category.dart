@@ -12,35 +12,24 @@ class CakeCategoryPage extends StatefulWidget {
 }
 
 class _CakeCategoryPageState extends State<CakeCategoryPage> {
-  final List<Map<String, String>> items = [
-    {'image': 'assets/cake1.png','title': 'Special Wedding Cake','price': 'RM150',},
-    {'image': 'assets/cake2.png','title': 'Birthday Cake','price': 'RM80',},
-    {'image': 'assets/cake3.png','title': 'Congratulations Cake','price': 'RM70',},
-    {'image': 'assets/cake4.png','title': 'Dessert Cake','price': 'RM50',},
-    {'image': 'assets/apam_moist.png', 'title': 'Apam@Moist 25 Pieces', 'price': 'RM30'},
-    {'image': 'assets/bite_size_cake.png', 'title': 'Bite Size Cake 25 Pieces', 'price': 'RM35'},
-  ];
-
-  // Add the selected item to Firebase cart collection
-  void addToCart(Map<String, String> item) async {
+  void addToCart(Map<String, dynamic> item) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       try {
         await FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)
-            .collection('cart') // Firebase collection for cart items
+            .collection('cart')
             .add({
-          'name': item['title'],
+          'name': item['name'],
           'imageUrl': item['image'],
           'price': item['price'],
           'timestamp': FieldValue.serverTimestamp(),
         });
 
-        // Show snack bar to confirm addition to cart
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("${item['title']} added to cart!"),
+            content: Text("${item['name']} added to cart!"),
             duration: const Duration(seconds: 2),
           ),
         );
@@ -77,100 +66,123 @@ class _CakeCategoryPageState extends State<CakeCategoryPage> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: GridView.builder(
-          itemCount: items.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 0.8, // Adjust aspect ratio
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-          ),
-          itemBuilder: (context, index) {
-            return Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                  ),
-                ],
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('cakes').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final items = snapshot.data!.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+
+          return Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: GridView.builder(
+              itemCount: items.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.8,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
               ),
-              child: Stack(
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+              itemBuilder: (context, index) {
+                final item = items[index];
+                return Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                      ),
+                    ],
+                  ),
+                  child: Stack(
                     children: [
-                      Image.asset(
-                        items[index]['image']!,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text(
-                          items[index]['title']!,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: item['image'].toString().startsWith('http')
+                                ? Image.network(
+                                    item['image'],
+                                    height: 100,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image),
+                                  )
+                                : Image.asset(
+                                    item['image'],
+                                    height: 100,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image),
+                                  ),
                           ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Text(
+                              item['name'] ?? '',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          Text(
+                            'RM ${item['price']}',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.green,
+                            ),
+                          ),
+                        ],
                       ),
-                      Text(
-                        items[index]['price']!,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.green,
+                      Positioned(
+                        bottom: 8,
+                        right: 8,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DescriptionPage(
+                                  imagePath: item['image'],
+                                  name: item['name'],
+                                  price: 'RM ${item['price']}',
+                                  onAddToCart: () {
+                                    addToCart(item);
+                                  },
+                                ),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.orange,
+                              shape: BoxShape.circle,
+                            ),
+                            padding: const EdgeInsets.all(8),
+                            child: const Icon(
+                              Icons.add,
+                              color: Colors.white,
+                              size: 24,
+                            ),
+                          ),
                         ),
                       ),
                     ],
                   ),
-                  Positioned(
-                    bottom: 8,
-                    right: 8,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DescriptionPage(
-                              imagePath: items[index]['image']!,
-                              name: items[index]['title']!,
-                              price: items[index]['price']!,
-                              onAddToCart: () {
-                                addToCart(items[index]);
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          color: Colors.orange,
-                          shape: BoxShape.circle,
-                        ),
-                        padding: const EdgeInsets.all(8),
-                        child: const Icon(
-                          Icons.add,
-                          color: Colors.white,
-                          size: 24, // Bigger size
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
+                );
+              },
+            ),
+          );
+        },
       ),
     );
   }
