@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mr_lowat_bakery/userscreens/home/widgets/open_comment_bottom_sheet.dart'; // Import "Comment" Bottom Sheet
-import 'book_now_bottom_sheet.dart';  // Import "Book Now" Bottom Sheet
+import 'package:mr_lowat_bakery/userscreens/home/widgets/open_comment_bottom_sheet.dart'; 
+import 'book_now_bottom_sheet.dart';  
 
 class DescriptionPage extends StatefulWidget {
   final String imagePath;
@@ -22,7 +22,7 @@ class DescriptionPage extends StatefulWidget {
 
 class _DescriptionPageState extends State<DescriptionPage> {
   final List<Map<String, String>> _comments = [];
-  bool isFavorite = false; // Declare the state variable here
+  bool isFavorite = false;
 
   void _addComment(String comment) {
     setState(() {
@@ -44,7 +44,7 @@ class _DescriptionPageState extends State<DescriptionPage> {
             Navigator.pop(context);
           },
         ),
-        title: Text(widget.name),
+        title: Text(widget.name, maxLines: 1, overflow: TextOverflow.ellipsis),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -85,7 +85,6 @@ class _DescriptionPageState extends State<DescriptionPage> {
                     setState(() {
                       isFavorite = !isFavorite;
                     });
-                    // Save to Firebase or local storage if necessary
                   },
                 ),
               ],
@@ -94,37 +93,39 @@ class _DescriptionPageState extends State<DescriptionPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.name,
-                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        widget.price,
-                        style: const TextStyle(fontSize: 20, color: Colors.orange),
-                      ),
-                    ],
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.name,
+                          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          widget.price,
+                          style: const TextStyle(fontSize: 20, color: Colors.orange),
+                        ),
+                      ],
+                    ),
                   ),
                   ElevatedButton(
-                onPressed: () {
-                    openBookNowBottomSheet(
-                      context: context,
-                      imagePath: widget.imagePath,  // Pass the imagePath from the widget
-                      name: widget.name,            // Pass the name from the widget
-                      price: widget.price,          // Pass the price from the widget
-                      onAddToCart: (preferences) {
-                        // Handle the preferences (e.g., add to cart)
-                        print(preferences);
-                      },
-                    );
-                  },
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
-                child: const Text('Book Now'),
+                    onPressed: () {
+                      openBookNowBottomSheet(
+                        context: context,
+                        imagePath: widget.imagePath,
+                        name: widget.name,
+                        price: widget.price,
+                        onAddToCart: (preferences) {
+                          print(preferences);
+                        },
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+                    child: const Text('Book Now'),
                   ),
                 ],
               ),
