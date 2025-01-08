@@ -117,8 +117,8 @@ class _AdminOthersPageState extends State<AdminOthersPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Admin Others Menu"),
-        backgroundColor: Colors.orange,
+        title: const Text("Others Menu - Admin"),
+        backgroundColor: Colors.pink,
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
@@ -142,7 +142,7 @@ class _AdminOthersPageState extends State<AdminOthersPage> {
             itemCount: items.length,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 0.8,
+              childAspectRatio: 0.7,
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
             ),
@@ -150,63 +150,80 @@ class _AdminOthersPageState extends State<AdminOthersPage> {
               final item = items[index].data() as Map<String, dynamic>;
               final id = items[index].id;
 
-              return Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.2),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                    ),
-                  ],
-                ),
-                child: Stack(
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Image.network(
-                          item['image'],
-                          height: 100,
-                          fit: BoxFit.cover,
-                        ),
-                        Text(
-                          item['name'],
-                          textAlign: TextAlign.center,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        Text(
-                          item['price'],
-                          style: const TextStyle(color: Colors.green),
-                        ),
-                      ],
-                    ),
-                    Positioned(
-                      bottom: 8,
-                      right: 8,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.edit, color: Colors.blue),
-                            onPressed: () => _showDialog(id: id, data: item),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: () => _deleteItem(id),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              );
+              return buildCard(id, item);
             },
           );
         },
+      ),
+    );
+  }
+
+  Widget buildCard(String id, Map<String, dynamic> item) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      elevation: 4,
+      child: Column(
+        children: [
+          Expanded(
+            flex: 2,
+            child: ClipRRect(
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+              child: item['image'].toString().startsWith('http')
+                  ? Image.network(
+                      item['image'],
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(Icons.broken_image, size: 50, color: Colors.grey);
+                      },
+                    )
+                  : Image.asset(
+                      item['image'],
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(Icons.broken_image, size: 50, color: Colors.grey);
+                      },
+                    ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item['name'],
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  'RM ${item['price']}',
+                  style: const TextStyle(
+                    color: Colors.green,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.edit, color: Colors.blue),
+                onPressed: () => _showDialog(id: id, data: item),
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete, color: Colors.red),
+                onPressed: () => _deleteItem(id),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

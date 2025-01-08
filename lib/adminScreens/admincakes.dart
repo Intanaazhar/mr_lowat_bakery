@@ -118,7 +118,7 @@ class _AdminCakePageState extends State<AdminCakePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Cake Menu - Admin"),
-        backgroundColor: Colors.orange,
+        backgroundColor: Colors.pink,
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
@@ -142,7 +142,7 @@ class _AdminCakePageState extends State<AdminCakePage> {
             itemCount: items.length,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 0.8,
+              childAspectRatio: 0.7,
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
             ),
@@ -168,36 +168,46 @@ class _AdminCakePageState extends State<AdminCakePage> {
             flex: 2,
             child: ClipRRect(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
-              child: Image.network(
-                item['image'],
-                fit: BoxFit.cover,
-                width: double.infinity,
-              ),
+              child: item['image'].toString().startsWith('http')
+                  ? Image.network(
+                      item['image'],
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(Icons.broken_image, size: 50, color: Colors.grey);
+                      },
+                    )
+                  : Image.asset(
+                      item['image'],
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(Icons.broken_image, size: 50, color: Colors.grey);
+                      },
+                    ),
             ),
           ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item['name'],
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item['name'],
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ),
-                  const SizedBox(height: 5),
-                  Text(
-                    item['price'],
-                    style: const TextStyle(
-                      color: Colors.orange,
-                      fontSize: 14,
-                    ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  'RM ${item['price']}',
+                  style: const TextStyle(
+                    color: Colors.green,
+                    fontSize: 14,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           Row(

@@ -15,9 +15,6 @@ class AdminEditMenu extends StatefulWidget {
 }
 
 class _AdminEditMenuState extends State<AdminEditMenu> {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _imageController = TextEditingController();
-
   final List<Map<String, dynamic>> hardcodedCategories = [
     {'imagePath': 'assets/cake.png', 'name': 'Cakes', 'page': const AdminCakePage()},
     {'imagePath': 'assets/cheesecake.png', 'name': 'Burnt Cheesecake', 'page': const AdminBurntCheesecakePage()},
@@ -27,73 +24,13 @@ class _AdminEditMenuState extends State<AdminEditMenu> {
     {'imagePath': 'assets/puffs.png', 'name': 'Others', 'page': const AdminOthersPage()},
   ];
 
-  void _addCategory() async {
-    try {
-      await FirebaseFirestore.instance.collection('categories').add({
-        'name': _nameController.text,
-        'imagePath': _imageController.text,
-        'timestamp': FieldValue.serverTimestamp(),
-      });
-      _nameController.clear();
-      _imageController.clear();
-      Navigator.pop(context); // Close the dialog
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Category added successfully!')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error adding category: $e')),
-      );
-    }
-  }
-
-  void _showAddCategoryDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text("Add New Category"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: _nameController,
-                decoration: const InputDecoration(labelText: "Category Name"),
-              ),
-              TextField(
-                controller: _imageController,
-                decoration: const InputDecoration(labelText: "Image URL"),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Cancel"),
-            ),
-            ElevatedButton(
-              onPressed: _addCategory,
-              child: const Text("Add"),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 235, 225, 225),
       appBar: AppBar(
-        backgroundColor: Colors.orange,
+        backgroundColor: Colors.pink,
         title: const Text('Admin Edit Menu'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: _showAddCategoryDialog, // Show add category dialog
-          ),
-        ],
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance

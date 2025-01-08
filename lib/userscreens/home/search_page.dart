@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mr_lowat_bakery/userscreens/cake_category_page.dart';
+import 'package:mr_lowat_bakery/userscreens/home/Bycategories/cake_category.dart';
 
 
 class SearchPage extends StatefulWidget {

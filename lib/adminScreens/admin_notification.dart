@@ -28,7 +28,7 @@ class AdminCustomerFeedback extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.orange.shade300,
+        backgroundColor: Colors.pink,
         title: const Text('Customer Feedback'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -45,7 +45,7 @@ class AdminCustomerFeedback extends StatelessWidget {
           final feedback = feedbackData[index];
           return Card(
             margin: const EdgeInsets.only(bottom: 16.0),
-            color: Colors.orange.shade300,
+            color: const Color.fromARGB(255, 255, 91, 145),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12.0),
             ),

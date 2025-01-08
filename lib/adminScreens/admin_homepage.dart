@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mr_lowat_bakery/adminScreens/admin_menu.dart';
 import 'package:mr_lowat_bakery/adminScreens/admincakes.dart';
 import 'package:mr_lowat_bakery/adminScreens/admincheesecake.dart';
 import 'package:mr_lowat_bakery/adminScreens/admintart.dart';
 import 'package:mr_lowat_bakery/adminScreens/adminbrownies.dart';
 import 'package:mr_lowat_bakery/adminScreens/admincupcake.dart';
 import 'package:mr_lowat_bakery/adminScreens/adminothers.dart';
-import 'package:mr_lowat_bakery/userscreens/home/widgets/menu_widgets.dart';
 import 'package:mr_lowat_bakery/userscreens/home/widgets/category_widgets.dart';
 
 class AdminHomepage extends StatelessWidget {
@@ -16,7 +17,7 @@ class AdminHomepage extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 235, 225, 225),
       appBar: AppBar(
-        backgroundColor: Colors.orange,
+        backgroundColor: Colors.pink,
         elevation: 0,
         title: const Text(
           "Admin Home",
@@ -26,45 +27,31 @@ class AdminHomepage extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.settings, color: Colors.white),
           onPressed: () {
-            // Settings action
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const MyApp()),
+            );
           },
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.edit, color: Colors.white), // Edit button
-            onPressed: () {
-              // Edit functionality
-              print("Edit action triggered");
-            },
-          ),
-        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Image(image: AssetImage('assets/homeAds.png')),
-              const SizedBox(height: 15),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search here...',
-                    prefixIcon: const Icon(Icons.search),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: const BorderSide(color: Colors.black, width: 1.0),
-                    ),
-                  ),
-                ),
+              const Image(
+                image: AssetImage('assets/homeAds.png'),
+                fit: BoxFit.cover, // Ensures the image fits the width nicely
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 15),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
                   'Discover by category',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18, // Slightly larger font size for emphasis
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
@@ -148,68 +135,85 @@ class AdminHomepage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
-                      children: [
-                        MenuWidgets(
-                          imagePath: 'assets/tart.jpg',
-                          name: 'Egg Tart',
-                          price: 'RM 5.00',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const AdminCheeseTartPage()),
-                            );
-                          },
+              StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collectionGroup('items')
+                    .where('isMostOrdered', isEqualTo: true)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  final mostOrderedItems = snapshot.data!.docs;
+
+                if (mostOrderedItems.isEmpty) {
+                  return const Center(child: Text("No most-ordered items available."));
+                }
+
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    children: List.generate(mostOrderedItems.length, (index) {
+                      final item = mostOrderedItems[index].data() as Map<String, dynamic>;
+                      final docId = mostOrderedItems[index].id;
+
+                      return Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        const SizedBox(height: 14),
-                        MenuWidgets(
-                          imagePath: 'assets/brownies.jpg',
-                          name: 'Brownies',
-                          price: 'RM 8.00',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const AdminBrowniesPage()),
-                            );
-                          },
-                        ),
-                      ],
+                        elevation: 4,
+                        child: Column(
+                          children: [
+                            Container(
+                              height: 150, // Fixed height to prevent overflow
+                              child: ClipRRect(
+                                borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+                                child: Image.network(
+                                  item['image'] ?? '',
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      const Icon(Icons.broken_image),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    item['name'] ?? '',
+                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    'RM ${item['price'] ?? ''}',
+                                    style: const TextStyle(color: Colors.green),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.bottomRight,
+                              child: IconButton(
+                                icon: const Icon(Icons.delete, color: Colors.red),
+                                onPressed: () {
+                                  // Update 'isMostOrdered' field to false
+                                  FirebaseFirestore.instance
+                                      .collection('cakes') // Adjust collection name dynamically if required
+                                      .doc(docId)
+                                      .update({'isMostOrdered': false});
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
                     ),
-                    Column(
-                      children: [
-                        MenuWidgets(
-                          imagePath: 'assets/cupcake.jpg',
-                          name: 'Cupcake',
-                          price: 'RM 6.00',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const AdminCupcakePage()),
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 14),
-                        MenuWidgets(
-                          imagePath: 'assets/puffs.jpg',
-                          name: 'Cream Puffs',
-                          price: 'RM 4.00',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const AdminOthersPage()),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                  );
+                },
               ),
             ],
           ),
