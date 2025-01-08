@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mr_lowat_bakery/userscreens/payment_options_page.dart';
-import 'payment_options_page.dart'; // Import the PaymentOptionsPage
 
 class ProductInfo extends StatelessWidget {
   final String imagePath;
@@ -197,6 +197,7 @@ class CheckoutPage extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
+                    print("Navigating to PaymentOptionsPage...");
                     Navigator.push(
                       context,
                       MaterialPageRoute(

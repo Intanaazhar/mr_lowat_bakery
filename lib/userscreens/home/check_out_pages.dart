@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mr_lowat_bakery/userscreens/payment_options_page.dart';
 
 class ProductInfo extends StatelessWidget {
   final String imagePath;
@@ -247,8 +248,12 @@ class CheckoutPage extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Order confirmed!')),
+                    print("Navigating to PaymentOptionsPage...");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const PaymentOptionsPage(),
+                      ),
                     );
                   },
                   style: ElevatedButton.styleFrom(
