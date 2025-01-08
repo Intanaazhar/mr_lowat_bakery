@@ -1,61 +1,100 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:mr_lowat_bakery/userscreens/home/navigation_bar.dart';
 
 class NotificationPage extends StatelessWidget {
   const NotificationPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.orange, // App bar background color
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const NavigationMenu(),
+        title: const Text('Notifications'),
+        backgroundColor: Colors.orange,
+      ),
+      body: user == null
+          ? const Center(
+              child: Text('Please log in to view your notifications.'),
+            )
+          : StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(user.uid)
+                  .collection('cart')
+                  .where('isPaid', isEqualTo: true)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return const Center(
+                    child: Text('No notifications available.'),
+                  );
+                }
+
+                final items = snapshot.data!.docs;
+
+                return ListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    final item = items[index].data() as Map<String, dynamic>;
+                    final itemName = item['name'] ?? 'Unknown Item';
+                    final isCancelled = item['isCancelled'] ?? false;
+                    final isAccepted = item['isAccepted'] ?? false;
+                    final requiredDate = item['requiredDate'] ?? 'Unknown Date';
+
+                    List<Widget> notifications = [];
+
+                    // Add notification for isPaid
+                    notifications.add(
+                      Card(
+                        margin: const EdgeInsets.all(8.0),
+                        child: ListTile(
+                          title: Text(itemName),
+                          subtitle: const Text('Your order is paid. We will notify the bakery.'),
                         ),
-            );
-          },
-        ),
-        title: const Text(
-          'Notifications',
-          style: TextStyle(color: Colors.white, fontSize: 20),
-        ),
-        centerTitle: true,
-      ),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.notifications_none,
-              color: Colors.orange,
-              size: 80,
+                      ),
+                    );
+
+                    // Add notification for isAccepted
+                    if (isAccepted) {
+                      notifications.add(
+                        Card(
+                          margin: const EdgeInsets.all(8.0),
+                          child: ListTile(
+                            title: Text(itemName),
+                            subtitle: const Text('Your order is in the kitchen.'),
+                          ),
+                        ),
+                      );
+                    }
+
+                    // Add notification for isCancelled
+                    if (isCancelled) {
+                      notifications.add(
+                        Card(
+                          margin: const EdgeInsets.all(8.0),
+                          child: ListTile(
+                            title: Text(itemName),
+                            subtitle: Text(
+                              'Your order ($itemName) scheduled for delivery on $requiredDate is cancelled. Please contact the bakery for more information. Your refund is in process.',
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+
+                    return Column(
+                      children: notifications,
+                    );
+                  },
+                );
+              },
             ),
-            SizedBox(height: 20),
-            Text(
-              'No notifications yet!',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey,
-              ),
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Check back later for updates.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

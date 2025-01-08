@@ -25,7 +25,7 @@ class AdminOrderList extends StatefulWidget {
 }
 
 class _AdminOrderListState extends State<AdminOrderList> {
-  final List<String> orderStatuses = ["Accepted", "Processing", "Ready"];
+  final List<String> processStages = ["Accepted", "Processing", "Ready", "Completed"];
 
   @override
   Widget build(BuildContext context) {
@@ -46,42 +46,74 @@ class _AdminOrderListState extends State<AdminOrderList> {
           },
         ),
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('orders') // Replace with your collection name
-            .snapshots(),
+      body: FutureBuilder<List<QueryDocumentSnapshot>>(
+        future: _fetchOrders(),
         builder: (context, snapshot) {
-          if (!snapshot.hasData) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          final orders = snapshot.data!.docs;
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(
+              child: Text("No orders available."),
+            );
+          }
+
+          final orders = snapshot.data!;
 
           return ListView.builder(
             padding: const EdgeInsets.all(16.0),
             itemCount: orders.length,
             itemBuilder: (context, index) {
               final order = orders[index].data() as Map<String, dynamic>;
-              final docId = orders[index].id;
+              final cartId = orders[index].id;
+              final userId = orders[index].reference.parent.parent!.id;
 
               return Card(
                 margin: const EdgeInsets.symmetric(vertical: 8),
                 child: ListTile(
-                  leading: const CircleAvatar(
-                    backgroundColor: Colors.pink,
-                    child: Icon(Icons.cake, color: Colors.white),
+                  title: Text(
+                    "${order['name'] ?? 'Unknown Item'}",
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  title: Text("Order ID: ${order['orderId'] ?? 'N/A'}"),
-                  subtitle: Text("Customer: ${order['customerName'] ?? 'Unknown'}"),
-                  trailing: ElevatedButton(
-                    onPressed: () => _showOrderDetails(context, order, docId),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.pink,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      FutureBuilder<DocumentSnapshot>(
+                        future: FirebaseFirestore.instance.collection('users').doc(userId).get(),
+                        builder: (context, userSnapshot) {
+                          if (!userSnapshot.hasData) return const Text("Loading...");
+                          final user = userSnapshot.data?.data() as Map<String, dynamic>? ?? {};
+                          return Text("Customer: ${user['firstName'] ?? 'Unknown'}");
+                        },
                       ),
-                    ),
-                    child: const Text("Details"),
+                      const SizedBox(height: 8),
+                      Text("Booking Date: ${order['bookingDate'] ?? 'N/A'}"),
+                      Text("Flavour: ${order['flavour'] ?? 'N/A'}"),
+                      Text("Pickup Option: ${order['pickupOption'] ?? 'N/A'}"),
+                      Text("Price: ${order['price']?.toString() ?? 'N/A'}"),
+                    ],
+                  ),
+                  trailing: DropdownButton<String>(
+                    value: order['status'] ?? processStages[0],
+                    items: processStages.map((stage) {
+                      return DropdownMenuItem(
+                        value: stage,
+                        child: Text(stage),
+                      );
+                    }).toList(),
+                    onChanged: (newStatus) {
+                      FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(userId)
+                          .collection('cart')
+                          .doc(cartId)
+                          .update({'status': newStatus});
+                      setState(() {});
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Order updated to $newStatus")),
+                      );
+                    },
                   ),
                 ),
               );
@@ -92,75 +124,18 @@ class _AdminOrderListState extends State<AdminOrderList> {
     );
   }
 
-  void _showOrderDetails(BuildContext context, Map<String, dynamic> order, String docId) {
-    String selectedStatus = order['status'] ?? "Accepted";
+  Future<List<QueryDocumentSnapshot>> _fetchOrders() async {
+    List<QueryDocumentSnapshot> allOrders = [];
 
-    showDialog(
-      context: context,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              title: const Text("Order Details"),
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Name: ${order['customerName'] ?? 'Unknown'}"),
-                    Text("Booking Date: ${order['bookingDate'] ?? 'N/A'}"),
-                    Text("Products: ${order['products'] ?? 'N/A'}"),
-                    Text("Description: ${order['description'] ?? 'N/A'}"),
-                    const SizedBox(height: 20),
-                    DropdownButtonFormField<String>(
-                      value: selectedStatus,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        labelText: "Order Status",
-                      ),
-                      items: orderStatuses.map((status) {
-                        return DropdownMenuItem(
-                          value: status,
-                          child: Text(status),
-                        );
-                      }).toList(),
-                      onChanged: (newStatus) {
-                        setState(() {
-                          selectedStatus = newStatus!;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    FirebaseFirestore.instance
-                        .collection('orders') // Replace with your collection name
-                        .doc(docId)
-                        .update({'status': selectedStatus});
-                    Navigator.of(context).pop();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Order status updated")),
-                    );
-                  },
-                  child: const Text("Save"),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text("Close"),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
+    final usersSnapshot = await FirebaseFirestore.instance.collection('users').get();
+    for (var userDoc in usersSnapshot.docs) {
+      final cartSnapshot = await userDoc.reference
+          .collection('cart')
+          .where('isAccepted', isEqualTo: true)
+          .get();
+      allOrders.addAll(cartSnapshot.docs);
+    }
+
+    return allOrders;
   }
 }

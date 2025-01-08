@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:mr_lowat_bakery/userscreens/home/settings/my_order_track.dart';
+import 'package:mr_lowat_bakery/userscreens/my_orders.dart';
 import 'package:mr_lowat_bakery/userscreens/home/settings/settings_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/user_profile.dart';
 
@@ -124,8 +124,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const OrderTracker(
-                      steps: [], // Placeholder for order steps
+                    builder: (context) => const MyOrdersPage(
                     ),
                   ),
                 );
