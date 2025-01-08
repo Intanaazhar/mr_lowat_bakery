@@ -5,7 +5,7 @@ import 'package:mr_lowat_bakery/userscreens/home/cart_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/widgets/description_page.dart';
 
 class MostOrderedPage extends StatefulWidget {
-  const MostOrderedPage({super.key});
+  const MostOrderedPage({super.key, required String collectionName});
 
   @override
   _MostOrderedPageState createState() => _MostOrderedPageState();

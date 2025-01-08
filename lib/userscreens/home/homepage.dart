@@ -220,7 +220,7 @@ class _HomepageState extends State<Homepage> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const MostOrderedPage()),
+                          MaterialPageRoute(builder: (context) => const MostOrderedPage(collectionName: 'cakes')),
                         );
                       },
                       child: const Text(
