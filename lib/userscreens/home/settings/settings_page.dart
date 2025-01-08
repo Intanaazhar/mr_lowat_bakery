@@ -1,99 +1,85 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:mr_lowat_bakery/userscreens/home/settings/address_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/settings/debit_card_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/settings/feedback_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/settings/support_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/user_profile.dart';
-import 'package:mr_lowat_bakery/userscreens/welcome.dart';
 
 class SettingsPopup extends StatelessWidget {
   const SettingsPopup({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.orange,
-      appBar: AppBar(
-        backgroundColor: Colors.orange,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context); // Navigate back to the previous screen
-          },
-        ),
-        title: const Text(
-          'Settings',
-          style: TextStyle(
-            fontSize: 24.0,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildSettingsOption('Profile', Icons.person, context, const UserProfile()),
-            _buildSettingsOption('Address', Icons.location_on, context, const AddressPage()),
-            _buildSettingsOption('Debit Card', Icons.credit_card, context, const DebitCardPage()),
-            _buildSettingsOption('Feedback', Icons.feedback, context, const FeedbackPage()),
-            _buildSettingsOption('Customer Support', Icons.support_agent, context, const SupportPage()),
-            const SizedBox(height: 30.0),
-            ElevatedButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('Log Out'),
-                      content: const Text('Are you sure you want to log out?'),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop(); // Close the dialog
-                          },
-                          child: const Text('Cancel'),
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Show the dialog immediately when this page is pushed
+      showDialog(
+        context: context,
+        barrierDismissible: true, // Allow dismissing the dialog by tapping outside
+        builder: (BuildContext context) {
+          return Stack(
+            children: [
+              // Blurred background
+              BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                child: Container(
+                  color: Colors.black.withOpacity(0.3), // Optional semi-transparent overlay
+                ),
+              ),
+              // Dialog in the center
+              Center(
+                child: Dialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Container(
+                    width: 300, // Adjust the width as needed
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text(
+                          'Settings',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        TextButton(
+                        const Divider(thickness: 1),
+                        _buildSettingsOption('Profile', Icons.person, context, const UserProfile()),
+                        const Divider(thickness: 1),
+                        _buildSettingsOption('Address', Icons.location_on, context, const AddressPage()),
+                        const Divider(thickness: 1),
+                        _buildSettingsOption('Debit Card', Icons.credit_card, context, const DebitCardPage()),
+                        const Divider(thickness: 1),
+                        _buildSettingsOption('Feedback', Icons.feedback, context, const FeedbackPage()),
+                        const Divider(thickness: 1),
+                        _buildSettingsOption('Customer Support', Icons.support_agent, context, const SupportPage()),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).pop(); // Close the dialog
-                            Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(builder: (context) => const BakeryWelcomeScreen()),
-                              (route) => false, // Remove all previous routes
-                            );
                           },
-                          child: const Text('Log Out'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.orange,
+                            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+                          ),
+                          child: const Text('Close'),
                         ),
                       ],
-                    );
-                  },
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: Colors.orange,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 40.0,
-                  vertical: 15.0,
+                    ),
+                  ),
                 ),
               ),
-              child: const Text(
-                'Log Out',
-                style: TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+            ],
+          );
+        },
+      );
+    });
+
+    // Empty Scaffold since the dialog will appear immediately
+    return const Scaffold(
+      backgroundColor: Colors.transparent,
     );
   }
 
@@ -110,14 +96,11 @@ class SettingsPopup extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Icon(icon, color: Colors.white),
+            Icon(icon, color: Colors.orange),
             const SizedBox(width: 10.0),
             Text(
               title,
-              style: const TextStyle(
-                fontSize: 18.0,
-                color: Colors.white,
-              ),
+              style: const TextStyle(fontSize: 18.0),
             ),
           ],
         ),

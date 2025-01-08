@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mr_lowat_bakery/userscreens/home/navigation_bar.dart';
 
-class FavouritePage extends StatelessWidget {
-  const FavouritePage({super.key});
+class NotificationPage extends StatelessWidget {
+  const NotificationPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class FavouritePage extends StatelessWidget {
           },
         ),
         title: const Text(
-          'Favourites',
+          'Notifications',
           style: TextStyle(color: Colors.white, fontSize: 20),
         ),
         centerTitle: true,
@@ -31,13 +31,13 @@ class FavouritePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.favorite,
+              Icons.notifications_none,
               color: Colors.orange,
               size: 80,
             ),
             SizedBox(height: 20),
             Text(
-              'No favourites yet!',
+              'No notifications yet!',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -46,7 +46,7 @@ class FavouritePage extends StatelessWidget {
             ),
             SizedBox(height: 10),
             Text(
-              'Add items to your favourites to see them here.',
+              'Check back later for updates.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,

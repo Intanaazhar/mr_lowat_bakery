@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:mr_lowat_bakery/userscreens/home/favourite_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/homepage.dart';
+import 'package:mr_lowat_bakery/userscreens/home/notification_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/profile_menu.dart';
 import 'package:mr_lowat_bakery/userscreens/home/search_page.dart';
 
@@ -39,5 +41,5 @@ Widget build(BuildContext context) {
 class NavigationController extends GetxController{
   final Rx<int> selectedIndex = 0.obs;
 
-  final screens = [const Homepage(),const SearchPage(),Container(color: Colors.orange), Container(color: Colors.orange), const ProfileMenu()];
+  final screens = [const Homepage(),const SearchPage(),const FavouritePage(), const NotificationPage(), const ProfileMenu()];
 }

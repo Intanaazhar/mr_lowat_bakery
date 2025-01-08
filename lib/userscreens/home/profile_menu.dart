@@ -136,12 +136,12 @@ class _ProfileMenuState extends State<ProfileMenu> {
             ProfileButton(
               label: "Settings",
               onTap: () {
-                // Navigate to the Settings Page
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SettingsPopup(),
-                  ),
+                // Show the Settings Dialog
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const SettingsPopup(); // Call your SettingsPopup widget as a dialog
+                  },
                 );
               },
             ),

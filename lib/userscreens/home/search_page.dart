@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mr_lowat_bakery/userscreens/home/Bycategories/cake_category.dart';
+import 'package:mr_lowat_bakery/userscreens/home/navigation_bar.dart';
 
 
 class SearchPage extends StatefulWidget {
@@ -60,8 +61,23 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Search Page'),
-        backgroundColor: Colors.orange,
+        backgroundColor: Colors.orange, // App bar background color
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const NavigationMenu(),
+                        ),
+            );
+          },
+        ),
+        title: const Text(
+          'Search',
+          style: TextStyle(color: Colors.white, fontSize: 20),
+        ),
+        centerTitle: true,
       ),
       backgroundColor: Colors.white,
       body: Column(
