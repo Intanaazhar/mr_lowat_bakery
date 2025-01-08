@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mr_lowat_bakery/userscreens/home/widgets/open_comment_bottom_sheet.dart'; 
 import 'book_now_bottom_sheet.dart';  
+import 'package:firebase_auth/firebase_auth.dart';
 
 class DescriptionPage extends StatefulWidget {
   final String imagePath;
@@ -31,6 +33,35 @@ class _DescriptionPageState extends State<DescriptionPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Comment added successfully!')),
     );
+  }
+
+  Future<void> _addToFavoritesCollection() async {
+    try {
+      final userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId == null) {
+        throw Exception("User not logged in");
+      }
+
+      final docRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('favorites')
+          .doc();
+
+      await docRef.set({
+        'imagePath': widget.imagePath,
+        'name': widget.name,
+        'price': widget.price,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Item added to favorites successfully!')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to add to favorites: $e')),
+      );
+    }
   }
 
   @override
@@ -85,6 +116,9 @@ class _DescriptionPageState extends State<DescriptionPage> {
                     setState(() {
                       isFavorite = !isFavorite;
                     });
+                    if (isFavorite) {
+                      _addToFavoritesCollection();
+                    }
                   },
                 ),
               ],
