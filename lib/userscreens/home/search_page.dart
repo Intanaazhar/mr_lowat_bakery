@@ -133,7 +133,7 @@ class _SearchPageState extends State<SearchPage> {
                           child: category['image'] != ''
                               ? ClipRRect(
                                   borderRadius: BorderRadius.circular(8),
-                                  child: Image.network(
+                                  child: Image.asset(
                                     category['image'],
                                     fit: BoxFit.cover,
                                     errorBuilder: (context, error, stackTrace) =>

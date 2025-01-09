@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mr_lowat_bakery/userscreens/home/homepage.dart';
+import 'package:mr_lowat_bakery/userscreens/home/navigation_bar.dart';
 
 class PaymentOptionsPage extends StatefulWidget {
   const PaymentOptionsPage({super.key});
@@ -406,7 +407,7 @@ ElevatedButton(
                 Navigator.pop(context); // Close the dialog
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => const Homepage()), // Navigate to home page
+                  MaterialPageRoute(builder: (context) => const NavigationMenu()), // Navigate to home page
                   (route) => false,
                 );
               },

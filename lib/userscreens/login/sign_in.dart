@@ -96,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 200),
                 // Username Field
-                buildTextField("Username", controller: _emailController),
+                buildTextField("Email", controller: _emailController),
                 const SizedBox(height: 20),
                 // Password Field
                 buildTextField("Password", controller: _passwordController, obscureText: true),

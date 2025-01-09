@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mr_lowat_bakery/userscreens/home/view_profile.dart';
 import 'package:mr_lowat_bakery/userscreens/my_orders.dart';
 import 'package:mr_lowat_bakery/userscreens/home/settings/settings_page.dart';
-import 'package:mr_lowat_bakery/userscreens/home/user_profile.dart';
 
 class ProfileMenu extends StatefulWidget {
   const ProfileMenu({super.key});
@@ -69,7 +69,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Profile Picture Section
+            // Profile Picture Section with Alphabet
             Container(
               width: 180, // Size of the circular ring
               height: 180,
@@ -84,10 +84,13 @@ class _ProfileMenuState extends State<ProfileMenu> {
               child: CircleAvatar(
                 radius: 80,
                 backgroundColor: Colors.grey[200],
-                child: const Icon(
-                  Icons.person, // Default avatar icon
-                  size: 80,
-                  color: Colors.grey,
+                child: Text(
+                  userName.isNotEmpty ? userName[0].toUpperCase() : 'U', // Display first letter of first name
+                  style: const TextStyle(
+                    fontSize: 80,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.orange,
+                  ),
                 ),
               ),
             ),
@@ -110,7 +113,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const UserProfile(),
+                    builder: (context) => const UserProfilePage(),
                   ),
                 );
               },
@@ -124,8 +127,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const MyOrdersPage(
-                    ),
+                    builder: (context) => const MyOrdersPage(),
                   ),
                 );
               },

@@ -4,7 +4,7 @@ import 'package:mr_lowat_bakery/userscreens/home/settings/address_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/settings/debit_card_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/settings/feedback_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/settings/support_page.dart';
-import 'package:mr_lowat_bakery/userscreens/home/user_profile.dart';
+
 
 class SettingsPopup extends StatelessWidget {
   const SettingsPopup({super.key});
@@ -45,8 +45,6 @@ class SettingsPopup extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const Divider(thickness: 1),
-                        _buildSettingsOption('Profile', Icons.person, context, const UserProfile()),
                         const Divider(thickness: 1),
                         _buildSettingsOption('Address', Icons.location_on, context, const AddressPage()),
                         const Divider(thickness: 1),
