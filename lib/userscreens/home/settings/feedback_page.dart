@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FeedbackPage extends StatefulWidget {
   const FeedbackPage({super.key});
@@ -12,6 +14,56 @@ class _FeedbackPageState extends State<FeedbackPage> {
   String? _selectedImprovement = '';
   final TextEditingController _improvementController = TextEditingController();
 
+  Future<void> _submitFeedback() async {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    final userName = FirebaseAuth.instance.currentUser?.displayName ?? "Anonymous";
+
+    if (userId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('User not logged in. Cannot submit feedback.')),
+      );
+      return;
+    }
+
+    if (_improvementController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Detailed feedback cannot be empty.')),
+      );
+      return;
+    }
+
+    final feedback = {
+      'rating': _rating,
+      'improvement': _selectedImprovement,
+      'detailedFeedback': _improvementController.text,
+      'timestamp': FieldValue.serverTimestamp(),
+      'userName': userName,
+    };
+
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('feedback')
+          .add(feedback);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Feedback Submitted')),
+      );
+
+      // Reset the fields
+      setState(() {
+        _rating = 0;
+        _selectedImprovement = '';
+        _improvementController.clear();
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to submit feedback: $e')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +71,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
         title: const Text('Feedback'),
         backgroundColor: Colors.orange,
       ),
-      body: SingleChildScrollView( // Make the whole body scrollable
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -30,7 +82,6 @@ class _FeedbackPageState extends State<FeedbackPage> {
             ),
             const SizedBox(height: 20),
 
-            // 5 Star Rating
             const Text(
               'Rate your experience:',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
@@ -53,28 +104,42 @@ class _FeedbackPageState extends State<FeedbackPage> {
             ),
             const SizedBox(height: 20),
 
-            // Multiple Choice Selection with border-styled buttons
             const Text(
               'What can we improve?',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
             ),
-            Column(
+            Wrap(
+              spacing: 8.0,
+              runSpacing: 8.0,
               children: [
-                _buildImprovementOption('Overall Service'),
-                _buildImprovementOption('Repair Quality'),
-                _buildImprovementOption('Transparency'),
-                _buildImprovementOption('Customer Support'),
-                _buildImprovementOption('Pickup and Delivery Service'),
-                _buildImprovementOption('Speed and Efficiency'),
-              ],
+                'Overall Service',
+                'Repair Quality',
+                'Transparency',
+                'Customer Support',
+                'Pickup and Delivery Service',
+                'Speed and Efficiency',
+              ].map((option) {
+                return ChoiceChip(
+                  label: Text(option),
+                  selected: _selectedImprovement == option,
+                  onSelected: (selected) {
+                    setState(() {
+                      _selectedImprovement = selected ? option : '';
+                    });
+                  },
+                  selectedColor: Colors.orange.withOpacity(0.8),
+                  backgroundColor: Colors.grey.shade200,
+                );
+              }).toList(),
             ),
+
             const SizedBox(height: 22),
 
-            // Additional feedback
             const Text(
               'What else can we improve?',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
             ),
+            const SizedBox(height: 10),
             TextField(
               controller: _improvementController,
               maxLines: 5,
@@ -85,54 +150,17 @@ class _FeedbackPageState extends State<FeedbackPage> {
             ),
             const SizedBox(height: 30),
 
-            // Submit Button
-            ElevatedButton(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Feedback Submitted')),
-                );
-              },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
-              child: const Text('Submit'),
+            Center(
+              child: ElevatedButton(
+                onPressed: _submitFeedback,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
+                child: const Text('Submit'),
+              ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildImprovementOption(String option) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
-      child: OutlinedButton(
-        onPressed: () {
-          setState(() {
-            _selectedImprovement = option;
-          });
-        },
-        style: OutlinedButton.styleFrom(
-          disabledBackgroundColor: _selectedImprovement == option
-              ? Colors.white
-              : Colors.orange, // Text color
-          side: BorderSide(
-            color: _selectedImprovement == option
-                ? Colors.orange
-                : Colors.orange.withOpacity(0.5), // Border color
-            width: 2,
-          ),
-          padding: const EdgeInsets.symmetric(vertical: 12.0),
-          backgroundColor: _selectedImprovement == option
-              ? Colors.orange
-              : Colors.transparent, // Background color
-        ),
-        child: Text(
-          option,
-          style: TextStyle(
-            color: _selectedImprovement == option
-                ? Colors.white
-                : Colors.orange, // Text color
-            fontSize: 16,
-          ),
         ),
       ),
     );
