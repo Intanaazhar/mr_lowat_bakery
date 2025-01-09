@@ -165,72 +165,101 @@ class _AdminMostOrderPageState extends State<AdminMostOrder> {
   }
 
    Widget buildCard(String id, Map<String, dynamic> item) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      elevation: 4,
-      child: Column(
-        children: [
-          Expanded(
-            flex: 2,
-            child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
-              child: item['image'].toString().startsWith('http')
-                  ? Image.network(
-                      item['image'],
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      errorBuilder: (context, error, stackTrace) {
-                        return const Icon(Icons.broken_image, size: 50, color: Colors.grey);
-                      },
-                    )
-                  : Image.asset(
-                      item['image'],
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      errorBuilder: (context, error, stackTrace) {
-                        return const Icon(Icons.broken_image, size: 50, color: Colors.grey);
-                      },
-                    ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item['name'],
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
+  return Container(
+    width: 180,
+    height: 180, // Adjusted height to accommodate buttons below
+    decoration: BoxDecoration(
+      color: const Color.fromARGB(255, 247, 246, 244), // Background color
+      borderRadius: BorderRadius.circular(20), // Rounded corners
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.2), // Shadow color
+          blurRadius: 6.0, // Blur amount
+          spreadRadius: 2.0, // Spread amount
+          offset: const Offset(4.0, 4.0), // Shadow offset
+        ),
+      ],
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Image
+        ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ), // Rounded top corners
+          child: item['image'].toString().startsWith('http')
+              ? Image.network(
+                  item['image'],
+                  width: double.infinity,
+                  height: 150,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(Icons.broken_image, size: 50, color: Colors.grey);
+                  },
+                )
+              : Image.asset(
+                  item['image'],
+                  width: double.infinity,
+                  height: 150,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(Icons.broken_image, size: 50, color: Colors.grey);
+                  },
                 ),
-                const SizedBox(height: 5),
-                Text(
-                  'RM ${item['price']}',
-                  style: const TextStyle(
-                    color: Colors.green,
-                    fontSize: 14,
-                  ),
+        ),
+        const SizedBox(height: 10),
+        // Name and Price
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                item['name'],
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
                 ),
-              ],
-            ),
+                textAlign: TextAlign.left,
+                maxLines: 1, // Restrict to one line
+                overflow: TextOverflow.ellipsis, // Ellipsis for overflow
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'RM ${item['price']}',
+                style: const TextStyle(
+                  color: Colors.orange,
+                  fontSize: 13,
+                ),
+                textAlign: TextAlign.left,
+              ),
+            ],
           ),
-          Row(
+        ),
+        const SizedBox(height: 5),
+        // Edit and Delete Buttons
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              // Edit Button
               IconButton(
                 icon: const Icon(Icons.edit, color: Colors.blue),
                 onPressed: () => _showDialog(id: id, data: item),
               ),
+              // Delete Button
               IconButton(
                 icon: const Icon(Icons.delete, color: Colors.red),
                 onPressed: () => _deleteItem(id),
               ),
             ],
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
 }
