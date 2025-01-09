@@ -150,7 +150,21 @@ class AdminHomepage extends StatelessWidget {
               // Corrected the padding widget for MostOrderedPage
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
-                child: AdminMostOrder(collectionNames: ['cakes', 'burntCheesecakes', 'brownies', 'cheeseTarts','cupcakes','others']),
+                child: Column(
+                  children: [
+                    AdminMostOrder(collectionNames: ['cakes']),
+                    SizedBox(height: 10), // Space between items
+                    AdminMostOrder(collectionNames: ['burntCheesecakes']),
+                    SizedBox(height: 10), // Space between items
+                    AdminMostOrder(collectionNames: ['brownies']),
+                    SizedBox(height: 10), // Space between items
+                    AdminMostOrder(collectionNames: ['cheeseTarts']),
+                    SizedBox(height: 10), // Space between items
+                    AdminMostOrder(collectionNames: ['cupcakes']),
+                    SizedBox(height: 10), // Space between items
+                    AdminMostOrder(collectionNames: ['others']),
+                  ],
+                ),
               ),
             ],
           ),
