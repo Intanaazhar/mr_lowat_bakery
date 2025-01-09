@@ -72,157 +72,157 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
   }
 
   @override
-Widget build(BuildContext context) {
-  return Scaffold(
-    backgroundColor: Colors.grey[900],
-    appBar: AppBar(
-      title: const Text('Payment'),
-      backgroundColor: Colors.black,
-      elevation: 0,
-    ),
-    body: Column(
-      children: [
-        const Padding(
-          padding: EdgeInsets.symmetric(vertical: 20.0),
-          child: Text(
-            'Payment',
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey[900],
+      appBar: AppBar(
+        title: const Text('Payment'),
+        backgroundColor: Colors.black,
+        elevation: 0,
+      ),
+      body: Column(
+        children: [
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 20.0),
+            child: Text(
+              'Payment',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
             ),
           ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.radio_button_checked,
-              color: selectedPaymentMethod.isNotEmpty ? Colors.orange : Colors.grey,
-            ),
-            Container(width: 50, height: 2, color: Colors.orange),
-            Icon(
-              Icons.radio_button_unchecked,
-              color: selectedPaymentMethod == 'Confirmation' ? Colors.orange : Colors.grey,
-            ),
-          ],
-        ),
-        const SizedBox(height: 30),
-        Expanded(
-          child: SingleChildScrollView(
-            child: Container(
-              padding: const EdgeInsets.all(20),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
-                ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.radio_button_checked,
+                color: selectedPaymentMethod.isNotEmpty ? Colors.orange : Colors.grey,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Select payment method',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+              Container(width: 50, height: 2, color: Colors.orange),
+              Icon(
+                Icons.radio_button_unchecked,
+                color: selectedPaymentMethod == 'Confirmation' ? Colors.orange : Colors.grey,
+              ),
+            ],
+          ),
+          const SizedBox(height: 30),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
                   ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      _buildPaymentMethodIcon(Icons.credit_card, 'Credit/Debit Card', 'Card'),
-                      _buildPaymentMethodIcon(Icons.account_balance, 'Online Banking', 'Banking'),
-                      _buildPaymentMethodIcon(Icons.phone_iphone, 'Spay', 'Spay'),
-                    ],
-                  ),
-                  const SizedBox(height: 30),
-                  if (selectedPaymentMethod == 'Card') _buildCardDetailsSection(context),
-                  if (selectedPaymentMethod == 'Banking') _buildBankingOptionsSection(),
-                  if (selectedPaymentMethod == 'Spay') _buildSpaySection(),
-                  const Divider(),
-                  _buildSummarySection(
-                    subtotal: subtotal,
-                    addOn: addOn,
-                    shipping: shipping,
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context); // Cancel button
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey,
-                          minimumSize: const Size(double.infinity, 50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        child: const Text('Cancel'),
+                    const Text(
+                      'Select payment method',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          if (selectedPaymentMethod == 'Banking') {
-                            if (selectedBank == 'CIMB Clicks') {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CIMBClicksPage(), // Redirect to CIMB page
-                                ),
-                              );
-                            } else if (selectedBank != null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Redirecting to $selectedBank...')),
-                              );
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Please select a bank to proceed.')),
-                              );
-                            }
-                          } else if (selectedPaymentMethod == 'Card') {
-                            _processPayment(); // Handle credit/debit card payment
-                          } else if (selectedPaymentMethod == 'Spay') {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => SPayPage(),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _buildPaymentMethodIcon(Icons.credit_card, 'Credit/Debit Card', 'Card'),
+                        _buildPaymentMethodIcon(Icons.account_balance, 'Online Banking', 'Banking'),
+                        _buildPaymentMethodIcon(Icons.phone_iphone, 'Spay', 'Spay'),
+                      ],
+                    ),
+                    const SizedBox(height: 30),
+                    if (selectedPaymentMethod == 'Card') _buildCardDetailsSection(context),
+                    if (selectedPaymentMethod == 'Banking') _buildBankingOptionsSection(),
+                    if (selectedPaymentMethod == 'Spay') _buildSpaySection(),
+                    const Divider(),
+                    _buildSummarySection(
+                      subtotal: subtotal,
+                      addOn: addOn,
+                      shipping: shipping,
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context); // Cancel button
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.grey,
+                              minimumSize: const Size(double.infinity, 50),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                            );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Please select a payment method.')),
-                            );
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange,
-                          minimumSize: const Size(double.infinity, 50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Text('Cancel'),
                           ),
                         ),
-                        child: const Text('Proceed to Payment'),
-                      ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (selectedPaymentMethod == 'Banking') {
+                                if (selectedBank == 'CIMB Clicks') {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => CIMBClicksPage(),
+                                    ),
+                                  );
+                                } else if (selectedBank != null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text('Redirecting to $selectedBank...')),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Please select a bank to proceed.')),
+                                  );
+                                }
+                              } else if (selectedPaymentMethod == 'Card') {
+                                _processPayment();
+                              } else if (selectedPaymentMethod == 'Spay') {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SPayPage(),
+                                  ),
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Please select a payment method.')),
+                                );
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.orange,
+                              minimumSize: const Size(double.infinity, 50),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            child: const Text('Proceed to Payment'),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-                ],
               ),
             ),
           ),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 
   Widget _buildPaymentMethodIcon(IconData icon, String label, String method) {
     return GestureDetector(
@@ -311,38 +311,38 @@ Widget build(BuildContext context) {
   }
 
   Widget _buildBankingOptionsSection() {
-  return Column(
-    children: [
-      const Text(
-        'Select a bank:',
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-      ),
-      const SizedBox(height: 10),
-      DropdownButton<String>(
-        value: selectedBank,
-        hint: const Text('Choose your bank'),
-        items: const [
-          DropdownMenuItem(value: 'Maybank2U', child: Text('Maybank2U')),
-          DropdownMenuItem(value: 'CIMB Clicks', child: Text('CIMB Clicks')),
-          DropdownMenuItem(value: 'Public Bank', child: Text('Public Bank')),
-        ],
-        onChanged: (value) {
-          setState(() {
-            selectedBank = value; // Update the selected bank
-          });
-        },
-      ),
-    ],
-  );
-}
+    return Column(
+      children: [
+        const Text(
+          'Select a bank:',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        DropdownButton<String>(
+          value: selectedBank,
+          hint: const Text('Choose your bank'),
+          items: const [
+            DropdownMenuItem(value: 'Maybank2U', child: Text('Maybank2U')),
+            DropdownMenuItem(value: 'CIMB Clicks', child: Text('CIMB Clicks')),
+            DropdownMenuItem(value: 'Public Bank', child: Text('Public Bank')),
+          ],
+          onChanged: (value) {
+            setState(() {
+              selectedBank = value; // Update the selected bank
+            });
+          },
+        ),
+      ],
+    );
+  }
 
   Widget _buildSpaySection() {
-    return Center(
-      child: Column(
-        children: const [
-          Text('Spay Payment Page Placeholder'),
-        ],
-      ),
+    return Column(
+      children: const [
+        Text(
+          'Redirecting to Spay payment gateway...',
+          style: TextStyle(fontSize: 16),
+        ),
+      ],
     );
   }
 
@@ -352,42 +352,21 @@ Widget build(BuildContext context) {
     required double shipping,
   }) {
     double total = subtotal + addOn + shipping;
+
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text('Subtotal', style: TextStyle(fontSize: 16)),
-            Text('RM${subtotal.toStringAsFixed(2)}',
-                style: const TextStyle(fontSize: 16)),
-          ],
+        const Text(
+          'Summary',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text('Add On', style: TextStyle(fontSize: 16)),
-            Text('RM${addOn.toStringAsFixed(2)}',
-                style: const TextStyle(fontSize: 16)),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text('Shipping', style: TextStyle(fontSize: 16)),
-            Text('RM${shipping.toStringAsFixed(2)}',
-                style: const TextStyle(fontSize: 16)),
-          ],
-        ),
+        const SizedBox(height: 10),
+        Text('Subtotal: RM${subtotal.toStringAsFixed(2)}'),
+        Text('Add-ons: RM${addOn.toStringAsFixed(2)}'),
+        Text('Shipping: RM${shipping.toStringAsFixed(2)}'),
         const Divider(),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text('Total',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            Text('RM${total.toStringAsFixed(2)}',
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          ],
-        ),
+        Text('Total: RM${total.toStringAsFixed(2)}',
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
       ],
     );
   }
