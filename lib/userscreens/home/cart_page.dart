@@ -41,14 +41,10 @@ class _CartPageState extends State<CartPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Cart'),
-        backgroundColor: Colors.orange,
+        backgroundColor: Colors.orange, // Set app bar color to orange
       ),
-      body: FutureBuilder<QuerySnapshot>(
-        future: FirebaseFirestore.instance
-            .collection('users')
-            .doc(userId)
-            .collection('cart')
-            .get(),
+      body: FutureBuilder<List<QueryDocumentSnapshot>>(
+        future: _cartItemsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -64,7 +60,9 @@ class _CartPageState extends State<CartPage> {
             itemCount: orders.length,
             itemBuilder: (context, index) {
               var orderData = orders[index].data() as Map<String, dynamic>;
-              var documentId = orders[index].id; // Get document ID
+              var documentId = orders[index].id;
+
+              final price = _parsePrice(orderData['price'].toString());
 
               return Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -78,7 +76,7 @@ class _CartPageState extends State<CartPage> {
                     child: Row(
                       children: [
                         Image.asset(
-                          orderData['imagePath'],
+                          orderData['imagePath'], // Use Image.network for Firebase storage URLs
                           width: 60,
                           height: 60,
                           fit: BoxFit.cover,
@@ -97,45 +95,24 @@ class _CartPageState extends State<CartPage> {
                               ),
                               const SizedBox(height: 5),
                               Text(
-                                orderData['price'].toString(),
+                                'RM ${price.toStringAsFixed(2)}',
                                 style:
                                     const TextStyle(fontSize: 14, color: Colors.grey),
                               ),
                             ],
                           ),
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () async {
-                            try {
-                              await FirebaseFirestore.instance
-                                  .collection('users')
-                                  .doc(userId)
-                                  .collection('cart')
-                                  .doc(documentId)
-                                  .delete();
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Item removed from cart.'),
-                                ),
-                              );
-                            } catch (e) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Failed to remove item.'),
-                                ),
-                              );
-                            }
-                          },
-                        ),
                         ElevatedButton(
                           onPressed: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => CheckoutPage(
-                                  userId: userId,
-                                  cartItemId: documentId, // Pass document ID
+                                builder: (context) => PaymentOptionsPage(
+                                  userId: widget.userId,
+                                  cartItemId: documentId,
+                                  price: price,
+                                  addOns: orderData['addOns'] ?? false,
+                                  isDelivery: orderData['pickupOption'] == 'Delivery',
                                 ),
                               ),
                             );

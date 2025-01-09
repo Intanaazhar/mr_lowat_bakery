@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mr_lowat_bakery/userscreens/home/homepage.dart';
 
 class PaymentOptionsPage extends StatefulWidget {
-  const PaymentOptionsPage({super.key});
+  const PaymentOptionsPage({super.key, required bool isDelivery, required addOns, required double price, required String cartItemId, required String userId});
 
   @override
   _PaymentOptionsPageState createState() => _PaymentOptionsPageState();
@@ -112,7 +112,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const CIMBClicksPage(),
+                builder: (context) => CIMBClicksPage(),
               ),
             );
           } 
@@ -256,15 +256,6 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
     );
   }
 
-  Widget _buildSpaySection() {
-    return Center(
-      child: Column(
-        children: const [
-          Text('Spay Payment Page Placeholder'),
-        ],
-      ),
-    );
-  }
 
   Widget _buildSummarySection() {
     double total = subtotal + addOn + shipping;
@@ -405,7 +396,7 @@ ElevatedButton(
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const ConfirmationPage(),
+                                builder: (context) => ConfirmationPage(),
                               ),
                             );
                           });

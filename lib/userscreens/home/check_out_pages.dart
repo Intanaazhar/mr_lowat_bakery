@@ -196,13 +196,19 @@ class CheckoutPage extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
+                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const PaymentOptionsPage(),
+                        builder: (context) => PaymentOptionsPage(
+                          isDelivery: true, // or false, depending on your logic
+                          addOns: addOns, // replace with your actual add-ons list or data
+                          price: price, // replace with the actual price
+                          cartItemId:cartItemId, // replace with the actual cart item ID
+                          userId: userId, // replace with the actual user ID
+                        ),
                       ),
-                    );
-                  },
+                     );
+                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.orange,
                     padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
