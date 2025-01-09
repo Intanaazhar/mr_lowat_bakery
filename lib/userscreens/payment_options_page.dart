@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mr_lowat_bakery/userscreens/home/homepage.dart';
-import 'package:mr_lowat_bakery/userscreens/home/navigation_bar.dart';
 
 class PaymentOptionsPage extends StatefulWidget {
   const PaymentOptionsPage({super.key});
@@ -80,13 +79,11 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
                     children: [
                       _buildPaymentMethodIcon(Icons.credit_card, 'Credit/Debit Card', 'Card'),
                       _buildPaymentMethodIcon(Icons.account_balance, 'Online Banking', 'Banking'),
-                      _buildPaymentMethodIcon(Icons.phone_iphone, 'Spay', 'Spay'),
                     ],
                   ),
                   const SizedBox(height: 30),
                   if (selectedPaymentMethod == 'Card') _buildCardDetailsSection(context),
                   if (selectedPaymentMethod == 'Banking') _buildBankingOptionsSection(),
-                  if (selectedPaymentMethod == 'Spay') _buildSpaySection(),
                   const Divider(),
                   _buildSummarySection(),
                   const SizedBox(height: 20),
@@ -118,9 +115,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
                 builder: (context) => const CIMBClicksPage(),
               ),
             );
-          } else if (selectedPaymentMethod == 'Spay') {
-            _showSpayConfirmationDialog();
-          }
+          } 
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.orange,
@@ -262,9 +257,9 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
   }
 
   Widget _buildSpaySection() {
-    return const Center(
+    return Center(
       child: Column(
-        children: [
+        children: const [
           Text('Spay Payment Page Placeholder'),
         ],
       ),
@@ -307,32 +302,6 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
           ],
         ),
       ],
-    );
-  }
-
-  void _showSpayConfirmationDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Proceed to Sarawak Pay?'),
-          content: const Text('Do you want to proceed to the Sarawak Pay app?'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('No'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Proceed'),
-            ),
-          ],
-        );
-      },
     );
   }
 }
@@ -407,7 +376,7 @@ ElevatedButton(
                 Navigator.pop(context); // Close the dialog
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => const NavigationMenu()), // Navigate to home page
+                  MaterialPageRoute(builder: (context) => const Homepage()), // Navigate to home page
                   (route) => false,
                 );
               },
