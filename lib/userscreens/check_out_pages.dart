@@ -1,6 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mr_lowat_bakery/userscreens/payment_options_page.dart';
 
 class ProductInfo extends StatelessWidget {
@@ -76,7 +76,7 @@ class ProductInfo extends StatelessWidget {
               _buildDetailRow('Booking Date', DateFormat('yyyy-MM-dd').format(bookingDate)),
               _buildDetailRow('Payment', paymentOption),
               _buildDetailRow('Pickup', pickupOption),
-              const Divider(thickness: 1),
+              const Divider(thickness: 1), // Divider *between* sections
               _buildDetailRow('Add-ons', addOns ? "RM 5.00" : "Not Included"),
               _buildDetailRow('Delivery', isDelivery ? "RM 5.00" : "Not Included"),
             ],
@@ -99,6 +99,7 @@ class ProductInfo extends StatelessWidget {
     );
   }
 }
+
 
 class CheckoutPage extends StatelessWidget {
   final String userId;
@@ -134,21 +135,71 @@ class CheckoutPage extends StatelessWidget {
           DateTime bookingDate = DateTime.now();
           if (cartItem.containsKey('bookingDate')) {
             final bookingData = cartItem['bookingDate'];
-            if (bookingData is Timestamp) {
-              bookingDate = bookingData.toDate();
+            if (bookingData != null) {
+              if (bookingData is Timestamp) {
+                bookingDate = bookingData.toDate();
+              } else if (bookingData is String) {
+                try {
+                  bookingDate = DateTime.parse(bookingData);
+                } catch (e) {
+                  print("Error parsing bookingDate: $e");
+                }
+              } else {
+                print("bookingDate is of unexpected type: ${bookingData.runtimeType}");
+              }
+            } else {
+              print("bookingDate is null");
             }
+          } else {
+            print("bookingDate field is missing in document");
           }
 
-          double price = cartItem['price']?.toDouble() ?? 0.0;
-          bool addOns = cartItem['addOns'] ?? false;
-          bool isDelivery = cartItem['pickupOption'] == 'Delivery';
+          double price = 0.0;
+          if (cartItem.containsKey('price')) {
+            final priceData = cartItem['price'];
+            if (priceData is num) {
+              price = priceData.toDouble();
+            } else if (priceData is String) {
+              price = double.tryParse(priceData) ?? 0.0;
+            } else {
+              print('Unexpected price data type: ${priceData.runtimeType}');
+            }
+          } else {
+            print("price field is missing");
+          }
+
+          bool addOns = false;
+          if (cartItem.containsKey('addOns')) {
+            final addOnsData = cartItem['addOns'];
+            if (addOnsData is bool) {
+              addOns = addOnsData;
+            } else if (addOnsData is String) {
+              addOns = addOnsData.toLowerCase() == 'true';
+            } else {
+              print('Unexpected addOns data type: ${addOnsData.runtimeType}');
+            }
+          } else {
+            print("addOns field is missing");
+          }
+
+          bool isDelivery = false;
+          if (cartItem.containsKey('pickupOption')) {
+            isDelivery = cartItem['pickupOption'] == 'Delivery';
+          } else {
+            print("pickupOption field is missing");
+          }
+
+          print("Addons value before adding price: $addOns");
+          print("Delivery value before adding price: $isDelivery");
 
           if (addOns) {
             price += 5;
+            print("Price with addons: RM ${price.toStringAsFixed(2)}");
           }
 
           if (isDelivery) {
             price += 5.00;
+            print("Price with delivery: RM ${price.toStringAsFixed(2)}");
           }
 
           return Padding(
@@ -215,8 +266,8 @@ class CheckoutPage extends StatelessWidget {
               ],
             ),
           );
-        },
-      ),
+     }, // Closing brace for FutureBuilder
+      ), // Closing brace for Scaffold
     );
   }
 }
