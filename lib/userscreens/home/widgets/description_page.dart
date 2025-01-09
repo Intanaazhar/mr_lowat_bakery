@@ -176,7 +176,7 @@ class _DescriptionPageState extends State<DescriptionPage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.orange, // Set the background color to orange
                     ),
-                    child: Text("Book Now"),
+                    child: const Text("Book Now"),
                   )
                 ],
               ),
