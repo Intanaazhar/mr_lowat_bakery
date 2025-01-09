@@ -5,9 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 void openBookNowBottomSheet({
   required BuildContext context,
   required Function(Map<String, dynamic>) onAddToCart,
-  required String imagePath,   // Added parameter for image
-  required String name,        // Added parameter for name
-  required String price,       // Added parameter for price
+  required String imagePath,   
+  required String name,        
+  required String price,     
 }) {
   String? selectedSize;
   String? selectedFlavour;
@@ -118,9 +118,9 @@ void openBookNowBottomSheet({
                   child: ElevatedButton(
                     onPressed: () async {
                       final data = {
-                        'name': name,                       // Include the name
-                        'price': price,                     // Include the price
-                        'imagePath': imagePath,             // Include the image path
+                        'name': name,                       
+                        'price': price,                     
+                        'imagePath': imagePath,             
                         'size': selectedSize,
                         'flavour': selectedFlavour,
                         'pickupOption': selectedPickupOption,
@@ -206,7 +206,8 @@ Widget _buildSelectionColumn({
 Widget _buildDatePickerColumn({
   required String title,
   DateTime? bookingDate,
-  required void Function(DateTime? selectedDate) onDateSelected, required BuildContext context,
+  required void Function(DateTime? selectedDate) onDateSelected,
+  required BuildContext context,
 }) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -224,12 +225,15 @@ Widget _buildDatePickerColumn({
               : 'Select Date',
         ),
         onPressed: () async {
-         final DateTime? pickedDate = await showDatePicker(
-  context: context, // Use the context provided to the StatefulBuilder
-  initialDate: DateTime.now(),
-  firstDate: DateTime.now(),
-  lastDate: DateTime(2100),
-);
+          final DateTime currentDate = DateTime.now();
+          final DateTime firstAvailableDate = currentDate.add(const Duration(days: 7));
+          
+          final DateTime? pickedDate = await showDatePicker(
+            context: context,
+            initialDate: firstAvailableDate,
+            firstDate: firstAvailableDate,
+            lastDate: DateTime(2100),
+          );
 
           if (pickedDate != null) {
             onDateSelected(pickedDate);
