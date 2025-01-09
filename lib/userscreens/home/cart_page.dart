@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:mr_lowat_bakery/userscreens/home/homepage.dart';
-import 'package:mr_lowat_bakery/userscreens/payment_options_page.dart';
+import 'package:mr_lowat_bakery/userscreens/check_out_pages.dart';
 
 class CartPage extends StatefulWidget {
   final String userId;
@@ -22,18 +21,45 @@ class _CartPageState extends State<CartPage> {
   }
 
   Future<List<QueryDocumentSnapshot>> _fetchCartItems() async {
-    final snapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(widget.userId)
-        .collection('cart')
-        .where('isPaid', isEqualTo: false) // Only fetch unpaid items
-        .get();
-    return snapshot.docs;
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.userId)
+          .collection('cart')
+          .get();
+      return snapshot.docs;
+    } catch (e) {
+      print('Error fetching cart items: $e');
+      return [];
+    }
   }
 
-  double _parsePrice(String priceString) {
+  double _parsePrice(String? priceString) {
+    if (priceString == null || priceString.isEmpty) return 0.0;
     final numericString = priceString.replaceAll(RegExp(r'[^\d.]'), '');
     return double.tryParse(numericString) ?? 0.0;
+  }
+
+  Future<void> _deleteCartItem(String cartItemId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.userId)
+          .collection('cart')
+          .doc(cartItemId)
+          .delete();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Item removed from cart')),
+      );
+      setState(() {
+        _cartItemsFuture = _fetchCartItems(); // Refresh the cart list
+      });
+    } catch (e) {
+      print('Error deleting cart item: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to remove item')),
+      );
+    }
   }
 
   @override
@@ -41,7 +67,7 @@ class _CartPageState extends State<CartPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Cart'),
-        backgroundColor: Colors.orange, // Set app bar color to orange
+        backgroundColor: Colors.orange,
       ),
       body: FutureBuilder<List<QueryDocumentSnapshot>>(
         future: _cartItemsFuture,
@@ -62,7 +88,13 @@ class _CartPageState extends State<CartPage> {
               var orderData = orders[index].data() as Map<String, dynamic>;
               var documentId = orders[index].id;
 
-              final price = _parsePrice(orderData['price'].toString());
+              // Handle null values with defaults
+              var name = orderData['name'] ?? 'Unknown Item';
+              var priceString = orderData['price']?.toString() ?? '0.0';
+              final price = _parsePrice(priceString);
+              var imagePath = orderData['imagePath'] ?? 'assets/default_image.png';
+              var addOns = orderData['addOns'] ?? false;
+              var isDelivery = orderData['pickupOption'] == 'Delivery';
 
               return Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -76,7 +108,7 @@ class _CartPageState extends State<CartPage> {
                     child: Row(
                       children: [
                         Image.asset(
-                          orderData['imagePath'], // Use Image.network for Firebase storage URLs
+                          imagePath,
                           width: 60,
                           height: 60,
                           fit: BoxFit.cover,
@@ -89,39 +121,49 @@ class _CartPageState extends State<CartPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                orderData['name'],
+                                name,
                                 style: const TextStyle(
                                     fontSize: 16, fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 5),
                               Text(
                                 'RM ${price.toStringAsFixed(2)}',
-                                style:
-                                    const TextStyle(fontSize: 14, color: Colors.grey),
+                                style: const TextStyle(
+                                    fontSize: 14, color: Colors.grey),
                               ),
                             ],
                           ),
                         ),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PaymentOptionsPage(
-                                  userId: widget.userId,
-                                  cartItemId: documentId,
-                                  price: price,
-                                  addOns: orderData['addOns'] ?? false,
-                                  isDelivery: orderData['pickupOption'] == 'Delivery',
-                                ),
+                        Row(
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                _deleteCartItem(documentId);
+                              },
+                              icon: const Icon(Icons.delete, color: Colors.red),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => CheckoutPage(
+                                      userId: widget.userId,
+                                      cartItemId: documentId,
+                                      price: price,
+                                      addOns: addOns,
+                                      isDelivery: isDelivery,
+                                    ),
+                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.orange,
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
                               ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.orange,
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                          ),
-                          child: const Text('Checkout'),
+                              child: const Text('Checkout'),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -131,53 +173,6 @@ class _CartPageState extends State<CartPage> {
             },
           );
         },
-      ),
-    );
-  }
-}
-
-class ConfirmationPage extends StatelessWidget {
-  const ConfirmationPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Confirmation'),
-        backgroundColor: Colors.green,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.check_circle, size: 100, color: Colors.green),
-            const SizedBox(height: 20),
-            const Text(
-              'Payment Successful',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              'Thank you for your payment.',
-              style: TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 30),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Homepage()),
-                  (route) => false,
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-              ),
-              child: const Text('Back to Home'),
-            ),
-          ],
-        ),
       ),
     );
   }

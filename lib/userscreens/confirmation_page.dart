@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mr_lowat_bakery/userscreens/home/navigation_bar.dart';
 
 class ConfirmationPage extends StatelessWidget {
   const ConfirmationPage({super.key});
@@ -42,8 +43,13 @@ class ConfirmationPage extends StatelessWidget {
               minimumSize: const Size(200, 50),
             ),
             onPressed: () {
-              Navigator.popUntil(context, (route) => route.isFirst);
-            },
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const NavigationMenu(),
+                        ),
+                      );
+                    },
             child: const Text('Back to Home'),
           ),
         ],

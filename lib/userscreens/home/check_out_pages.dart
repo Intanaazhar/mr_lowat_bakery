@@ -39,7 +39,7 @@ class ProductInfo extends StatelessWidget {
             child: Image.network(
               imagePath,
               width: 200,
-              height: 200,
+              height: 400,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) =>
                   const Icon(Icons.broken_image, size: 80),
@@ -52,21 +52,23 @@ class ProductInfo extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Flexible(
+              // Ensure name can take up to two lines without overflow
+              Expanded(
                 child: Text(
                   name,
                   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2, // Display name on up to two lines
+                  overflow: TextOverflow.ellipsis, // Add ellipsis if the name is too long
                 ),
               ),
-              Text(
+              /*Text(
                 'RM ${price.toStringAsFixed(2)}',
                 style: const TextStyle(fontSize: 16, color: Colors.grey),
-              ),
+              ),*/
             ],
           ),
         ),
+        const SizedBox(height: 16),
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 16),
           child: Divider(thickness: 1),
@@ -75,12 +77,14 @@ class ProductInfo extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             children: [
+              _buildDetailRow('Price', 'RM ${price}'),
               _buildDetailRow('Flavour', flavour),
               _buildDetailRow('Size', size),
-              _buildDetailRow('Booking Date', DateFormat('yyyy-MM-dd').format(bookingDate)),
+              _buildDetailRow(
+                  'Booking Date', DateFormat('yyyy-MM-dd').format(bookingDate)),
               _buildDetailRow('Payment', paymentOption),
               _buildDetailRow('Pickup', pickupOption),
-              const Divider(thickness: 1), // Divider *between* sections
+              const Divider(thickness: 1),
               _buildDetailRow('Add-ons', addOns ? "RM 5.00" : "Not Included"),
               _buildDetailRow('Delivery', isDelivery ? "RM 10.00" : "Not Included"),
             ],
@@ -118,7 +122,7 @@ class CheckoutPage extends StatelessWidget {
   final String userId;
   final String cartItemId;
 
-  const CheckoutPage({super.key, required this.userId, required this.cartItemId});
+  const CheckoutPage({super.key, required this.userId, required this.cartItemId, required double price, required addOns, required bool isDelivery});
 
   @override
   Widget build(BuildContext context) {
@@ -203,7 +207,7 @@ class CheckoutPage extends StatelessWidget {
                           isDelivery: true, // or false, depending on your logic
                           addOns: addOns, // replace with your actual add-ons list or data
                           price: price, // replace with the actual price
-                          cartItemId:cartItemId, // replace with the actual cart item ID
+                          cartItemId: cartItemId, // replace with the actual cart item ID
                           userId: userId, // replace with the actual user ID
                         ),
                       ),

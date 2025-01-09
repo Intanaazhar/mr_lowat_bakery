@@ -1,3 +1,5 @@
+//not using this one
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -105,7 +107,7 @@ class CheckoutPage extends StatelessWidget {
   final String userId;
   final String cartItemId;
 
-  const CheckoutPage({super.key, required this.userId, required this.cartItemId});
+  const CheckoutPage({super.key, required this.userId, required this.cartItemId, required double price, required addOns, required bool isDelivery});
 
   @override
   Widget build(BuildContext context) {
