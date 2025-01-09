@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'confirmation_page.dart';
 
 class CIMBClicksPage extends StatelessWidget {
+  const CIMBClicksPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +43,7 @@ class CIMBClicksPage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ConfirmationPage(),
+                          builder: (context) => const ConfirmationPage(),
                         ),
                       );
                     });

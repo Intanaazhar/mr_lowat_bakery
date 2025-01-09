@@ -39,7 +39,7 @@ class SPayPage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ConfirmationPage(),
+                    builder: (context) => const ConfirmationPage(),
                   ),
                 );
               },

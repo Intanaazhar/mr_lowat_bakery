@@ -115,7 +115,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => CIMBClicksPage(),
+                builder: (context) => const CIMBClicksPage(),
               ),
             );
           } else if (selectedPaymentMethod == 'Spay') {
@@ -262,9 +262,9 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
   }
 
   Widget _buildSpaySection() {
-    return Center(
+    return const Center(
       child: Column(
-        children: const [
+        children: [
           Text('Spay Payment Page Placeholder'),
         ],
       ),
@@ -436,7 +436,7 @@ ElevatedButton(
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ConfirmationPage(),
+                                builder: (context) => const ConfirmationPage(),
                               ),
                             );
                           });

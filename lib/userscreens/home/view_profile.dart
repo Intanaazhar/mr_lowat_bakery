@@ -108,9 +108,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       // First Name (Editable)
                       TextField(
                         controller: _firstNameController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: "First Name",
-                          prefixIcon: const Icon(Icons.account_circle, color: Colors.orange),
+                          prefixIcon: Icon(Icons.account_circle, color: Colors.orange),
                         ),
                       ),
                       const Divider(),
@@ -118,9 +118,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       // Last Name (Editable)
                       TextField(
                         controller: _lastNameController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: "Last Name",
-                          prefixIcon: const Icon(Icons.account_circle, color: Colors.orange),
+                          prefixIcon: Icon(Icons.account_circle, color: Colors.orange),
                         ),
                       ),
                       const Divider(),
@@ -135,9 +135,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       // Phone Number (Editable)
                       TextField(
                         controller: _phoneController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: "Phone Number",
-                          prefixIcon: const Icon(Icons.phone, color: Colors.orange),
+                          prefixIcon: Icon(Icons.phone, color: Colors.orange),
                         ),
                       ),
                     ],
@@ -150,8 +150,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
               // Save Button to Update Profile
               ElevatedButton(
                 onPressed: updateUserProfile,
-                child: const Text("Save Changes"),
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+                child: const Text("Save Changes"),
               ),
             ],
           ),

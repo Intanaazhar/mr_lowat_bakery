@@ -12,14 +12,14 @@ class CartPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Cart'),
-        backgroundColor: Colors.orange, // Set app bar color to orange
+        backgroundColor: Colors.orange,
       ),
-      body: FutureBuilder<QuerySnapshot>(
-        future: FirebaseFirestore.instance
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
             .collection('users')
             .doc(userId)
             .collection('cart')
-            .get(),
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -35,7 +35,7 @@ class CartPage extends StatelessWidget {
             itemCount: orders.length,
             itemBuilder: (context, index) {
               var orderData = orders[index].data() as Map<String, dynamic>;
-              var documentId = orders[index].id; // Get document ID
+              var documentId = orders[index].id;
 
               return Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -49,7 +49,7 @@ class CartPage extends StatelessWidget {
                     child: Row(
                       children: [
                         Image.asset(
-                          orderData['imagePath'], // Use Image.network for Firebase storage URLs
+                          orderData['imagePath'],
                           width: 60,
                           height: 60,
                           fit: BoxFit.cover,
@@ -68,12 +68,36 @@ class CartPage extends StatelessWidget {
                               ),
                               const SizedBox(height: 5),
                               Text(
-                                orderData['price'].toString(),
-                                style:
-                                    const TextStyle(fontSize: 14, color: Colors.grey),
+                                orderData['price'],
+                                style: const TextStyle(
+                                    fontSize: 14, color: Colors.grey),
                               ),
                             ],
                           ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          onPressed: () async {
+                            try {
+                              await FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(userId)
+                                  .collection('cart')
+                                  .doc(documentId)
+                                  .delete();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Item removed from cart.'),
+                                ),
+                              );
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Failed to remove item.'),
+                                ),
+                              );
+                            }
+                          },
                         ),
                         ElevatedButton(
                           onPressed: () {
@@ -82,13 +106,13 @@ class CartPage extends StatelessWidget {
                               MaterialPageRoute(
                                 builder: (context) => CheckoutPage(
                                   userId: userId,
-                                  cartItemId: documentId, // Pass document ID
+                                  cartItemId: documentId,
                                 ),
                               ),
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.orange, // Set background color to orange
+                            backgroundColor: Colors.orange,
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                           ),
                           child: const Text('Checkout'),

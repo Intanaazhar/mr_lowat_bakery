@@ -33,7 +33,6 @@ class MenuWidgets extends StatelessWidget {
         ],
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // Image
@@ -41,17 +40,30 @@ class MenuWidgets extends StatelessWidget {
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(20),
               topRight: Radius.circular(20),
-            ), // Round only top edges
-            child: Image.asset(
-              imagePath,
-              width: double.infinity,
-              height: 120,
-              fit: BoxFit.cover,
-            ),
+            ), // Rounded top corners
+            child: imagePath.startsWith('http')
+                ? Image.network(
+                    imagePath,
+                    width: double.infinity,
+                    height: 150,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Icon(Icons.broken_image, size: 50, color: Colors.grey);
+                    },
+                  )
+                : Image.asset(
+                    imagePath,
+                    width: double.infinity,
+                    height: 150,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Icon(Icons.broken_image, size: 50, color: Colors.grey);
+                    },
+                  ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
           // Name, Price, and Button
-        Padding(
+          Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -74,7 +86,7 @@ class MenuWidgets extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        price,
+                        'RM $price',
                         style: const TextStyle(
                           color: Colors.orange,
                           fontSize: 12,
@@ -87,7 +99,6 @@ class MenuWidgets extends StatelessWidget {
                 // Button
                 ElevatedButton(
                   onPressed: () {
-                    // Navigate to the DescriptionPage and pass parameters
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -99,7 +110,7 @@ class MenuWidgets extends StatelessWidget {
                         ),
                       ),
                     );
-                  },
+                  }, // Call the external callback (onPressed)
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.orange,
                     shape: const CircleBorder(),

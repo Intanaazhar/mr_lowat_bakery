@@ -7,10 +7,11 @@ import 'package:mr_lowat_bakery/userscreens/home/Bycategories/burntcheesecake_ca
 import 'package:mr_lowat_bakery/userscreens/home/Bycategories/cheesetart_category.dart';
 import 'package:mr_lowat_bakery/userscreens/home/Bycategories/cupcake_category.dart';
 import 'package:mr_lowat_bakery/userscreens/home/Bycategories/others_category.dart';
-import 'package:mr_lowat_bakery/userscreens/home/widgets/menu_widgets.dart';
+//import 'package:mr_lowat_bakery/userscreens/home/widgets/menu_widgets.dart';
 import 'package:mr_lowat_bakery/userscreens/home/Bycategories/cake_category.dart';
 import 'package:mr_lowat_bakery/userscreens/home/Bycategories/most_ordered.dart';
 import 'package:mr_lowat_bakery/userscreens/home/widgets/category_widgets.dart';
+import 'package:mr_lowat_bakery/userscreens/home/widgets/most_ordered_widget.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -65,7 +66,6 @@ class _HomepageState extends State<Homepage> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,7 +82,7 @@ class _HomepageState extends State<Homepage> {
           icon: const Icon(Icons.settings, color: Colors.white),
           onPressed: () {},
         ),
-    actions: [
+        actions: [
           IconButton(
             icon: const Icon(Icons.shopping_cart, color: Colors.white),
             onPressed: () {
@@ -235,117 +235,24 @@ class _HomepageState extends State<Homepage> {
                 ),
               ),
               const SizedBox(height: 18),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Expanded(
-                          child: MenuWidgets(
-                            imagePath: 'assets/tart.jpg',
-                            name: 'Mini Cheese Tart',
-                            price: 'RM34.00-RM38.00',
-                            onPressed: () {
-                              _addToCart(CartItem(
-                                name: 'Mini Cheese Tart',
-                                price: 'RM34.00-RM38.00',
-                                imagePath: 'assets/tart.jpg',
-                              ));
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: MenuWidgets(
-                            imagePath: 'assets/brownies.jpg',
-                            name: 'Nutella Brownies',
-                            price: 'RM27.00-RM38.00',
-                            onPressed: () {
-                              _addToCart(CartItem(
-                                name: 'Nutella Brownies',
-                                price: 'RM27.00-RM38.00',
-                                imagePath: 'assets/brownies.jpg',
-                              ));
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 18),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Expanded(
-                          child: MenuWidgets(
-                            imagePath: 'assets/cupcake.jpg',
-                            name: 'Cupcake Fresh Cream',
-                            price: 'RM2.30-RM3.00/pcs',
-                            onPressed: () {
-                              _addToCart(CartItem(
-                                name: 'Cupcake Fresh Cream',
-                                price: 'RM2.30-RM3.00/pcs',
-                                imagePath: 'assets/cupcake.jpg',
-                              ));
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: MenuWidgets(
-                            imagePath: 'assets/puffs.jpg',
-                            name: 'Cream Puffs 25 Pieces',
-                            price: 'RM25.00-RM35.00',
-                            onPressed: () {
-                              _addToCart(CartItem(
-                                name: 'Cream Puffs 25 Pieces',
-                                price: 'RM25.00-RM35.00',
-                                imagePath: 'assets/puffs.jpg',
-                              ));
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 18),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Expanded(
-                          child: MenuWidgets(
-                            imagePath: 'assets/tart1.png',
-                            name: 'Mini Fruit Tart',
-                            price: 'RM35',
-                            onPressed: () {
-                              _addToCart(CartItem(
-                                name: 'Mini Fruit Tart',
-                                price: 'RM35',
-                                imagePath: 'assets/tart1.png',
-                              ));
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: MenuWidgets(
-                            imagePath: 'assets/cream_cheese_nutella.png',
-                            name: 'Cream Cheese Brownies',
-                            price: 'RM45',
-                            onPressed: () {
-                              _addToCart(CartItem(
-                                name: 'Cream Cheese Brownies',
-                                price: 'RM45',
-                                imagePath: 'assets/cream_cheese_nutella.png',
-                              ));
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                          const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                children: [
+                  MenuList(collectionNames: ['cakes']),
+                  SizedBox(height: 10), // Space between items
+                  MenuList(collectionNames: ['burntCheesecakes']),
+                  SizedBox(height: 10), // Space between items
+                  MenuList(collectionNames: ['brownies']),
+                  SizedBox(height: 10), // Space between items
+                  MenuList(collectionNames: ['cheeseTarts']),
+                  SizedBox(height: 10), // Space between items
+                  MenuList(collectionNames: ['cupcakes']),
+                  SizedBox(height: 10), // Space between items
+                  MenuList(collectionNames: ['others']),
+                ],
               ),
+              )
             ],
           ),
         ),

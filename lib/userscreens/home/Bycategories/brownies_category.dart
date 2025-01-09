@@ -154,7 +154,7 @@ class _BrowniesCategoryPageState extends State<BrowniesCategoryPage> {
                                 builder: (context) => DescriptionPage(
                                   imagePath: item['image'],
                                   name: item['name'],
-                                  price: 'RM ${item['price']}',
+                                  price: item['price'],
                                   onAddToCart: () {
                                     addToCart(item);
                                   },
