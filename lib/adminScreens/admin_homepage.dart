@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mr_lowat_bakery/adminScreens/admincakes.dart';
-import 'package:mr_lowat_bakery/adminScreens/admincheesecake.dart';
-import 'package:mr_lowat_bakery/adminScreens/admintart.dart';
-import 'package:mr_lowat_bakery/adminScreens/adminbrownies.dart';
-import 'package:mr_lowat_bakery/adminScreens/admincupcake.dart';
-import 'package:mr_lowat_bakery/adminScreens/adminothers.dart';
-import 'package:mr_lowat_bakery/adminScreens/admin_most_ordered.dart';
+import 'package:mr_lowat_bakery/adminScreens/admincategory/admincakes.dart';
+import 'package:mr_lowat_bakery/adminScreens/admincategory/admincheesecake.dart';
+import 'package:mr_lowat_bakery/adminScreens/admincategory/admintart.dart';
+import 'package:mr_lowat_bakery/adminScreens/admincategory/adminbrownies.dart';
+import 'package:mr_lowat_bakery/adminScreens/admincategory/admincupcake.dart';
+import 'package:mr_lowat_bakery/adminScreens/admincategory/adminothers.dart';
+import 'package:mr_lowat_bakery/adminScreens/admincategory/admin_most_ordered.dart';
 import 'package:mr_lowat_bakery/userscreens/home/widgets/category_widgets.dart';
 
 class AdminHomepage extends StatelessWidget {

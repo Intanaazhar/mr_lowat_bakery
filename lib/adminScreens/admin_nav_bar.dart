@@ -4,7 +4,7 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:mr_lowat_bakery/adminScreens/admin_homepage.dart';
 import 'package:mr_lowat_bakery/adminScreens/admin_notification.dart';
 import 'package:mr_lowat_bakery/adminScreens/admin_orderlist.dart';
-import 'package:mr_lowat_bakery/adminScreens/admin_menu.dart';
+import 'package:mr_lowat_bakery/adminScreens/adminProfile/admin_menu.dart';
 import 'package:mr_lowat_bakery/adminScreens/admin_updates.dart'; 
 
 class AdminNavigationMenu extends StatelessWidget {

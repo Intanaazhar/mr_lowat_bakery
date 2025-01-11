@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:mr_lowat_bakery/userscreens/home/Bycategories/brownies_category.dart';
-import 'package:mr_lowat_bakery/userscreens/home/cart_page.dart'; // Ensure this file is correctly imported
+import 'package:mr_lowat_bakery/userscreens/payment/cart_page.dart'; // Ensure this file is correctly imported
 import 'package:mr_lowat_bakery/userscreens/home/Bycategories/burntcheesecake_category.dart';
 import 'package:mr_lowat_bakery/userscreens/home/Bycategories/cheesetart_category.dart';
 import 'package:mr_lowat_bakery/userscreens/home/Bycategories/cupcake_category.dart';

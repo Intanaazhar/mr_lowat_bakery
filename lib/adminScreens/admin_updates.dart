@@ -113,7 +113,7 @@ class AdminUpdates extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Text('Order details:'),
-                                Text('Booking Date: ${item['requiredDate'] ?? 'N/A'}'),
+                                Text('Booking Date: ${item['bookingDate'] ?? 'N/A'}'),
                                 Text('Flavour: ${item['flavour'] ?? 'N/A'}'),
                                 Text('Pickup Option: ${item['pickupOption'] ?? 'N/A'}'),
                               ],

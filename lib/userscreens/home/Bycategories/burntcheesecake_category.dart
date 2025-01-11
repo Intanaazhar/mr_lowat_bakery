@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:mr_lowat_bakery/userscreens/home/cart_page.dart';
+import 'package:mr_lowat_bakery/userscreens/payment/cart_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/widgets/description_page.dart';
 
 class BurntCheesecakePage extends StatefulWidget {
