@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mr_lowat_bakery/userscreens/home/settings/edit_profile.dart';
 import 'package:mr_lowat_bakery/userscreens/home/view_profile.dart';
 import 'package:mr_lowat_bakery/userscreens/my_orders.dart';
 import 'package:mr_lowat_bakery/userscreens/home/settings/settings_page.dart';
@@ -51,6 +52,15 @@ class _ProfileMenuState extends State<ProfileMenu> {
     }
   }
 
+  Future<void> _logout() async {
+    try {
+      await FirebaseAuth.instance.signOut(); // Sign out from Firebase
+      Navigator.pushReplacementNamed(context, '/login'); // Redirect to login page
+    } catch (e) {
+      print("Logout error: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,6 +73,34 @@ class _ProfileMenuState extends State<ProfileMenu> {
           style: TextStyle(color: Colors.white, fontSize: 20),
         ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'Log Out',
+            onPressed: () async {
+              final shouldLogout = await showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text("Log Out"),
+                  content: const Text("Are you sure you want to log out?"),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: const Text("Cancel"),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      child: const Text("Log Out"),
+                    ),
+                  ],
+                ),
+              );
+              if (shouldLogout == true) {
+                _logout();
+              }
+            },
+          ),
+        ],
       ),
       body: Center(
         child: Column(
@@ -147,42 +185,6 @@ class _ProfileMenuState extends State<ProfileMenu> {
               },
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-// Reusable Button Widget
-class ProfileButton extends StatelessWidget {
-  final String label;
-  final VoidCallback onTap;
-
-  const ProfileButton({super.key, required this.label, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 350,
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 225, 126, 19),
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 2,
-              blurRadius: 5,
-            ),
-          ],
-        ),
-        child: Center(
-          child: Text(
-            label,
-            style: const TextStyle(fontSize: 18, color: Colors.white),
-          ),
         ),
       ),
     );

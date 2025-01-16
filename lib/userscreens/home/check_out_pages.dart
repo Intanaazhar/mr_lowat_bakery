@@ -77,7 +77,7 @@ class ProductInfo extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             children: [
-              _buildDetailRow('Price', 'RM ${price}'),
+              _buildDetailRow('Price', 'RM ${price.toStringAsFixed(2)}'),
               _buildDetailRow('Flavour', flavour),
               _buildDetailRow('Size', size),
               _buildDetailRow(
@@ -122,7 +122,7 @@ class CheckoutPage extends StatelessWidget {
   final String userId;
   final String cartItemId;
 
-  const CheckoutPage({super.key, required this.userId, required this.cartItemId, required double price, required addOns, required bool isDelivery});
+  const CheckoutPage({super.key, required this.userId, required this.cartItemId});
 
   @override
   Widget build(BuildContext context) {

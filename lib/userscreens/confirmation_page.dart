@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mr_lowat_bakery/userscreens/home/navigation_bar.dart';
+//import 'package:mr_lowat_bakery/lib/userscreens/home/navigation_bar.dart';
 
 class ConfirmationPage extends StatelessWidget {
   const ConfirmationPage({super.key});
@@ -42,14 +44,12 @@ class ConfirmationPage extends StatelessWidget {
               backgroundColor: Colors.orange,
               minimumSize: const Size(200, 50),
             ),
-            onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const NavigationMenu(),
-                        ),
-                      );
-                    },
+           onPressed: () {
+              // Use Get to navigate back to NavigationMenu and reset to Home
+              final controller = Get.find<NavigationController>();
+              controller.selectedIndex.value = 0; // Set Home as selected
+              Get.offAll(() => const NavigationMenu());
+            },
             child: const Text('Back to Home'),
           ),
         ],

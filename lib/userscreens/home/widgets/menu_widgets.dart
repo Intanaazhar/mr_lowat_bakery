@@ -19,7 +19,9 @@ class MenuWidgets extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 180,
-      height: 200,
+      constraints: const BoxConstraints(
+    maxHeight: 200, // Prevent overflow by constraining the height
+      ),//height: 200,
       decoration: BoxDecoration(
         color: const Color.fromARGB(255, 247, 246, 244), // Background color
         borderRadius: BorderRadius.circular(20), // Rounded corners
@@ -45,7 +47,7 @@ class MenuWidgets extends StatelessWidget {
                 ? Image.network(
                     imagePath,
                     width: double.infinity,
-                    height: 150,
+                    height: 100,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return const Icon(Icons.broken_image, size: 50, color: Colors.grey);
@@ -54,7 +56,7 @@ class MenuWidgets extends StatelessWidget {
                 : Image.asset(
                     imagePath,
                     width: double.infinity,
-                    height: 150,
+                    height: 100,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return const Icon(Icons.broken_image, size: 50, color: Colors.grey);
