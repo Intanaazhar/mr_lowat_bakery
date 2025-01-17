@@ -1,8 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mr_lowat_bakery/userscreens/home/homepage.dart';
 
 class PaymentOptionsPage extends StatefulWidget {
-  const PaymentOptionsPage({super.key, required bool isDelivery, required addOns, required double price, required String cartItemId, required String userId});
+  const PaymentOptionsPage({
+    super.key,
+    required this.isDelivery,
+    required this.addOns,
+    required this.price,
+    required this.cartItemId,
+    required this.userId,
+  });
+
+  final bool isDelivery;
+  final bool addOns;
+  final double price;
+  final String cartItemId;
+  final String userId;
 
   @override
   _PaymentOptionsPageState createState() => _PaymentOptionsPageState();
@@ -12,9 +26,38 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
   String selectedPaymentMethod = '';
   String? selectedBank;
   bool cardSaved = false;
-  double subtotal = 80.0;
-  double addOn = 10.0;
-  double shipping = 0.0;
+  double subtotal = 0.0; // To be fetched
+  double addOn = 0.0; // Dynamic based on widget.addOns
+  double shipping = 0.0; // Dynamic based on widget.isDelivery
+
+@override
+  void initState() {
+    super.initState();
+    _fetchSubtotal();
+  }
+
+  Future<void> _fetchSubtotal() async {
+    try {
+      final cartDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.userId)
+          .collection('cart')
+          .doc(widget.cartItemId)
+          .get();
+
+      if (cartDoc.exists) {
+        setState(() {
+          subtotal = double.parse(cartDoc.data()?['price'] ?? '0.00');
+          addOn = widget.addOns ? 5.0 : 0.0;
+          shipping = widget.isDelivery ? 10.0 : 0.0;
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error fetching subtotal: $e')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -150,9 +150,6 @@ class _CartPageState extends State<CartPage> {
                                     builder: (context) => CheckoutPage(
                                       userId: widget.userId,
                                       cartItemId: documentId,
-                                      price: price,
-                                      addOns: addOns,
-                                      isDelivery: isDelivery,
                                     ),
                                   ),
                                 );

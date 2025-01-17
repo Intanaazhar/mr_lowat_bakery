@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:mr_lowat_bakery/userscreens/home/Bycategories/brownies_category.dart';
-import 'package:mr_lowat_bakery/userscreens/home/cart_page.dart'; // Ensure this file is correctly imported
+import 'package:mr_lowat_bakery/userscreens/home/cart_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/Bycategories/burntcheesecake_category.dart';
 import 'package:mr_lowat_bakery/userscreens/home/Bycategories/cheesetart_category.dart';
 import 'package:mr_lowat_bakery/userscreens/home/Bycategories/cupcake_category.dart';
 import 'package:mr_lowat_bakery/userscreens/home/Bycategories/others_category.dart';
-//import 'package:mr_lowat_bakery/userscreens/home/widgets/menu_widgets.dart';
+import 'package:mr_lowat_bakery/userscreens/home/profile_menu.dart';
+import 'package:mr_lowat_bakery/userscreens/home/search_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/Bycategories/cake_category.dart';
 import 'package:mr_lowat_bakery/userscreens/home/Bycategories/most_ordered.dart';
 import 'package:mr_lowat_bakery/userscreens/home/widgets/category_widgets.dart';
@@ -54,6 +55,20 @@ class _HomepageState extends State<Homepage> {
   late User? user;
   List<CartItem> cart = [];
 
+  List<String> _getRandomCategories() {
+  final List<String> allCategories = [
+    'cakes',
+    'burntCheesecakes',
+    'brownies',
+    'cheeseTarts',
+    'cupcakes',
+    'others',
+  ];
+
+  // Shuffle and return the first 4 categories
+    return (List.of(allCategories)..shuffle()).take(4).toList();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -80,7 +95,12 @@ class _HomepageState extends State<Homepage> {
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.settings, color: Colors.white),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ProfileMenu()),
+            );
+          },
         ),
         actions: [
           IconButton(
@@ -113,6 +133,14 @@ class _HomepageState extends State<Homepage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: TextField(
+                  readOnly: true, // Prevent text input, treating it as a tappable widget
+                  onTap: () {
+                    // Redirect to the search page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const SearchPage()),
+                    );
+                  },
                   decoration: InputDecoration(
                     hintText: 'Search here...',
                     prefixIcon: const Icon(Icons.search),
@@ -208,51 +236,49 @@ class _HomepageState extends State<Homepage> {
               ),
               const SizedBox(height: 16),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Most Ordered',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const MostOrderedPage(collectionName: 'cakes')),
-                        );
-                      },
-                      child: const Text(
-                        'View All',
-                        style: TextStyle(
-                          color: Colors.blue,
-                          fontWeight: FontWeight.w500,
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Most Ordered',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const MostOrderedPage(),
                         ),
+                      );
+                    },
+                    child: const Text(
+                      'View All',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 18),
-                          const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                children: [
-                  MenuList(collectionNames: ['cakes']),
-                  SizedBox(height: 10), // Space between items
-                  MenuList(collectionNames: ['burntCheesecakes']),
-                  SizedBox(height: 10), // Space between items
-                  MenuList(collectionNames: ['brownies']),
-                  SizedBox(height: 10), // Space between items
-                  MenuList(collectionNames: ['cheeseTarts']),
-                  SizedBox(height: 10), // Space between items
-                  MenuList(collectionNames: ['cupcakes']),
-                  SizedBox(height: 10), // Space between items
-                  MenuList(collectionNames: ['others']),
+                  ),
                 ],
               ),
-              )
+            ),
+            const SizedBox(height: 18),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                children: _getRandomCategories()
+                    .map((category) => Column(
+                          children: [
+                            MenuList(collectionNames: [category]),
+                            const SizedBox(height: 10), // Space between items
+                          ],
+                        ))
+                    .toList(),
+              ),
+            ),
             ],
           ),
         ),
