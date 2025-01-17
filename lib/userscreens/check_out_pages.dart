@@ -1,5 +1,3 @@
-//not using this one
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -8,7 +6,7 @@ import 'package:mr_lowat_bakery/userscreens/payment_options_page.dart';
 class ProductInfo extends StatelessWidget {
   final String imagePath;
   final String name;
-  final double price;
+  final String price;
   final String flavour;
   final String size;
   final bool addOns;
@@ -38,10 +36,10 @@ class ProductInfo extends StatelessWidget {
         Center(
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: Image.asset(
+            child: Image.network(
               imagePath,
               width: 200,
-              height: 200,
+              height: 400,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) =>
                   const Icon(Icons.broken_image, size: 80),
@@ -54,17 +52,18 @@ class ProductInfo extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                name,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-              ),
-              Text(
-                'RM ${price.toStringAsFixed(2)}',
-                style: const TextStyle(fontSize: 16, color: Colors.grey),
+              Expanded(
+                child: Text(
+                  name,
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ],
           ),
         ),
+        const SizedBox(height: 16),
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 16),
           child: Divider(thickness: 1),
@@ -73,14 +72,16 @@ class ProductInfo extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             children: [
+              _buildDetailRow('Price', 'RM ${double.parse(price).toStringAsFixed(2)}'),
               _buildDetailRow('Flavour', flavour),
               _buildDetailRow('Size', size),
-              _buildDetailRow('Booking Date', DateFormat('yyyy-MM-dd').format(bookingDate)),
+              _buildDetailRow(
+                  'Booking Date', DateFormat('yyyy-MM-dd').format(bookingDate)),
               _buildDetailRow('Payment', paymentOption),
               _buildDetailRow('Pickup', pickupOption),
-              const Divider(thickness: 1), // Divider *between* sections
+              const Divider(thickness: 1),
               _buildDetailRow('Add-ons', addOns ? "RM 5.00" : "Not Included"),
-              _buildDetailRow('Delivery', isDelivery ? "RM 5.00" : "Not Included"),
+              _buildDetailRow('Delivery', isDelivery ? "RM 10.00" : "Not Included"),
             ],
           ),
         ),
@@ -94,20 +95,29 @@ class ProductInfo extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label),
-          Text(value),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 16),
+          ),
+          Flexible(
+            child: Text(
+              value,
+              style: const TextStyle(fontSize: 16, color: Colors.grey),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         ],
       ),
     );
   }
 }
 
-
 class CheckoutPage extends StatelessWidget {
   final String userId;
   final String cartItemId;
 
-  const CheckoutPage({super.key, required this.userId, required this.cartItemId, required double price, required addOns, required bool isDelivery});
+  const CheckoutPage({super.key, required this.userId, required this.cartItemId});
 
   @override
   Widget build(BuildContext context) {
@@ -134,75 +144,14 @@ class CheckoutPage extends StatelessWidget {
 
           final cartItem = snapshot.data!.data() as Map<String, dynamic>;
 
-          DateTime bookingDate = DateTime.now();
-          if (cartItem.containsKey('bookingDate')) {
-            final bookingData = cartItem['bookingDate'];
-            if (bookingData != null) {
-              if (bookingData is Timestamp) {
-                bookingDate = bookingData.toDate();
-              } else if (bookingData is String) {
-                try {
-                  bookingDate = DateTime.parse(bookingData);
-                } catch (e) {
-                  print("Error parsing bookingDate: $e");
-                }
-              } else {
-                print("bookingDate is of unexpected type: ${bookingData.runtimeType}");
-              }
-            } else {
-              print("bookingDate is null");
-            }
-          } else {
-            print("bookingDate field is missing in document");
-          }
+          final bookingDate = _parseBookingDate(cartItem);
+          final price = double.parse(cartItem['price'] ?? '0.00');
+          final addOns = cartItem['addOns'] ?? false;
+          final isDelivery = cartItem['pickupOption'] == 'Delivery';
 
-          double price = 0.0;
-          if (cartItem.containsKey('price')) {
-            final priceData = cartItem['price'];
-            if (priceData is num) {
-              price = priceData.toDouble();
-            } else if (priceData is String) {
-              price = double.tryParse(priceData) ?? 0.0;
-            } else {
-              print('Unexpected price data type: ${priceData.runtimeType}');
-            }
-          } else {
-            print("price field is missing");
-          }
-
-          bool addOns = false;
-          if (cartItem.containsKey('addOns')) {
-            final addOnsData = cartItem['addOns'];
-            if (addOnsData is bool) {
-              addOns = addOnsData;
-            } else if (addOnsData is String) {
-              addOns = addOnsData.toLowerCase() == 'true';
-            } else {
-              print('Unexpected addOns data type: ${addOnsData.runtimeType}');
-            }
-          } else {
-            print("addOns field is missing");
-          }
-
-          bool isDelivery = false;
-          if (cartItem.containsKey('pickupOption')) {
-            isDelivery = cartItem['pickupOption'] == 'Delivery';
-          } else {
-            print("pickupOption field is missing");
-          }
-
-          print("Addons value before adding price: $addOns");
-          print("Delivery value before adding price: $isDelivery");
-
-          if (addOns) {
-            price += 5;
-            print("Price with addons: RM ${price.toStringAsFixed(2)}");
-          }
-
-          if (isDelivery) {
-            price += 5.00;
-            print("Price with delivery: RM ${price.toStringAsFixed(2)}");
-          }
+          final addOnsPrice = addOns ? 5.00 : 0.00;
+          final deliveryPrice = isDelivery ? 10.00 : 0.00;
+          final totalPrice = price + addOnsPrice + deliveryPrice;
 
           return Padding(
             padding: const EdgeInsets.all(16.0),
@@ -219,7 +168,7 @@ class CheckoutPage extends StatelessWidget {
                     child: ProductInfo(
                       imagePath: cartItem['imagePath'] ?? '',
                       name: cartItem['name'] ?? '',
-                      price: price,
+                      price: price.toStringAsFixed(2),
                       flavour: cartItem['flavour'] ?? '',
                       size: cartItem['size'] ?? '',
                       paymentOption: cartItem['paymentOption'] ?? '',
@@ -242,7 +191,7 @@ class CheckoutPage extends StatelessWidget {
                         style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        'RM ${price.toStringAsFixed(2)}',
+                        'RM ${totalPrice.toStringAsFixed(2)}',
                         style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                     ],
@@ -250,19 +199,19 @@ class CheckoutPage extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                     Navigator.push(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => PaymentOptionsPage(
-                          isDelivery: true, // or false, depending on your logic
-                          addOns: addOns, // replace with your actual add-ons list or data
-                          price: price, // replace with the actual price
-                          cartItemId:cartItemId, // replace with the actual cart item ID
-                          userId: userId, // replace with the actual user ID
+                          isDelivery: isDelivery,
+                          addOns: addOns,
+                          price: totalPrice,
+                          cartItemId: cartItemId,
+                          userId: userId,
                         ),
                       ),
-                     );
-                   },
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.orange,
                     padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
@@ -273,8 +222,17 @@ class CheckoutPage extends StatelessWidget {
               ],
             ),
           );
-     }, // Closing brace for FutureBuilder
-      ), // Closing brace for Scaffold
+        },
+      ),
     );
+  }
+
+  DateTime _parseBookingDate(Map<String, dynamic> cartItem) {
+    if (cartItem.containsKey('bookingDate')) {
+      final bookingData = cartItem['bookingDate'];
+      if (bookingData is Timestamp) return bookingData.toDate();
+      if (bookingData is String) return DateTime.tryParse(bookingData) ?? DateTime.now();
+    }
+    return DateTime.now();
   }
 }

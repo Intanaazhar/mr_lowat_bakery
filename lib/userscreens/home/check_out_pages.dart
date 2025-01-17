@@ -6,7 +6,7 @@ import 'package:mr_lowat_bakery/userscreens/payment_options_page.dart';
 class ProductInfo extends StatelessWidget {
   final String imagePath;
   final String name;
-  final double price;
+  final String price;
   final String flavour;
   final String size;
   final bool addOns;
@@ -52,19 +52,14 @@ class ProductInfo extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Ensure name can take up to two lines without overflow
               Expanded(
                 child: Text(
                   name,
                   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                  maxLines: 2, // Display name on up to two lines
-                  overflow: TextOverflow.ellipsis, // Add ellipsis if the name is too long
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              /*Text(
-                'RM ${price.toStringAsFixed(2)}',
-                style: const TextStyle(fontSize: 16, color: Colors.grey),
-              ),*/
             ],
           ),
         ),
@@ -77,7 +72,7 @@ class ProductInfo extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             children: [
-              _buildDetailRow('Price', 'RM ${price.toStringAsFixed(2)}'),
+              _buildDetailRow('Price', 'RM $price'),
               _buildDetailRow('Flavour', flavour),
               _buildDetailRow('Size', size),
               _buildDetailRow(
@@ -150,7 +145,7 @@ class CheckoutPage extends StatelessWidget {
           final cartItem = snapshot.data!.data() as Map<String, dynamic>;
 
           final bookingDate = _parseBookingDate(cartItem);
-          final price = _calculatePrice(cartItem);
+          final price = cartItem['price'] ?? '0.00';
           final addOns = cartItem['addOns'] ?? false;
           final isDelivery = cartItem['pickupOption'] == 'Delivery';
 
@@ -192,7 +187,7 @@ class CheckoutPage extends StatelessWidget {
                         style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        'RM ${price.toStringAsFixed(2)}',
+                        'RM $price',
                         style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                     ],
@@ -204,11 +199,11 @@ class CheckoutPage extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => PaymentOptionsPage(
-                          isDelivery: true, // or false, depending on your logic
-                          addOns: addOns, // replace with your actual add-ons list or data
-                          price: price, // replace with the actual price
-                          cartItemId: cartItemId, // replace with the actual cart item ID
-                          userId: userId, // replace with the actual user ID
+                          isDelivery: isDelivery,
+                          addOns: addOns,
+                          price: price,
+                          cartItemId: cartItemId,
+                          userId: userId,
                         ),
                       ),
                      );
@@ -235,12 +230,5 @@ class CheckoutPage extends StatelessWidget {
       if (bookingData is String) return DateTime.tryParse(bookingData) ?? DateTime.now();
     }
     return DateTime.now();
-  }
-
-  double _calculatePrice(Map<String, dynamic> cartItem) {
-    double price = cartItem['price'] ?? 0.0;
-    if (cartItem['addOns'] == true) price += 5;
-    if (cartItem['pickupOption'] == 'Delivery') price += 5;
-    return price;
   }
 }

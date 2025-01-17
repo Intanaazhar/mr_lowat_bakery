@@ -100,23 +100,33 @@ class _AdminEditMenuState extends State<AdminEditMenu> {
                         Expanded(
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Image.network(
-                              category['imagePath'],
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return const Icon(Icons.broken_image, size: 50, color: Colors.grey);
-                              },
-                            ),
+                            child: category['imagePath'] != null
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.asset(
+                                      category['imagePath'], // Use asset icons
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (context, error, stackTrace) {
+                                        return const Icon(Icons.broken_image, size: 50, color: Colors.grey);
+                                      },
+                                    ),
+                                  )
+                                : const Icon(
+                                    Icons.category,
+                                    size: 50,
+                                    color: Colors.grey,
+                                  ),
                           ),
                         ),
                         const SizedBox(height: 10),
                         Text(
-                          category['name'],
+                          category['name'] ?? 'Unnamed',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
                             color: Colors.black87,
                           ),
+                          textAlign: TextAlign.center,
                         ),
                       ],
                     ),
