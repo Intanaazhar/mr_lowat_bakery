@@ -1,11 +1,23 @@
 import 'package:flutter/material.dart';
-import 'confirmation_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mr_lowat_bakery/userscreens/home/homepage.dart';
+import 'package:mr_lowat_bakery/userscreens/confirmation_page.dart';
 
 class CIMBClicksPage extends StatelessWidget {
-  const CIMBClicksPage({super.key});
+  final String userId;
+  final String cartItemId;
+
+  const CIMBClicksPage({
+    super.key,
+    required this.userId,
+    required this.cartItemId,
+  });
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController userIdController = TextEditingController();
+    TextEditingController passwordController = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red,
@@ -14,53 +26,123 @@ class CIMBClicksPage extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(height: 20),
             const Text(
-              'Please enter your login credentials',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            const TextField(
-              decoration: InputDecoration(
-                labelText: 'Enter User ID',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                minimumSize: const Size(double.infinity, 50),
-              ),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (BuildContext context) {
-                    Future.delayed(const Duration(seconds: 3), () {
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ConfirmationPage(),
-                        ),
-                      );
-                    });
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  },
-                );
-              },
-              child: const Text('Login'),
+              'CIMB Clicks Login',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
+            const Text(
+              'Please enter your CIMB Clicks login details to proceed with the payment.',
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 30),
+            TextField(
+              controller: userIdController,
+              decoration: const InputDecoration(
+                labelText: 'Username',
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.person),
+              ),
+            ),
+            const SizedBox(height: 20),
+            TextField(
+              controller: passwordController,
+              obscureText: true,
+              decoration: const InputDecoration(
+                labelText: 'Password',
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.lock),
+              ),
+            ),
+            const SizedBox(height: 30),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey,
+                    minimumSize: const Size(150, 50),
+                  ),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text('Payment Pending'),
+                          content: const Text(
+                              'Your payment is pending. You have 24 hours to complete the payment to secure your booking.'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context); // Close the dialog
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const Homepage()), // Navigate to home page
+                                  (route) => false,
+                                );
+                              },
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  child: const Text('Cancel'),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    minimumSize: const Size(150, 50),
+                  ),
+                  onPressed: () async {
+                    if (userIdController.text.isNotEmpty && passwordController.text.isNotEmpty) {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          Future.delayed(const Duration(seconds: 2), () async {
+                            // Update Firestore isPaid to true
+                            await FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(userId)
+                                .collection('cart')
+                                .doc(cartItemId)
+                                .update({'isPaid': true});
+
+                            // Navigate to ConfirmationPage
+                            Navigator.pop(context);
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ConfirmationPage(
+                                  userId: userId,
+                                  cartItemId: cartItemId,
+                                ),
+                              ),
+                            );
+                          });
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please fill in both Username and Password.'),
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text('Login'),
+                ),
+              ],
             ),
           ],
         ),

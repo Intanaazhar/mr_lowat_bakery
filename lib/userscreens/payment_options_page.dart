@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mr_lowat_bakery/userscreens/home/homepage.dart';
+import 'package:mr_lowat_bakery/userscreens/cimb_clicks_page.dart';
 
 class PaymentOptionsPage extends StatefulWidget {
   const PaymentOptionsPage({
@@ -30,34 +30,43 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
   double addOn = 0.0; // Dynamic based on widget.addOns
   double shipping = 0.0; // Dynamic based on widget.isDelivery
 
-@override
+  @override
   void initState() {
     super.initState();
     _fetchSubtotal();
   }
 
   Future<void> _fetchSubtotal() async {
-    try {
-      final cartDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(widget.userId)
-          .collection('cart')
-          .doc(widget.cartItemId)
-          .get();
+  try {
+    // Fetch the cart document from Firestore
+    final cartDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.userId)
+        .collection('cart')
+        .doc(widget.cartItemId)
+        .get();
 
-      if (cartDoc.exists) {
-        setState(() {
-          subtotal = double.parse(cartDoc.data()?['price'] ?? '0.00');
-          addOn = widget.addOns ? 5.0 : 0.0;
-          shipping = widget.isDelivery ? 10.0 : 0.0;
-        });
-      }
-    } catch (e) {
+    if (cartDoc.exists) {
+      final priceString = cartDoc.data()?['price'] ?? '0.00';
+
+      final priceDouble = double.tryParse(priceString.toString().replaceAll(RegExp(r'[^\d.]'), '')) ?? 0.0;
+
+      setState(() {
+        subtotal = priceDouble;
+        addOn = widget.addOns ? 5.0 : 0.0;
+        shipping = widget.isDelivery ? 10.0 : 0.0;
+      });
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error fetching subtotal: $e')),
+        const SnackBar(content: Text('Cart item not found.')),
       );
     }
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Error fetching subtotal: $e')),
+    );
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -132,46 +141,49 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
                   const SizedBox(height: 20),
                   Row(
                     children: [
-    Expanded(
-      child: ElevatedButton(
-        onPressed: () {
-          Navigator.pop(context); // Cancel button functionality
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.grey,
-          minimumSize: const Size(double.infinity, 50),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
-        child: const Text('Cancel'),
-      ),
-    ),
-    const SizedBox(width: 10),
-    Expanded(
-      child: ElevatedButton(
-        onPressed: () {
-          if (selectedPaymentMethod == 'Banking' && selectedBank == 'CIMB Clicks') {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const CIMBClicksPage(),
-              ),
-            );
-          } 
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.orange,
-          minimumSize: const Size(double.infinity, 50),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
-        child: const Text('Proceed to payment'),
-      ),
-    ),
-  ],
-),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context); // Cancel button functionality
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey,
+                            minimumSize: const Size(double.infinity, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: const Text('Cancel'),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (selectedPaymentMethod == 'Banking' && selectedBank == 'CIMB Clicks') {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CIMBClicksPage(
+                                    userId: widget.userId,
+                                    cartItemId: widget.cartItemId,
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.orange,
+                            minimumSize: const Size(double.infinity, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: const Text('Proceed to payment'),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -181,7 +193,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
     );
   }
 
-    Widget _buildPaymentMethodIcon(IconData icon, String label, String method) {
+  Widget _buildPaymentMethodIcon(IconData icon, String label, String method) {
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -254,7 +266,10 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const ConfirmationPage(),
+                  builder: (context) => CIMBClicksPage(
+                    userId: widget.userId,
+                    cartItemId: widget.cartItemId,
+                  ),
                 ),
               );
             } else {
@@ -299,7 +314,6 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
     );
   }
 
-
   Widget _buildSummarySection() {
     double total = subtotal + addOn + shipping;
     return Column(
@@ -336,180 +350,6 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
           ],
         ),
       ],
-    );
-  }
-}
-
-class CIMBClicksPage extends StatelessWidget {
-  const CIMBClicksPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    TextEditingController userIdController = TextEditingController();
-    TextEditingController passwordController = TextEditingController();
-
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.red,
-        title: const Text('CIMB Clicks'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            const Text(
-              'CIMB Clicks Login',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              'Please enter your CIMB Clicks login details to proceed with the payment.',
-              style: TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 30),
-            TextField(
-              controller: userIdController,
-              decoration: const InputDecoration(
-                labelText: 'Username',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.person),
-              ),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.lock),
-              ),
-            ),
-            const SizedBox(height: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-ElevatedButton(
-  style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.grey,
-    minimumSize: const Size(150, 50),
-  ),
-  onPressed: () {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Payment Pending'),
-          content: const Text('Your payment is pending. You have 24 hours to complete the payment to secure your booking.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context); // Close the dialog
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Homepage()), // Navigate to home page
-                  (route) => false,
-                );
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  },
-  child: const Text('Cancel'),
-),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    minimumSize: const Size(150, 50),
-                  ),
-                  onPressed: () {
-                    if (userIdController.text.isNotEmpty && passwordController.text.isNotEmpty) {
-                      showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (BuildContext context) {
-                          Future.delayed(const Duration(seconds: 2), () {
-                            Navigator.pop(context);
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const ConfirmationPage(),
-                              ),
-                            );
-                          });
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        },
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Please fill in both Username and Password.'),
-                        ),
-                      );
-                    }
-                  },
-                  child: const Text('Login'),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class ConfirmationPage extends StatelessWidget {
-  const ConfirmationPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Confirmation'),
-        backgroundColor: Colors.green,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.check_circle, size: 100, color: Colors.green),
-            const SizedBox(height: 20),
-            const Text(
-              'Payment Successful',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              'Thank you for your payment.',
-              style: TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 30),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Homepage()), // Navigate to the home page
-                  (route) => false, // Remove all previous routes
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-              ),
-              child: const Text('Back to Home'),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
