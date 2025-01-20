@@ -115,54 +115,62 @@ void openBookNowBottomSheet({
 
                 // Add to Cart Button
                 Center(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      final data = {
-                        'name': name,                       
-                        'price': price,                     
-                        'imagePath': imagePath,             
-                        'size': selectedSize,
-                        'flavour': selectedFlavour,
-                        'pickupOption': selectedPickupOption,
-                        'paymentOption': selectedPaymentOption,
-                        'bookingDate': bookingDate?.toIso8601String(),
-                        'addOns': addOns,
-                        'timestamp': FieldValue.serverTimestamp(),
-                      };
+                child: ElevatedButton(
+                  onPressed: (bookingDate == null || selectedSize == null || selectedFlavour == null)
+                      ? null // Disable button if required fields are not set
+                      : () async {
+                          final bool isFullPayment = selectedPaymentOption == 'Full Payment'; // Convert to boolean
 
-                      try {
-                        final user = FirebaseAuth.instance.currentUser;
-                        if (user != null) {
-                          final userId = user.uid;
+                          final data = {
+                            'name': name,
+                            'price': price,
+                            'imagePath': imagePath,
+                            'size': selectedSize,
+                            'flavour': selectedFlavour,
+                            'pickupOption': selectedPickupOption,
+                            'isFullPayment': isFullPayment, 
+                            'bookingDate': bookingDate?.toIso8601String(),
+                            'addOns': addOns,
+                            'isPaid': false, // Default value
+                            'isAccepted': false, // Default value
+                            'isCancelled': false, // Default value
+                            'timestamp': FieldValue.serverTimestamp(),
+                          };
 
-                          // Add the product and preferences to Firestore
-                          await FirebaseFirestore.instance
-                              .collection('users')
-                              .doc(userId)
-                              .collection('cart')
-                              .add(data);
+                          try {
+                            final user = FirebaseAuth.instance.currentUser;
+                            if (user != null) {
+                              final userId = user.uid;
 
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Booking saved successfully!')),
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('User not logged in!')),
-                          );
-                        }
-                      } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Error saving booking: $e')),
-                        );
-                      }
+                              // Add the product and preferences to Firestore
+                              await FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(userId)
+                                  .collection('cart')
+                                  .add(data);
 
-                      onAddToCart(data); // Callback function
-                      Navigator.pop(context);  // Close bottom sheet
-                    },
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
-                    child: const Text('Add to Cart'),
-                  ),
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Booking saved successfully!')),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('User not logged in!')),
+                              );
+                            }
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Error saving booking: $e')),
+                            );
+                          }
+
+                          onAddToCart(data); // Callback function
+                          Navigator.pop(context); // Close bottom sheet
+                        },
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+                  child: const Text('Add to Cart'),
                 ),
+              )
+
               ],
             ),
           );

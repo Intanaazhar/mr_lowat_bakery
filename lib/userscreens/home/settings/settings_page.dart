@@ -4,7 +4,7 @@ import 'package:mr_lowat_bakery/userscreens/home/settings/address_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/settings/debit_card_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/settings/feedback_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/settings/support_page.dart';
-
+import 'package:mr_lowat_bakery/userscreens/home/view_profile.dart';
 
 class SettingsPopup extends StatelessWidget {
   const SettingsPopup({super.key});
@@ -56,7 +56,11 @@ class SettingsPopup extends StatelessWidget {
                         const SizedBox(height: 20),
                         ElevatedButton(
                           onPressed: () {
-                            Navigator.of(context).pop(); // Close the dialog
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (context) => const UserProfilePage()),
+                              (route) => false, // Remove all previous routes
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.orange,

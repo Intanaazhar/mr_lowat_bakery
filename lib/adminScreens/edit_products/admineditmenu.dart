@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:mr_lowat_bakery/adminScreens/admincakes.dart';
-import 'package:mr_lowat_bakery/adminScreens/admincheesecake.dart';
-import 'package:mr_lowat_bakery/adminScreens/admintart.dart';
-import 'package:mr_lowat_bakery/adminScreens/adminbrownies.dart';
-import 'package:mr_lowat_bakery/adminScreens/admincupcake.dart';
-import 'package:mr_lowat_bakery/adminScreens/adminothers.dart';
+import 'package:mr_lowat_bakery/adminScreens/edit_products/admincakes.dart';
+import 'package:mr_lowat_bakery/adminScreens/edit_products/admincheesecake.dart';
+import 'package:mr_lowat_bakery/adminScreens/edit_products/admintart.dart';
+import 'package:mr_lowat_bakery/adminScreens/edit_products/adminbrownies.dart';
+import 'package:mr_lowat_bakery/adminScreens/edit_products/admincupcake.dart';
+import 'package:mr_lowat_bakery/adminScreens/edit_products/adminothers.dart';
 
 class AdminEditMenu extends StatefulWidget {
   const AdminEditMenu({super.key});

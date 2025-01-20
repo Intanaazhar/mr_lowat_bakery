@@ -148,20 +148,20 @@ class _DescriptionPageState extends State<DescriptionPage> {
                     ),
                   ),
                  ElevatedButton(
-                  onPressed: () {
-                    // Check if the name contains 'cake', case-insensitive
-                    if (widget.name.contains('Cake')) {
-                      openBookNowBottomSheet(
-                        context: context,
-                        imagePath: widget.imagePath,
-                        name: widget.name,
-                        price: widget.price,
-                        onAddToCart: (preferences) {
-                          print(preferences);
-                        },
-                      );
-                    } else {
-                      // Open the BookNowBottomSheetOthers for any other name
+                    onPressed: () {
+                      // Check if the name contains 'Cake' but exclude 'Cheesecake', case-insensitive
+                      if (widget.name.toLowerCase().contains('cake') && !widget.name.toLowerCase().contains('cheesecake')) {
+                        openBookNowBottomSheet(
+                          context: context,
+                          imagePath: widget.imagePath,
+                          name: widget.name,
+                          price: widget.price,
+                          onAddToCart: (preferences) {
+                            print(preferences);
+                          },
+                        );
+                      } else {
+                        // Open the BookNowBottomSheetOthers for Cheesecake or other names
                         BookNowBottomSheetOthers(
                           context: context,
                           imagePath: widget.imagePath,

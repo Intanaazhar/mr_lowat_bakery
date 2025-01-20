@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:mr_lowat_bakery/userscreens/check_out_pages.dart';
+import 'package:mr_lowat_bakery/userscreens/payment/check_out_pages.dart';
 
 class CartPage extends StatefulWidget {
   final String userId;
@@ -26,6 +26,7 @@ class _CartPageState extends State<CartPage> {
           .collection('users')
           .doc(widget.userId)
           .collection('cart')
+          .where('isPaid', isEqualTo: false)
           .get();
       return snapshot.docs;
     } catch (e) {
@@ -60,6 +61,44 @@ class _CartPageState extends State<CartPage> {
         const SnackBar(content: Text('Failed to remove item')),
       );
     }
+  }
+
+  // Show details of the cart item
+  void _showItemDetails(Map<String, dynamic> orderData) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(orderData['name'] ?? 'Unknown Item'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Image.asset(
+                orderData['imagePath'] ?? 'assets/default_image.png',
+                width: 100,
+                height: 100,
+                fit: BoxFit.cover,
+              ),
+              const SizedBox(height: 10),
+              Text('Price: RM ${_parsePrice(orderData['price'].toString()).toStringAsFixed(2)}'),
+              const SizedBox(height: 10),
+              Text('Pickup Option: ${orderData['pickupOption'] ?? 'Unknown'}'),
+              const SizedBox(height: 10),
+              Text('Add-Ons: ${orderData['addOns'] ?? false ? 'Yes' : 'No'}'),
+              const SizedBox(height: 10),
+              Text('Booking Date: ${orderData['bookingDate'] ?? 'N/A'}'),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -141,6 +180,12 @@ class _CartPageState extends State<CartPage> {
                                 _deleteCartItem(documentId);
                               },
                               icon: const Icon(Icons.delete, color: Colors.red),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                _showItemDetails(orderData); // Show details popup
+                              },
+                              icon: const Icon(Icons.info_outline, color: Colors.blue),
                             ),
                             ElevatedButton(
                               onPressed: () {

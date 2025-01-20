@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mr_lowat_bakery/adminScreens/admin_login.dart';
-import 'package:mr_lowat_bakery/adminScreens/admineditmenu.dart'; 
+import 'package:mr_lowat_bakery/adminScreens/edit_products/admineditmenu.dart'; 
 import 'package:mr_lowat_bakery/adminScreens/admin_orderlist.dart'; 
 import 'package:mr_lowat_bakery/adminScreens/admin_notification.dart';
 
