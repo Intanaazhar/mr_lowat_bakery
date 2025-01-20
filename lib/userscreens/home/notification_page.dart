@@ -132,7 +132,6 @@ class NotificationPage extends StatelessWidget {
               Text('Price: RM${orderData['price'] ?? 'N/A'}'),
               Text('Pickup Option: ${orderData['pickupOption'] ?? 'Unknown'}'),
               Text('Booking Date: ${orderData['bookingDate'] ?? 'N/A'}'),
-              Text('Required Date: ${orderData['requiredDate'] ?? 'N/A'}'),
               const SizedBox(height: 10),
               Text(
                 orderData['isCancelled'] == true

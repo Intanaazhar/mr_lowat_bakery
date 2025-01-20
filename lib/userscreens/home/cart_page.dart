@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:mr_lowat_bakery/userscreens/check_out_pages.dart';
+import 'package:mr_lowat_bakery/userscreens/payment/check_out_pages.dart';
 
 class CartPage extends StatefulWidget {
   final String userId;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mr_lowat_bakery/userscreens/cimb_clicks_page.dart';
+import 'package:mr_lowat_bakery/userscreens/payment/cimb_clicks_page.dart';
 
 class PaymentOptionsPage extends StatefulWidget {
   const PaymentOptionsPage({

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mr_lowat_bakery/userscreens/payment_options_page.dart';
+import 'package:mr_lowat_bakery/userscreens/payment/payment_options_page.dart';
 
 class ProductInfo extends StatelessWidget {
   final String userId;

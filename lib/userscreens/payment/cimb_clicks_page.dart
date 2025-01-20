@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mr_lowat_bakery/userscreens/home/homepage.dart';
-import 'package:mr_lowat_bakery/userscreens/confirmation_page.dart';
+import 'package:mr_lowat_bakery/userscreens/payment/confirmation_page.dart';
 
 class CIMBClicksPage extends StatelessWidget {
   final String userId;

@@ -5,6 +5,7 @@ import 'package:mr_lowat_bakery/userscreens/home/settings/edit_profile.dart';
 import 'package:mr_lowat_bakery/userscreens/home/view_profile.dart';
 import 'package:mr_lowat_bakery/userscreens/my_orders.dart';
 import 'package:mr_lowat_bakery/userscreens/home/settings/settings_page.dart';
+import 'package:mr_lowat_bakery/userscreens/welcome.dart';
 
 class ProfileMenu extends StatefulWidget {
   const ProfileMenu({super.key});
@@ -55,7 +56,10 @@ class _ProfileMenuState extends State<ProfileMenu> {
   Future<void> _logout() async {
     try {
       await FirebaseAuth.instance.signOut(); // Sign out from Firebase
-      Navigator.pushReplacementNamed(context, '/login'); // Redirect to login page
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const BakeryWelcomeScreen()),
+      ); // Redirect to Welcome Page
     } catch (e) {
       print("Logout error: $e");
     }

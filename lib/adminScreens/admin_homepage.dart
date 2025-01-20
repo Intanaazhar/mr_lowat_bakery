@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mr_lowat_bakery/adminScreens/admin_menu.dart';
-import 'package:mr_lowat_bakery/adminScreens/admineditmenu.dart';
-import 'package:mr_lowat_bakery/adminScreens/admincakes.dart';
-import 'package:mr_lowat_bakery/adminScreens/admincheesecake.dart';
-import 'package:mr_lowat_bakery/adminScreens/admintart.dart';
-import 'package:mr_lowat_bakery/adminScreens/adminbrownies.dart';
-import 'package:mr_lowat_bakery/adminScreens/admincupcake.dart';
-import 'package:mr_lowat_bakery/adminScreens/adminothers.dart';
+import 'package:mr_lowat_bakery/adminScreens/edit_products/admineditmenu.dart';
+import 'package:mr_lowat_bakery/adminScreens/edit_products/admincakes.dart';
+import 'package:mr_lowat_bakery/adminScreens/edit_products/admincheesecake.dart';
+import 'package:mr_lowat_bakery/adminScreens/edit_products/admintart.dart';
+import 'package:mr_lowat_bakery/adminScreens/edit_products/adminbrownies.dart';
+import 'package:mr_lowat_bakery/adminScreens/edit_products/admincupcake.dart';
+import 'package:mr_lowat_bakery/adminScreens/edit_products/adminothers.dart';
 import 'package:mr_lowat_bakery/userscreens/home/widgets/category_widgets.dart';
 
 class AdminHomepage extends StatelessWidget {
