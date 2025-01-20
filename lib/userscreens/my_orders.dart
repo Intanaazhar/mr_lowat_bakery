@@ -44,22 +44,41 @@ class MyOrdersPage extends StatelessWidget {
                     final item = items[index].data() as Map<String, dynamic>;
                     final itemName = item['name'] ?? 'Unknown Item';
                     final bookingDate = item['bookingDate'] ?? 'Unknown Date';
-                    final isAccepted = item['isAccepted'] ?? false;
+                    final currentStatus = item['status'] ?? 'Accepted';
+                    final isCompleted = currentStatus == 'Completed';
+                    final isCancelled = item['isCancelled'] ?? false;
 
                     return Card(
                       margin: const EdgeInsets.all(8.0),
                       child: ListTile(
-                        title: Text(itemName),
-                        subtitle: Text('Booking Date: $bookingDate'),
+                        title: Text(
+                          itemName,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: isCancelled ? Colors.red : Colors.black,
+                          ),
+                        ),
+                        subtitle: Text(
+                          isCancelled
+                              ? 'This order has been cancelled.'
+                              : 'Booking Date: $bookingDate',
+                          style: const TextStyle(fontSize: 14),
+                        ),
                         trailing: ElevatedButton(
                           onPressed: () => _showOrderDetails(context, item),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.pink,
+                            backgroundColor: isCancelled
+                                ? Colors.grey
+                                : (isCompleted ? Colors.green : Colors.orange),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                          child: const Text('View Details'),
+                          child: Text(
+                            isCancelled ? 'Cancelled' : 'View Details',
+                            style: const TextStyle(color: Colors.white),
+                          ),
                         ),
                       ),
                     );
@@ -73,7 +92,16 @@ class MyOrdersPage extends StatelessWidget {
   void _showOrderDetails(BuildContext context, Map<String, dynamic> order) {
     final itemName = order['name'] ?? 'Unknown Item';
     final bookingDate = order['bookingDate'] ?? 'Unknown Date';
-    final isAccepted = order['isAccepted'] ?? false;
+    final currentStatus = order['status'] ?? 'Accepted';
+    final isCancelled = order['isCancelled'] ?? false;
+
+    final processStages = ["Accepted", "Processing", "Ready", "Completed"];
+    final steps = processStages.map((stage) {
+      return OrderStepData(
+        title: stage,
+        isCompleted: processStages.indexOf(currentStatus) >= processStages.indexOf(stage),
+      );
+    }).toList();
 
     showDialog(
       context: context,
@@ -82,29 +110,67 @@ class MyOrdersPage extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          title: const Text('Order Details'),
+          title: Text(
+            isCancelled ? 'Order Cancelled' : 'Order Details',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: isCancelled ? Colors.red : Colors.black,
+            ),
+          ),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Item: $itemName'),
-              Text('Booking Date: $bookingDate'),
-              const SizedBox(height: 12),
-              const Text('Order Progress:'),
-              ListTile(
-                leading: Icon(
-                  isAccepted ? Icons.check_circle : Icons.radio_button_unchecked,
-                  color: isAccepted ? Colors.green : Colors.grey,
-                ),
-                title: const Text('Order Accepted'),
+              Text(
+                'Item: $itemName',
+                style: const TextStyle(fontSize: 16),
               ),
-              ListTile(
-                leading: Icon(
-                  order['isPaid'] == true ? Icons.check_circle : Icons.radio_button_unchecked,
-                  color: order['isPaid'] == true ? Colors.green : Colors.grey,
+              if (!isCancelled)
+                Text(
+                  'Booking Date: $bookingDate',
+                  style: const TextStyle(fontSize: 16),
                 ),
-                title: const Text('Payment Completed'),
-              ),
+              const SizedBox(height: 20),
+              if (!isCancelled)
+                const Text(
+                  'Order Progress:',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              if (!isCancelled)
+                const SizedBox(height: 10),
+              if (!isCancelled)
+                Column(
+                  children: List.generate(steps.length, (index) {
+                    final step = steps[index];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 6.0),
+                      child: Row(
+                        children: [
+                          Icon(
+                            step.isCompleted
+                                ? Icons.check_circle
+                                : Icons.radio_button_unchecked,
+                            color: step.isCompleted ? Colors.green : Colors.grey,
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            step.title,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: step.isCompleted ? Colors.black : Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+                ),
+              if (isCancelled)
+                const Text(
+                  "This order has been cancelled and a refund has been issued. If you have any questions, please don't hesitate to contact support.",
+                  style: TextStyle(fontSize: 14, color: Colors.red),
+                ),
             ],
           ),
           actions: [
@@ -117,4 +183,11 @@ class MyOrdersPage extends StatelessWidget {
       },
     );
   }
+}
+
+class OrderStepData {
+  final String title;
+  final bool isCompleted;
+
+  OrderStepData({required this.title, required this.isCompleted});
 }

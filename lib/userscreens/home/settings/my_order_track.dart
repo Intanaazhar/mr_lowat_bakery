@@ -1,22 +1,76 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
+//TAK PAKAI 
 class OrderTracker extends StatelessWidget {
-  final List<OrderStepData> steps;
+  final String userId;
+  final String orderId;
 
-  const OrderTracker({super.key, required this.steps});
+  const OrderTracker({super.key, required this.userId, required this.orderId});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: List.generate(steps.length, (index) {
-        return Column(
-          children: [
-            _buildOrderStep(steps[index]),
-            if (index < steps.length - 1) // Don't add divider after last step
-              _buildVerticalDivider(steps[index].isCompleted),
-          ],
-        );
-      }),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Order Tracker'),
+        backgroundColor: Colors.orange,
+      ),
+      body: StreamBuilder<DocumentSnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .collection('cart')
+            .doc(orderId)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (!snapshot.hasData || !snapshot.data!.exists) {
+            return const Center(
+              child: Text("Order not found or has been removed."),
+            );
+          }
+
+          final orderData = snapshot.data!.data() as Map<String, dynamic>;
+          final currentStatus = orderData['status'] ?? 'Accepted';
+
+          // Define process stages with additional stages
+          final processStages = ["Accepted", "Processing", "Ready", "Completed"];
+          final steps = processStages.map((stage) {
+            return OrderStepData(
+              title: stage,
+              isCompleted: processStages.indexOf(currentStatus) >= processStages.indexOf(stage),
+            );
+          }).toList();
+
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                const Text(
+                  'Track Your Order Progress',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 20),
+                Column(
+                  children: List.generate(steps.length, (index) {
+                    return Column(
+                      children: [
+                        _buildOrderStep(steps[index]),
+                        if (index < steps.length - 1)
+                          _buildVerticalDivider(steps[index].isCompleted),
+                      ],
+                    );
+                  }),
+                ),
+                const SizedBox(height: 20),
+                _buildOrderDetails(orderData),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -48,6 +102,31 @@ class OrderTracker extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 15),
     );
   }
+
+  Widget _buildOrderDetails(Map<String, dynamic> orderData) {
+    return Card(
+      elevation: 3,
+      margin: const EdgeInsets.all(10.0),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "Order Details",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            Text("Item: ${orderData['name'] ?? 'N/A'}"),
+            Text("Flavour: ${orderData['flavour'] ?? 'N/A'}"),
+            Text("Pickup Option: ${orderData['pickupOption'] ?? 'N/A'}"),
+            Text("Price: \$${orderData['price']?.toStringAsFixed(2) ?? 'N/A'}"),
+            Text("Current Status: ${orderData['status'] ?? 'N/A'}"),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class OrderStepData {
@@ -55,26 +134,4 @@ class OrderStepData {
   final bool isCompleted;
 
   OrderStepData({required this.title, required this.isCompleted});
-}
-
-// Example usage:
-class ExampleUsage extends StatelessWidget {
-  const ExampleUsage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    List<OrderStepData> orderSteps = [
-      OrderStepData(title: "Payment Completed", isCompleted: true),
-      OrderStepData(title: "Order Accepted", isCompleted: true),
-      OrderStepData(title: "Order Processing", isCompleted: true),
-      OrderStepData(title: "Ready for Pickup", isCompleted: false),
-    ];
-
-    return Scaffold(
-      appBar: AppBar(title: const Text('Order Tracker Example')),
-      body: Center(
-        child: OrderTracker(steps: orderSteps),
-      ),
-    );
-  }
 }

@@ -10,6 +10,7 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  List<Map<String, dynamic>> allCategories = [];
   List<Map<String, dynamic>> filteredCategories = [];
 
   @override
@@ -49,16 +50,21 @@ class _SearchPageState extends State<SearchPage> {
     }
 
     setState(() {
+      allCategories = allItems;
       filteredCategories = allItems;
     });
   }
 
   void filterCategories(String query) {
     setState(() {
-      filteredCategories = filteredCategories
-          .where((item) =>
-              item['title']!.toLowerCase().contains(query.toLowerCase()))
-          .toList();
+      if (query.isEmpty) {
+        filteredCategories = List.from(allCategories); // Reset to all items
+      } else {
+        filteredCategories = allCategories
+            .where((item) =>
+                item['title']!.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      }
     });
   }
 
@@ -68,6 +74,7 @@ class _SearchPageState extends State<SearchPage> {
       appBar: AppBar(
         title: const Text('Search Page'),
         backgroundColor: Colors.orange,
+        automaticallyImplyLeading: false, // Remove the back button
       ),
       backgroundColor: Colors.white,
       body: Column(
