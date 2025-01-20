@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 class NotificationPage extends StatelessWidget {
   const NotificationPage({super.key});
 
+  // Define process stages as a static constant list
+  static const List<String> processStages = ["Accepted", "Processing", "Ready", "Completed"];
+
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
@@ -43,74 +46,33 @@ class NotificationPage extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final item = items[index].data() as Map<String, dynamic>;
                     final itemName = item['name'] ?? 'Unknown Item';
+                    final currentStatus = item['status'] ?? 'Pending';
+                    final bookingDate = item['bookingDate'] ?? 'Unknown Date';
                     final isCancelled = item['isCancelled'] ?? false;
-                    final isAccepted = item['isAccepted'] ?? false;
-                    final requiredDate = item['requiredDate'] ?? 'Unknown Date';
-                    final cartItemId = items[index].id;
 
-                    List<Widget> notifications = [];
-
-                    // Default notification for isPaid=true
-                    notifications.add(
-                      Card(
-                        margin: const EdgeInsets.all(8.0),
-                        child: ListTile(
-                          title: Text(itemName),
-                          subtitle: const Text(
-                              'Your order has been paid. The bakery has been notified.'),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.info_outline, color: Colors.blue),
-                            onPressed: () {
-                              _showOrderDetails(context, item, cartItemId);
-                            },
-                          ),
+                    return Card(
+                      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: ListTile(
+                        title: Text(
+                          itemName,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(
+                          isCancelled
+                              ? 'This order has been cancelled. Please contact support for further assistance.'
+                              : _getNotificationMessage(currentStatus, bookingDate),
+                        ),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.info_outline),
+                          onPressed: () {
+                            _showOrderDetails(context, item, currentStatus, isCancelled);
+                          },
                         ),
                       ),
-                    );
-
-                    // Notification for isAccepted=true
-                    if (isAccepted) {
-                      notifications.add(
-                        Card(
-                          margin: const EdgeInsets.all(8.0),
-                          child: ListTile(
-                            title: Text(itemName),
-                            subtitle: const Text(
-                                'Your order has been accepted by the bakery and is now in the kitchen.'),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.info_outline, color: Colors.blue),
-                              onPressed: () {
-                                _showOrderDetails(context, item, cartItemId);
-                              },
-                            ),
-                          ),
-                        ),
-                      );
-                    }
-
-                    // Notification for isCancelled=true
-                    if (isCancelled) {
-                      notifications.add(
-                        Card(
-                          margin: const EdgeInsets.all(8.0),
-                          child: ListTile(
-                            title: Text(itemName),
-                            subtitle: Text(
-                              'Your order scheduled for delivery on $requiredDate was not accepted by the bakery. A refund is in progress. Please contact the bakery for further information.',
-                            ),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.info_outline, color: Colors.blue),
-                              onPressed: () {
-                                _showOrderDetails(context, item, cartItemId);
-                              },
-                            ),
-                          ),
-                        ),
-                      );
-                    }
-
-                    return Column(
-                      children: notifications,
                     );
                   },
                 );
@@ -119,7 +81,22 @@ class NotificationPage extends StatelessWidget {
     );
   }
 
-  void _showOrderDetails(BuildContext context, Map<String, dynamic> orderData, String cartItemId) {
+  String _getNotificationMessage(String status, String bookingDate) {
+    switch (status) {
+      case "Accepted":
+        return 'Your order has been accepted and is being prepared.';
+      case "Processing":
+        return 'Your order is currently being processed in the kitchen.';
+      case "Ready":
+        return 'Your order is ready for pickup or delivery on $bookingDate.';
+      case "Completed":
+        return 'Your order has been successfully completed. Thank you for your purchase!';
+      default:
+        return 'Your order is awaiting confirmation.';
+    }
+  }
+
+  void _showOrderDetails(BuildContext context, Map<String, dynamic> orderData, String status, bool isCancelled) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -129,18 +106,29 @@ class NotificationPage extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Price: RM${orderData['price'] ?? 'N/A'}'),
-              Text('Pickup Option: ${orderData['pickupOption'] ?? 'Unknown'}'),
               Text('Booking Date: ${orderData['bookingDate'] ?? 'N/A'}'),
+              Text('Pickup Option: ${orderData['pickupOption'] ?? 'Unknown'}'),
               const SizedBox(height: 10),
-              Text(
-                orderData['isCancelled'] == true
-                    ? 'Status: Cancelled'
-                    : (orderData['isAccepted'] == true
-                        ? 'Status: Accepted'
-                        : 'Status: Pending'),
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
+              if (isCancelled)
+                const Text(
+                  'This order was cancelled and refunded. Please contact support if you have any questions.',
+                  style: TextStyle(fontSize: 14, color: Colors.red),
+                ),
+              if (!isCancelled)
+                Text(
+                  'Current Status: $status',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              if (status == "Completed")
+                const Text(
+                  'Your order is completed. Thank you!',
+                  style: TextStyle(fontSize: 14),
+                ),
+              if (status == "Ready")
+                const Text(
+                  'Your order is ready for pickup or delivery.',
+                  style: TextStyle(fontSize: 14),
+                ),
             ],
           ),
           actions: [

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mr_lowat_bakery/userscreens/home/homepage.dart';
+import 'package:mr_lowat_bakery/userscreens/home/navigation_bar.dart';
 
 class ConfirmationPage extends StatelessWidget {
   final String userId;
@@ -55,11 +55,12 @@ class ConfirmationPage extends StatelessWidget {
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
+                // Navigate back to the NavigationMenu with the home screen selected
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const Homepage(),
-                  ), // Navigate to the home page
+                    builder: (context) => const NavigationMenu(),
+                  ),
                   (route) => false, // Remove all previous routes
                 );
               },
