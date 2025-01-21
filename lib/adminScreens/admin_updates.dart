@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class AdminUpdates extends StatefulWidget {
   const AdminUpdates({super.key});
@@ -45,16 +44,18 @@ class _AdminUpdatesState extends State<AdminUpdates> {
 
               final isCancelled = order['isCancelled'] ?? false;
               final isAccepted = order['isAccepted'] ?? false;
+              final isIgnored = order['isIgnored'] ?? false;
               final productName = order['name'] ?? 'Unknown Product';
               final bookingDate = _parseDate(order['bookingDate']);
               final countdownText = _getCountdownText(bookingDate);
 
-              // Automatically cancel overdue bookings only when isAccepted and isCancelled are false
+              // Handle overdue bookings by updating only `isIgnored`
               if (bookingDate != null &&
                   bookingDate.isBefore(DateTime.now()) &&
                   !isCancelled &&
-                  !isAccepted) {
-                _autoCancelOrder(userId: userId, cartId: cartId);
+                  !isAccepted &&
+                  !isIgnored) {
+                _updateIsIgnored(userId: userId, cartId: cartId);
               }
 
               return Card(
@@ -76,7 +77,7 @@ class _AdminUpdatesState extends State<AdminUpdates> {
 
                       if (isCancelled) {
                         return Text(
-                          'Automatically cancelled because booking day passed. We will notify the customer.\nOrder details: $productName',
+                          'Order by $userName is cancelled. The customer has been notified, and a refund process has been initiated.\nOrder details: $productName',
                           style: const TextStyle(color: Colors.black, fontSize: 14),
                         );
                       }
@@ -102,6 +103,13 @@ class _AdminUpdatesState extends State<AdminUpdates> {
                         );
                       }
 
+                      if (isIgnored) {
+                        return Text(
+                          'Order by $userName was ignored by the admin and has been automatically cancelled due to inactivity.\nOrder details: $productName',
+                          style: const TextStyle(color: Colors.black, fontSize: 14),
+                        );
+                      }
+
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -118,13 +126,13 @@ class _AdminUpdatesState extends State<AdminUpdates> {
                       );
                     },
                   ),
-                  subtitle: !isCancelled && !isAccepted
+                  subtitle: !isCancelled && !isAccepted && !isIgnored
                       ? const Text(
                           'Action required.',
                           style: TextStyle(color: Colors.blue, fontSize: 12),
                         )
                       : null,
-                  trailing: !isCancelled && !isAccepted
+                  trailing: !isCancelled && !isAccepted && !isIgnored
                       ? Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -192,12 +200,9 @@ class _AdminUpdatesState extends State<AdminUpdates> {
           .doc(cartId);
 
       if (isCancelled) {
-        await docRef.update({'isCancelled': true, 'isAccepted': false});
+        await docRef.update({'isCancelled': true, 'isAccepted': false, 'isIgnored': false});
       } else if (isAccepted) {
-        await docRef.update({
-          'isAccepted': true,
-          'isCancelled': false,
-        });
+        await docRef.update({'isAccepted': true, 'isCancelled': false, 'isIgnored': false});
       }
 
       setState(() {});
@@ -211,7 +216,7 @@ class _AdminUpdatesState extends State<AdminUpdates> {
     }
   }
 
-  void _autoCancelOrder({required String userId, required String cartId}) async {
+  void _updateIsIgnored({required String userId, required String cartId}) async {
     try {
       final docRef = FirebaseFirestore.instance
           .collection('users')
@@ -219,10 +224,10 @@ class _AdminUpdatesState extends State<AdminUpdates> {
           .collection('cart')
           .doc(cartId);
 
-      await docRef.update({'isCancelled': true, 'isAccepted': false});
+      await docRef.update({'isIgnored': true});
       setState(() {});
     } catch (e) {
-      debugPrint('Error auto-cancelling order: $e');
+      debugPrint('Error updating isIgnored: $e');
     }
   }
 
