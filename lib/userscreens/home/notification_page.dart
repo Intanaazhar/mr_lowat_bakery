@@ -49,6 +49,7 @@ class NotificationPage extends StatelessWidget {
                     final currentStatus = item['status'] ?? 'Pending';
                     final bookingDate = item['bookingDate'] ?? 'Unknown Date';
                     final isCancelled = item['isCancelled'] ?? false;
+                    final isIgnored = item['isIgnored'] ?? false;
 
                     return Card(
                       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -64,12 +65,14 @@ class NotificationPage extends StatelessWidget {
                         subtitle: Text(
                           isCancelled
                               ? 'This order has been cancelled. Please contact support for further assistance.'
-                              : _getNotificationMessage(currentStatus, bookingDate),
+                              : isIgnored
+                                  ? 'Your order was cancelled due to no action taken by the admin. We apologize for the inconvenience.'
+                                  : _getNotificationMessage(currentStatus, bookingDate),
                         ),
                         trailing: IconButton(
                           icon: const Icon(Icons.info_outline),
                           onPressed: () {
-                            _showOrderDetails(context, item, currentStatus, isCancelled);
+                            _showOrderDetails(context, item, currentStatus, isCancelled, isIgnored);
                           },
                         ),
                       ),
@@ -96,7 +99,7 @@ class NotificationPage extends StatelessWidget {
     }
   }
 
-  void _showOrderDetails(BuildContext context, Map<String, dynamic> orderData, String status, bool isCancelled) {
+  void _showOrderDetails(BuildContext context, Map<String, dynamic> orderData, String status, bool isCancelled, bool isIgnored) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -114,7 +117,12 @@ class NotificationPage extends StatelessWidget {
                   'This order was cancelled and refunded. Please contact support if you have any questions.',
                   style: TextStyle(fontSize: 14, color: Colors.red),
                 ),
-              if (!isCancelled)
+              if (isIgnored)
+                const Text(
+                  'This order was automatically cancelled due to no action taken by the admin. We apologize for the inconvenience. Refund is made.',
+                  style: TextStyle(fontSize: 14, color: Colors.red),
+                ),
+              if (!isCancelled && !isIgnored)
                 Text(
                   'Current Status: $status',
                   style: const TextStyle(fontWeight: FontWeight.bold),

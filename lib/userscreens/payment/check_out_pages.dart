@@ -41,8 +41,8 @@ class ProductInfo extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: Container(
-              width: 150, // Set the desired width
-              height: 150, // Set the desired height
+              width: 150,
+              height: 150,
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey, width: 1),
                 borderRadius: BorderRadius.circular(10),
@@ -50,7 +50,7 @@ class ProductInfo extends StatelessWidget {
               child: imagePath.startsWith("http") || imagePath.startsWith("https")
                   ? Image.network(
                       imagePath,
-                      fit: BoxFit.contain, // Ensures the image fits within the box
+                      fit: BoxFit.contain,
                       errorBuilder: (context, error, stackTrace) => Image.asset(
                         'assets/images/default_image.png',
                         fit: BoxFit.contain,
@@ -110,7 +110,7 @@ class ProductInfo extends StatelessWidget {
       ],
     );
   }
-  
+
   Widget _buildDetailRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -168,87 +168,87 @@ class CheckoutPage extends StatelessWidget {
 
           final bookingDate = _parseBookingDate(cartItem);
           final price = double.tryParse(
-                  cartItem['price']?.toString().replaceAll(RegExp(r'[^\d.]'), '') ??
-                      '0.00') ??
-              0.00;
+                  cartItem['price']?.toString().replaceAll(RegExp(r'[^\d.]'), '') ?? '0.00') ?? 0.00;
           final addOns = cartItem['addOns'] ?? false;
           final isDelivery = cartItem['pickupOption'] == 'Delivery';
           final isFullPayment = cartItem['isFullPayment'] == true ||
-            cartItem['isFullPayment']?.toString().toLowerCase() == 'true';
+              cartItem['isFullPayment']?.toString().toLowerCase() == 'true';
 
           final addOnsPrice = addOns ? 5.00 : 0.00;
           final deliveryPrice = isDelivery ? 10.00 : 0.00;
           final totalPrice = price + addOnsPrice + deliveryPrice;
 
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Card(
-                  elevation: 3,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: ProductInfo(
-                      userId: userId,
-                      cartItemId: cartItemId, 
-                      imagePath: cartItem['imagePath'] ?? '',
-                      name: cartItem['name'] ?? '',
-                      price: price.toStringAsFixed(2),
-                      flavour: cartItem['flavour'] ?? '',
-                      size: cartItem['size'] ?? '',
-                      isFullPayment: cartItem['isFullPayment'] ?? '',
-                      pickupOption: cartItem['pickupOption'] ?? '',
-                      bookingDate: bookingDate,
-                      addOns: addOns,
-                      isDelivery: isDelivery,
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Card(
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: ProductInfo(
+                        userId: userId,
+                        cartItemId: cartItemId,
+                        imagePath: cartItem['imagePath'] ?? '',
+                        name: cartItem['name'] ?? '',
+                        price: price.toStringAsFixed(2),
+                        flavour: cartItem['flavour'] ?? '',
+                        size: cartItem['size'] ?? '',
+                        isFullPayment: cartItem['isFullPayment'] ?? '',
+                        pickupOption: cartItem['pickupOption'] ?? '',
+                        bookingDate: bookingDate,
+                        addOns: addOns,
+                        isDelivery: isDelivery,
+                      ),
                     ),
                   ),
-                ),
-                const Spacer(),
-                const Divider(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Total:',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        'RM ${totalPrice.toStringAsFixed(2)}',
-                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PaymentOptionsPage(
-                          isDelivery: isDelivery,
-                          addOns: addOns,
-                          price: totalPrice,
-                          cartItemId: cartItemId,
-                          userId: userId,
+                  const SizedBox(height: 20),
+                  const Divider(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Total:',
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                         ),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange,
-                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
-                    textStyle: const TextStyle(fontSize: 18),
+                        Text(
+                          'RM ${totalPrice.toStringAsFixed(2)}',
+                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
                   ),
-                  child: const Center(child: Text('Proceed To Payment')),
-                ),
-              ],
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PaymentOptionsPage(
+                            isDelivery: isDelivery,
+                            addOns: addOns,
+                            price: totalPrice,
+                            cartItemId: cartItemId,
+                            userId: userId,
+                          ),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange,
+                      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+                      textStyle: const TextStyle(fontSize: 18),
+                    ),
+                    child: const Center(child: Text('Proceed To Payment')),
+                  ),
+                ],
+              ),
             ),
           );
         },
