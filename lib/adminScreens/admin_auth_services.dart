@@ -6,7 +6,7 @@ import 'package:mr_lowat_bakery/adminScreens/admin_nav_bar.dart';
 class AdminAuthServices {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
+  //Hello fazianaa!! how you doingg?
   // Admin Sign In Method
   Future<void> adminSignIn({
     required String email,
@@ -19,7 +19,8 @@ class AdminAuthServices {
 
     try {
       // Sign in the user
-      UserCredential userCredential = await _firebaseAuth.signInWithEmailAndPassword(
+      UserCredential userCredential =
+          await _firebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
