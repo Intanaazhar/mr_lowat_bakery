@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mr_lowat_bakery/userscreens/home/widgets/description_page.dart';
+//changes made in line 174-175 patch change
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -170,8 +171,8 @@ class _SearchPageState extends State<SearchPage> {
                                 style: const TextStyle(
                                   color: Colors.grey,
                                 ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+                                softWrap: true, //changes made for long text to be wrapped into the next
+                                overflow: TextOverflow.visible, //change made ellipsis -> visible for visible text title
                               ),
                             ],
                           ),
