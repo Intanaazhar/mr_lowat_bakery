@@ -6,6 +6,7 @@ import 'package:mr_lowat_bakery/adminScreens/edit_products/admincakes.dart';
 import 'package:mr_lowat_bakery/adminScreens/edit_products/admincheesecake.dart';
 import 'package:mr_lowat_bakery/adminScreens/edit_products/admintart.dart';
 import 'package:mr_lowat_bakery/adminScreens/edit_products/adminbrownies.dart';
+import 'package:mr_lowat_bakery/adminScreens/edit_products/admincookies.dart';
 import 'package:mr_lowat_bakery/adminScreens/edit_products/admincupcake.dart';
 import 'package:mr_lowat_bakery/adminScreens/edit_products/adminothers.dart';
 import 'package:mr_lowat_bakery/userscreens/home/widgets/category_widgets.dart';
@@ -270,6 +271,18 @@ Widget buildCardWithToggle(String docId, Map<String, dynamic> item, String categ
                           Navigator.push(
                             context,
                             MaterialPageRoute(
+                                builder: (context) => const AdminCookiePage()),
+                          );
+                        },
+                        child: const CustomRoundedContainer(
+                            imagePath: 'assets/cookieschristmas.png'),
+                      ),
+                      const SizedBox(width: 14),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
                                 builder: (context) => const AdminOthersPage()),
                           );
                         },
@@ -304,6 +317,8 @@ Widget buildCardWithToggle(String docId, Map<String, dynamic> item, String categ
                     buildCategoryGridWithToggle('cheeseTarts'),
                     const SizedBox(height: 20),
                     buildCategoryGridWithToggle('cupcakes'),
+                    const SizedBox(height: 20),
+                    buildCategoryGridWithToggle('cookies'),
                     const SizedBox(height: 20),
                     buildCategoryGridWithToggle('others'),
                   ],

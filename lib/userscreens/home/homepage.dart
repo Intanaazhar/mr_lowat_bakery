@@ -7,6 +7,7 @@ import 'package:mr_lowat_bakery/userscreens/home/Bycategories/burntcheesecake_ca
 import 'package:mr_lowat_bakery/userscreens/home/Bycategories/cheesetart_category.dart';
 import 'package:mr_lowat_bakery/userscreens/home/Bycategories/cupcake_category.dart';
 import 'package:mr_lowat_bakery/userscreens/home/Bycategories/others_category.dart';
+import 'package:mr_lowat_bakery/userscreens/home/Bycategories/cookies_category.dart';
 import 'package:mr_lowat_bakery/userscreens/home/profile_menu.dart';
 import 'package:mr_lowat_bakery/userscreens/home/search_page.dart';
 import 'package:mr_lowat_bakery/userscreens/home/Bycategories/cake_category.dart';
@@ -62,6 +63,7 @@ class _HomepageState extends State<Homepage> {
     'brownies',
     'cheeseTarts',
     'cupcakes',
+    'cookies',
     'others',
   ];
 
@@ -218,6 +220,17 @@ class _HomepageState extends State<Homepage> {
                           );
                         },
                         child: const CustomRoundedContainer(imagePath: 'assets/cupcake.png'),
+                      ),
+                      const SizedBox(width: 16),
+                      // GestureDetector for Cookies Category
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const CookieCategoryPage()),
+                          );
+                        },
+                        child: const CustomRoundedContainer(imagePath: 'assets/cookieschristmas.png'),
                       ),
                       const SizedBox(width: 16),
                       GestureDetector(
