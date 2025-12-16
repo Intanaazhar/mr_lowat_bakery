@@ -26,7 +26,7 @@ class NotificationPage extends StatelessWidget {
                   .collection('users')
                   .doc(user.uid)
                   .collection('cart')
-                  .where('isPaid', isEqualTo: true)
+                  .where('status.isPaid', isEqualTo: true)
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -46,10 +46,11 @@ class NotificationPage extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final item = items[index].data() as Map<String, dynamic>;
                     final itemName = item['name'] ?? 'Unknown Item';
-                    final currentStatus = item['status'] ?? 'Pending';
-                    final bookingDate = item['bookingDate'] ?? 'Unknown Date';
-                    final isCancelled = item['isCancelled'] ?? false;
-                    final isIgnored = item['isIgnored'] ?? false;
+                    final bookingDate = item['bookingDetails']['bookingDate'] ?? 'Unknown Date';
+                    final currentStatus = item['status']['currentStatus'] ?? 'Pending'; // Adjusted field
+                    final imagePath = item['imagePath'] ?? 'assets/default_image.png'; // Fallback image
+                    final isCancelled = item['status']['isCancelled'] ?? false;
+                    final isIgnored = item['status']['isIgnored'] ?? false;
 
                     return Card(
                       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -58,6 +59,12 @@ class NotificationPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: ListTile(
+                        leading: Image.asset(
+                          imagePath, // Display local image or default image
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.cover,
+                        ),
                         title: Text(
                           itemName,
                           style: const TextStyle(fontWeight: FontWeight.bold),
@@ -109,7 +116,7 @@ class NotificationPage extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Booking Date: ${orderData['bookingDate'] ?? 'N/A'}'),
+              Text('Booking Date: ${orderData['bookingDetails']['bookingDate'] ?? 'N/A'}'),
               Text('Pickup Option: ${orderData['pickupOption'] ?? 'Unknown'}'),
               const SizedBox(height: 10),
               if (isCancelled)

@@ -56,10 +56,14 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
                 priceString.toString().replaceAll(RegExp(r'[^\d.]'), '')) ??
             0.0;
 
+        final bookingDetails = cartDoc.data()?['bookingDetails'] ?? {};
+        final isDelivery = widget.isDelivery;
+        final addOns = widget.addOns;
+
         setState(() {
           subtotal = priceDouble;
-          addOn = widget.addOns ? 5.0 : 0.0;
-          shipping = widget.isDelivery ? 10.0 : 0.0;
+          addOn = addOns ? 5.0 : 0.0;
+          shipping = isDelivery ? 10.0 : 0.0;
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
