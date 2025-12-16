@@ -107,25 +107,48 @@ class CIMBClicksPage extends StatelessWidget {
                         barrierDismissible: false,
                         builder: (BuildContext context) {
                           Future.delayed(const Duration(seconds: 2), () async {
-                            // Update Firestore isPaid to true
-                            await FirebaseFirestore.instance
-                                .collection('users')
-                                .doc(userId)
-                                .collection('cart')
-                                .doc(cartItemId)
-                                .update({'isPaid': true});
+                            // Fetch the cart item and update isPaid status to true
+                            try {
+                              final cartDoc = await FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(userId)
+                                  .collection('cart')
+                                  .doc(cartItemId)
+                                  .get();
 
-                            // Navigate to ConfirmationPage
-                            Navigator.pop(context);
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ConfirmationPage(
-                                  userId: userId,
-                                  cartItemId: cartItemId,
-                                ),
-                              ),
-                            );
+                              if (cartDoc.exists) {
+                                // Update the payment status
+                                await FirebaseFirestore.instance
+                                    .collection('users')
+                                    .doc(userId)
+                                    .collection('cart')
+                                    .doc(cartItemId)
+                                    .update({
+                                  'status.isPaid': true,
+                                  'status.isAccepted': true, // Optionally mark the order as accepted
+                                });
+
+                                // Navigate to ConfirmationPage
+                                Navigator.pop(context);
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ConfirmationPage(
+                                      userId: userId,
+                                      cartItemId: cartItemId,
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Cart item not found.')),
+                                );
+                              }
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Error updating payment: $e')),
+                              );
+                            }
                           });
                           return const Center(
                             child: CircularProgressIndicator(),

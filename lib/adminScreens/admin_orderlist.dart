@@ -66,6 +66,14 @@ class _AdminOrderListState extends State<AdminOrderList> {
 
                   final user = userSnapshot.data?.data() as Map<String, dynamic>? ?? {};
 
+                  // Accessing the correct fields from the structure
+                  final orderName = order['name'] ?? 'Unknown Item';
+                  final bookingDate = _formatBookingDate(order['bookingDetails']['bookingDate']);
+                  final flavour = order['bookingDetails']['flavour'] ?? 'N/A';
+                  final pickupOption = order['bookingDetails']['pickupOption'] ?? 'N/A';
+                  final status = order['status']['currentStatus'] ?? 'Pending';
+                  final imagePath = order['imagePath'] ?? 'assets/default_image.png'; // Fallback for image
+
                   return Card(
                     margin: const EdgeInsets.symmetric(vertical: 8),
                     elevation: 4,
@@ -78,15 +86,15 @@ class _AdminOrderListState extends State<AdminOrderList> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            order['name'] ?? 'Unknown Item',
+                            orderName,
                             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 8),
                           Text("Customer: ${user['firstName'] ?? 'Unknown'}"),
                           const SizedBox(height: 8),
-                          Text("Booking Date: ${order['bookingDate'] ?? 'N/A'}"),
-                          Text("Flavour: ${order['flavour'] ?? 'N/A'}"),
-                          Text("Pickup Option: ${order['pickupOption'] ?? 'N/A'}"),
+                          Text("Booking Date: $bookingDate"),
+                          Text("Flavour: $flavour"),
+                          Text("Pickup Option: $pickupOption"),
                           const SizedBox(height: 12),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -96,8 +104,8 @@ class _AdminOrderListState extends State<AdminOrderList> {
                                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                               ),
                               DropdownButton<String>(
-                                value: processStages.contains(order['status'])
-                                    ? order['status']
+                                value: processStages.contains(status)
+                                    ? status
                                     : processStages[0],
                                 items: processStages.map((stage) {
                                   return DropdownMenuItem(
@@ -126,6 +134,22 @@ class _AdminOrderListState extends State<AdminOrderList> {
     );
   }
 
+  // Function to format the bookingDate if it's a Firestore Timestamp
+  String _formatBookingDate(dynamic bookingDate) {
+    if (bookingDate == null) return 'N/A';
+
+    if (bookingDate is String) {
+      return bookingDate; // If bookingDate is stored as a string
+    } else if (bookingDate is Timestamp) {
+      final dateTime = bookingDate.toDate();
+      return '${dateTime.day}-${dateTime.month}-${dateTime.year}';
+    } else if (bookingDate is DateTime) {
+      return '${bookingDate.day}-${bookingDate.month}-${bookingDate.year}';
+    }
+
+    return 'N/A';
+  }
+
   Future<List<QueryDocumentSnapshot>> _fetchOrders() async {
     try {
       List<QueryDocumentSnapshot> allOrders = [];
@@ -133,7 +157,7 @@ class _AdminOrderListState extends State<AdminOrderList> {
       for (var userDoc in usersSnapshot.docs) {
         final cartSnapshot = await userDoc.reference
             .collection('cart')
-            .where('isAccepted', isEqualTo: true)
+            .where('status.isAccepted', isEqualTo: true) // Adjusted to match database field
             .get();
         allOrders.addAll(cartSnapshot.docs);
       }
@@ -151,7 +175,9 @@ class _AdminOrderListState extends State<AdminOrderList> {
           .doc(userId)
           .collection('cart')
           .doc(cartId)
-          .update({'status': newStatus});
+          .update({
+            'status.currentStatus': newStatus, // Update status field in Firestore
+          });
 
       setState(() {});
       ScaffoldMessenger.of(context).showSnackBar(

@@ -7,16 +7,20 @@ class AdminCustomerFeedback extends StatelessWidget {
   Future<List<Map<String, dynamic>>> _fetchAllFeedback() async {
     final feedbackList = <Map<String, dynamic>>[];
 
-    final userDocs = await FirebaseFirestore.instance.collection('users').get();
+    try {
+      final userDocs = await FirebaseFirestore.instance.collection('users').get();
 
-    for (var user in userDocs.docs) {
-      final userFeedback = await user.reference.collection('feedback').get();
-      for (var feedbackDoc in userFeedback.docs) {
-        feedbackList.add({
-          ...feedbackDoc.data(),
-          'userName': user['firstName'] ?? 'Unknown User', // Fetch user's first name
-        });
+      for (var user in userDocs.docs) {
+        final userFeedback = await user.reference.collection('feedback').get();
+        for (var feedbackDoc in userFeedback.docs) {
+          feedbackList.add({
+            ...feedbackDoc.data(),
+            'userName': user['firstName'] ?? 'Unknown User', // Fetch user's first name
+          });
+        }
       }
+    } catch (e) {
+      debugPrint("Error fetching feedback: $e");
     }
 
     return feedbackList;
