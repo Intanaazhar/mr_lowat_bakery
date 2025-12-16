@@ -26,7 +26,7 @@ class _CartPageState extends State<CartPage> {
           .collection('users')
           .doc(widget.userId)
           .collection('cart')
-          .where('isPaid', isEqualTo: false)
+          .where('status.isPaid', isEqualTo: false) // Updated field reference
           .get();
       return snapshot.docs;
     } catch (e) {
@@ -83,11 +83,11 @@ class _CartPageState extends State<CartPage> {
               const SizedBox(height: 10),
               Text('Price: RM ${_parsePrice(orderData['price'].toString()).toStringAsFixed(2)}'),
               const SizedBox(height: 10),
-              Text('Pickup Option: ${orderData['pickupOption'] ?? 'Unknown'}'),
+              Text('Pickup Option: ${orderData['bookingDetails']['pickupOption'] ?? 'Unknown'}'),
               const SizedBox(height: 10),
-              Text('Add-Ons: ${orderData['addOns'] ?? false ? 'Yes' : 'No'}'),
+              Text('Add-Ons: ${orderData['bookingDetails']['addOns'] ?? false ? 'Yes' : 'No'}'),
               const SizedBox(height: 10),
-              Text('Booking Date: ${orderData['bookingDate'] ?? 'N/A'}'),
+              Text('Booking Date: ${orderData['bookingDetails']['bookingDate'] ?? 'N/A'}'),
             ],
           ),
           actions: [
@@ -132,8 +132,8 @@ class _CartPageState extends State<CartPage> {
               var priceString = orderData['price']?.toString() ?? '0.0';
               final price = _parsePrice(priceString);
               var imagePath = orderData['imagePath'] ?? 'assets/default_image.png';
-              var addOns = orderData['addOns'] ?? false;
-              var isDelivery = orderData['pickupOption'] == 'Delivery';
+              var addOns = orderData['bookingDetails']['addOns'] ?? false;
+              var isDelivery = orderData['bookingDetails']['pickupOption'] == 'Delivery';
 
               return Padding(
                 padding: const EdgeInsets.all(8.0),

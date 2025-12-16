@@ -115,62 +115,67 @@ void openBookNowBottomSheet({
 
                 // Add to Cart Button
                 Center(
-                child: ElevatedButton(
-                  onPressed: (bookingDate == null || selectedSize == null || selectedFlavour == null)
-                      ? null // Disable button if required fields are not set
-                      : () async {
-                          final bool isFullPayment = selectedPaymentOption == 'Full Payment'; // Convert to boolean
+                  child: ElevatedButton(
+                    onPressed: (bookingDate == null || selectedSize == null || selectedFlavour == null)
+                        ? null // Disable button if required fields are not set
+                        : () async {
+                            final bool isFullPayment = selectedPaymentOption == 'Full Payment'; // Convert to boolean
 
-                          final data = {
-                            'name': name,
-                            'price': price,
-                            'imagePath': imagePath,
-                            'size': selectedSize,
-                            'flavour': selectedFlavour,
-                            'pickupOption': selectedPickupOption,
-                            'isFullPayment': isFullPayment, 
-                            'bookingDate': bookingDate?.toIso8601String(),
-                            'addOns': addOns,
-                            'isPaid': false, // Default value
-                            'isAccepted': false, // Default value
-                            'isCancelled': false, // Default value
-                            'timestamp': FieldValue.serverTimestamp(),
-                          };
+                            final data = {
+                              'name': name,
+                              'price': price,
+                              'imagePath': imagePath,
+                              'bookingDetails': {
+                                'size': selectedSize,
+                                'flavour': selectedFlavour,
+                                'pickupOption': selectedPickupOption,
+                                'paymentOption': selectedPaymentOption,
+                                'bookingDate': bookingDate?.toIso8601String(),
+                                'addOns': addOns,
+                              },
+                              'status': {
+                                'isFullPayment': isFullPayment,
+                                'isPaid': false, // Default value
+                                'isAccepted': false, // Default value
+                                'isCancelled': false, // Default value
+                              },
+                              'timestamp': FieldValue.serverTimestamp(),
+                              'createdAt': FieldValue.serverTimestamp(),
+                            };
 
-                          try {
-                            final user = FirebaseAuth.instance.currentUser;
-                            if (user != null) {
-                              final userId = user.uid;
+                            try {
+                              final user = FirebaseAuth.instance.currentUser;
+                              if (user != null) {
+                                final userId = user.uid;
 
-                              // Add the product and preferences to Firestore
-                              await FirebaseFirestore.instance
-                                  .collection('users')
-                                  .doc(userId)
-                                  .collection('cart')
-                                  .add(data);
+                                // Add the product and preferences to Firestore
+                                await FirebaseFirestore.instance
+                                    .collection('users')
+                                    .doc(userId)
+                                    .collection('cart')
+                                    .add(data);
 
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Booking saved successfully!')),
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('User not logged in!')),
+                                );
+                              }
+                            } catch (e) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Booking saved successfully!')),
-                              );
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('User not logged in!')),
+                                SnackBar(content: Text('Error saving booking: $e')),
                               );
                             }
-                          } catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Error saving booking: $e')),
-                            );
-                          }
 
-                          onAddToCart(data); // Callback function
-                          Navigator.pop(context); // Close bottom sheet
-                        },
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
-                  child: const Text('Add to Cart'),
-                ),
-              )
-
+                            onAddToCart(data); // Callback function
+                            Navigator.pop(context); // Close bottom sheet
+                          },
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+                    child: const Text('Add to Cart'),
+                  ),
+                )
               ],
             ),
           );

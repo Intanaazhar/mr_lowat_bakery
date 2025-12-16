@@ -97,14 +97,20 @@ void BookNowBottomSheetOthers({
                             'name': name,
                             'price': price,
                             'imagePath': imagePath,
-                            'pickupOption': selectedPickupOption,
-                            'isFullPayment': isFullPayment, 
-                            'bookingDate': bookingDate?.toIso8601String(),
-                            'addOns': addOns,
-                            'isPaid': false, // Default value
-                            'isAccepted': false, // Default value
-                            'isCancelled': false, // Default value
+                            'bookingDetails': {
+                              'pickupOption': selectedPickupOption,
+                              'paymentOption': selectedPaymentOption,
+                              'bookingDate': bookingDate?.toIso8601String(),
+                              'addOns': addOns,
+                            },
+                            'status': {
+                              'isFullPayment': isFullPayment, 
+                              'isPaid': false, // Default value
+                              'isAccepted': false, // Default value
+                              'isCancelled': false, // Default value
+                            },
                             'timestamp': FieldValue.serverTimestamp(),
+                            'createdAt': FieldValue.serverTimestamp(),
                           };
 
                           try {

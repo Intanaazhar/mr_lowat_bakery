@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+
 class MyOrdersPage extends StatelessWidget {
   const MyOrdersPage({super.key});
 
@@ -23,7 +24,7 @@ class MyOrdersPage extends StatelessWidget {
                   .collection('users')
                   .doc(user.uid)
                   .collection('cart')
-                  .where('isPaid', isEqualTo: true)
+                  .where('status.isPaid', isEqualTo: true)
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -43,14 +44,21 @@ class MyOrdersPage extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final item = items[index].data() as Map<String, dynamic>;
                     final itemName = item['name'] ?? 'Unknown Item';
-                    final bookingDate = item['bookingDate'] ?? 'Unknown Date';
-                    final currentStatus = item['status'] ?? 'Accepted';
+                    final bookingDate = item['bookingDetails']['bookingDate'] ?? 'Unknown Date';
+                    final imagePath = item['imagePath'] ?? 'assets/default_image.png'; // Use fallback image
+                    final currentStatus = item['status']['currentStatus'] ?? 'Accepted'; // Adjusted field
                     final isCompleted = currentStatus == 'Completed';
-                    final isCancelled = item['isCancelled'] ?? false;
+                    final isCancelled = item['status']['isCancelled'] ?? false;
 
                     return Card(
                       margin: const EdgeInsets.all(8.0),
                       child: ListTile(
+                        leading: Image.asset(
+                          imagePath, // Use local image or default image
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.cover,
+                        ),
                         title: Text(
                           itemName,
                           style: TextStyle(
@@ -91,9 +99,10 @@ class MyOrdersPage extends StatelessWidget {
 
   void _showOrderDetails(BuildContext context, Map<String, dynamic> order) {
     final itemName = order['name'] ?? 'Unknown Item';
-    final bookingDate = order['bookingDate'] ?? 'Unknown Date';
-    final currentStatus = order['status'] ?? 'Accepted';
-    final isCancelled = order['isCancelled'] ?? false;
+    final bookingDate = order['bookingDetails']['bookingDate'] ?? 'Unknown Date';
+    final imagePath = order['imagePath'] ?? 'assets/default_image.png'; // Use fallback image
+    final currentStatus = order['status']['currentStatus'] ?? 'Accepted'; // Adjusted field
+    final isCancelled = order['status']['isCancelled'] ?? false;
 
     final processStages = ["Accepted", "Processing", "Ready", "Completed"];
     final steps = processStages.map((stage) {
@@ -122,6 +131,7 @@ class MyOrdersPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
+              Image.asset(imagePath), // Display image in details view
               Text(
                 'Item: $itemName',
                 style: const TextStyle(fontSize: 16),

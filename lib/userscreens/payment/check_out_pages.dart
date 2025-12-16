@@ -166,13 +166,13 @@ class CheckoutPage extends StatelessWidget {
 
           final cartItem = snapshot.data!.data() as Map<String, dynamic>;
 
+          // Access the nested bookingDetails and status fields
           final bookingDate = _parseBookingDate(cartItem);
           final price = double.tryParse(
                   cartItem['price']?.toString().replaceAll(RegExp(r'[^\d.]'), '') ?? '0.00') ?? 0.00;
-          final addOns = cartItem['addOns'] ?? false;
-          final isDelivery = cartItem['pickupOption'] == 'Delivery';
-          final isFullPayment = cartItem['isFullPayment'] == true ||
-              cartItem['isFullPayment']?.toString().toLowerCase() == 'true';
+          final addOns = cartItem['bookingDetails']['addOns'] ?? false;
+          final isDelivery = cartItem['bookingDetails']['pickupOption'] == 'Delivery';
+          final isFullPayment = cartItem['status']['isFullPayment'] ?? false;
 
           final addOnsPrice = addOns ? 5.00 : 0.00;
           final deliveryPrice = isDelivery ? 10.00 : 0.00;
@@ -197,10 +197,10 @@ class CheckoutPage extends StatelessWidget {
                         imagePath: cartItem['imagePath'] ?? '',
                         name: cartItem['name'] ?? '',
                         price: price.toStringAsFixed(2),
-                        flavour: cartItem['flavour'] ?? '',
-                        size: cartItem['size'] ?? '',
-                        isFullPayment: cartItem['isFullPayment'] ?? '',
-                        pickupOption: cartItem['pickupOption'] ?? '',
+                        flavour: cartItem['bookingDetails']['flavour'] ?? '',
+                        size: cartItem['bookingDetails']['size'] ?? '',
+                        isFullPayment: isFullPayment,
+                        pickupOption: cartItem['bookingDetails']['pickupOption'] ?? '',
                         bookingDate: bookingDate,
                         addOns: addOns,
                         isDelivery: isDelivery,
@@ -257,8 +257,8 @@ class CheckoutPage extends StatelessWidget {
   }
 
   DateTime _parseBookingDate(Map<String, dynamic> cartItem) {
-    if (cartItem.containsKey('bookingDate')) {
-      final bookingData = cartItem['bookingDate'];
+    if (cartItem.containsKey('bookingDetails') && cartItem['bookingDetails'].containsKey('bookingDate')) {
+      final bookingData = cartItem['bookingDetails']['bookingDate'];
       if (bookingData is Timestamp) return bookingData.toDate();
       if (bookingData is String) return DateTime.tryParse(bookingData) ?? DateTime.now();
     }
